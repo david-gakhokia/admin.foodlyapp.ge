@@ -32,9 +32,9 @@ use App\Http\Controllers\Kiosk\BookingController;
 // Admin Controllers
 use App\Http\Controllers\Admin\PlaceController;
 
-Route::get('baro', function () {
-    return response()->json(['message' => 'Baro Baro!']);
-})->name('baro');
+// Route::get('baro', function () {
+//     return response()->json(['message' => 'Baro Baro!']);
+// })->name('baro');
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -181,7 +181,7 @@ Route::prefix('kiosk')->group(function () {
     // Route::get('test1', [KioskAuthController::class, 'test'])->name('test1');
     Route::get('baro', function () {
         return response()->json(['message' => 'Baro Baro!']);
-    })->name('baro');
+    })->name('kiosk.baro');
 
     // PUBLIC: Kiosk–ის ლოგინისთვის
     Route::post('login', [KioskAuthController::class, 'login'])
