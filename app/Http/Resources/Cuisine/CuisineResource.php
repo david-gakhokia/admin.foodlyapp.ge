@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Resources\Cuisine;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class CuisineResource extends JsonResource
+{
+    public function toArray($request)
+    {
+        $locale = $request->query('locale');
+
+        if ($locale) {
+            app()->setLocale($locale);
+
+            return [
+                'id' => $this->id,
+                'status' => $this->status,
+                'rank' => $this->rank,
+                'slug' => $this->slug,
+                'name' => $this->name,
+                'image' => $this->image,
+            ];
+        }
+
+        return [
+            'id' => $this->id,
+            'slug' => $this->slug,
+            'status' => $this->status,
+            'image' => $this->image,
+        
+            'translations' => $this->translations->map(function ($tr) {
+                return [
+                    'locale' => $tr->locale,
+                    'name' => $tr->name,
+                ];
+            }),
+        ];
+    }
+}

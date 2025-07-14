@@ -1,0 +1,5 @@
+integrations:
+  forge:
+    api.foodly.pro:
+      site-id: 2704190
+      server-id: 825483
