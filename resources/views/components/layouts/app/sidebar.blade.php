@@ -30,8 +30,9 @@
                     {{-- <flux:navlist.item icon="table-cells-large" :href="route('admin.tables.index')" :current="request()->routeIs('admin.tables.*')" wire:navigate>{{ __('Tables') }}</flux:navlist.item>
                      --}}
           
-                    <flux:navlist.item icon="cube" :href="route('admin.cuisines.index')" :current="request()->routeIs('admin.cuisines.*')" wire:navigate>{{ __('Cuisines') }}</flux:navlist.item>
-                    <flux:navlist.item icon="cube" :href="route('admin.dishes.index')" :current="request()->routeIs('admin.dishes.*')" wire:navigate>{{ __('Dishes') }}</flux:navlist.item>
+                    <flux:navlist.item icon="globe-alt" :href="route('admin.cuisines.index')" :current="request()->routeIs('admin.cuisines.*')" wire:navigate>{{ __('Cuisines') }}</flux:navlist.item>
+                    <flux:navlist.item icon="cake" :href="route('admin.dishes.index')" :current="request()->routeIs('admin.dishes.*')" wire:navigate>{{ __('Dishes') }}</flux:navlist.item>
+                    <flux:navlist.item icon="map-pin" :href="route('admin.spots.index')" :current="request()->routeIs('admin.spots.*')" wire:navigate>{{ __('Spots') }}</flux:navlist.item>
                     <flux:navlist.item icon="building-office" :href="route('admin.spaces.index')" :current="request()->routeIs('admin.spaces.*')" wire:navigate>{{ __('Spaces') }}</flux:navlist.item>
             
                 </flux:navlist.group>

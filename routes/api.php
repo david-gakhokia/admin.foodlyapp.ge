@@ -25,7 +25,6 @@ use App\Http\Controllers\Kiosk\KioskCuisineController;
 use App\Http\Controllers\Kiosk\KioskDishController;
 use App\Http\Controllers\Api\DishRestaurantApiController;
 use App\Http\Controllers\Kiosk\KioskCategoryController;
-use App\Http\Controllers\Kiosk\KioskSpotController;
 use App\Http\Controllers\Kiosk\BookingFormController;
 use App\Http\Controllers\Kiosk\BookingController;
 
@@ -72,8 +71,7 @@ Route::webapp()
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsBySpace')->name('top');
             });
 
-
-        // 🍽 Cuisines
+        //  Cuisines
         Route::prefix('cuisines')
             ->name('cuisines.')
             ->controller(CuisineController::class)
@@ -256,18 +254,6 @@ Route::prefix('kiosk')->group(function () {
                 Route::get('/{slug}/restaurants', 'restaurantsBySpace')->name('restaurants');
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsBySpace')->name('top-10-restaurants');
             });
-
-        // Spots
-        Route::prefix('spots')
-            ->name('spots.')
-            ->controller(KioskSpotController::class)
-            ->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::get('/{slug}', 'showBySlug')->name('show');
-                Route::get('/{slug}/restaurants', 'restaurantsBySpot')->name('restaurants');
-                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsBySpot')->name('top-10-restaurants');
-            });
-
 
         // 🍽 Cuisines
         Route::prefix('cuisines')

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RestaurantDishController;
 use App\Http\Controllers\Admin\DishRestaurantController;
 use App\Http\Controllers\Admin\RestaurantSpaceController;
 use App\Http\Controllers\Admin\SpaceRestaurantController;
+use App\Http\Controllers\Admin\SpotController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Artisan;
@@ -163,6 +164,10 @@ Route::middleware(['auth'])
         Route::delete('dishes/{dish}/image', [DishController::class, 'deleteOnlyImage'])
             ->name('dishes.image.delete');
 
+        // Spots
+        Route::resource('spots', SpotController::class)
+            ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
         // Dish-Restaurant Management (from Dish perspective)
         Route::prefix('dishes/{dish}/restaurants')->name('dishes.restaurants.')->group(function () {
             Route::get('/', [DishRestaurantController::class, 'index'])->name('index');
@@ -206,8 +211,6 @@ Route::middleware(['auth'])
             Route::delete('{restaurant}', [SpaceRestaurantController::class, 'destroy'])->name('destroy');
             Route::put('/', [SpaceRestaurantController::class, 'bulkUpdate'])->name('bulk-update');
         });
-
-
 
         // Menu Module
         Route::prefix('menu')->name('menu.')->group(function () {
