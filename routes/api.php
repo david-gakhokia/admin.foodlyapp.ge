@@ -73,7 +73,6 @@ Route::webapp()
             });
 
 
-
         // 🍽 Cuisines
         Route::prefix('cuisines')
             ->name('cuisines.')
@@ -337,8 +336,8 @@ Route::prefix('booking')
 });
 
 // Dish-Restaurant API endpoints for menu category relationships
-Route::prefix('dishes')->controller(DishRestaurantApiController::class)->group(function () {
-    Route::get('/', 'getDishesWithRestaurantCounts')->name('dishes.with-restaurants');
-    Route::get('/{dish}/restaurants', 'getRestaurantsByDish')->name('dishes.restaurants');
-    Route::get('/search', 'searchRestaurantsByDishName')->name('dishes.search-restaurants');
-});
+// Route::prefix('dishes')->controller(DishRestaurantApiController::class)->group(function () {
+//     Route::get('/', 'getDishesWithRestaurantCounts')->name('dishes.with-restaurants');
+//     Route::get('/{dish}/restaurants', 'getRestaurantsByDish')->name('api.dishes.restaurants');
+//     Route::get('/search', 'searchRestaurantsByDishName')->name('dishes.search-restaurants');
+// });

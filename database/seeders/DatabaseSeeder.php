@@ -17,17 +17,6 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
             KioskSeeder::class,
-            CuisineSeeder::class,
-            RestaurantSeeder::class,
-            PlaceSeeder::class,
-            MenuCategorySeeder::class,
-            MenuItemsTableSeeder::class,
-            SpaceSeeder::class,
-            DishSeeder::class,
-            SpotSeeder::class,
-            // TableSeeder::class,
-            // CategorySeeder::class,
-
         ]);
         // User::factory(10)->create();
 

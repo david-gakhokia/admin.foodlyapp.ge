@@ -4,11 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('restaurants', function (Blueprint $table) {
@@ -38,6 +34,7 @@ return new class extends Migration
             // Business details
             $table->integer('discount_rate')->default(0);
             $table->string('price_per_person')->nullable();
+            $table->enum('price_currency', ['GEL', 'USD', 'EUR', 'AED', 'HUF', 'CZK'])->nullable()->default(null);
             $table->string('working_hours')->nullable();
             $table->integer('delivery_time')->nullable();
             $table->string('reservation_type')->nullable();
@@ -56,9 +53,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('restaurants');

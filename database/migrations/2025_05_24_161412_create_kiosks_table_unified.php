@@ -13,10 +13,11 @@ return new class extends Migration {
             $table->string('secret')->nullable(false);
             $table->string('name')->nullable();
             $table->string('location')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['active', 'inactive', 'maintenance'])->default('active');
             $table->string('ip_address')->nullable();
             $table->timestamp('last_seen')->nullable();
-            
+            $table->string('mode')->default('default');
+            $table->json('content')->nullable();
             $table->timestamps();
         });
     }
