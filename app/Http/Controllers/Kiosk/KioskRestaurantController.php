@@ -34,8 +34,9 @@ class KioskRestaurantController extends Controller
         $sort    = $request->query('sort', 'rank_asc');
         [$sortField, $sortDir] = explode('_', $sort) + [1 => 'asc'];
 
-        // Query builder-ის შექმნა
-        $query = Restaurant::with(['translations']);
+        // Query builder-ის შექმნა - მხოლოდ აქტიური რესტორნები
+        $query = Restaurant::with(['translations'])
+            ->where('status', 'active');
 
         // 1) Search by name or description
         if ($search = $request->query('search')) {
@@ -83,7 +84,9 @@ class KioskRestaurantController extends Controller
     public function showBySlug(string $slug)
     {
         try {
-            $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+            $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
+                ->firstOrFail();
             return RestaurantResource::make($restaurant);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Restaurant not found'], 404);
@@ -97,6 +100,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with(['places.tables', 'tables'])
                 ->firstOrFail();
 
@@ -138,6 +142,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with('places')
                 ->firstOrFail();
 
@@ -158,6 +163,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with('places')
                 ->firstOrFail();
 
@@ -191,6 +197,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with(['places.tables'])
                 ->firstOrFail();
 
@@ -218,6 +225,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with(['places.tables'])
                 ->firstOrFail();
 
@@ -253,6 +261,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with('tables')
                 ->firstOrFail();
 
@@ -275,6 +284,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with(['tables' => function ($q) use ($table) {
                     $q->where('id', $table)->orWhere('slug', $table);
                 }])
@@ -306,6 +316,7 @@ class KioskRestaurantController extends Controller
         try {
             $restaurant = Restaurant::where('id', $identifier)
                 ->orWhere('slug', $identifier)
+                ->where('status', 'active')
                 ->firstOrFail();
 
             return response()->json([
@@ -327,6 +338,7 @@ class KioskRestaurantController extends Controller
         try {
             $restaurant = Restaurant::where('id', $identifier)
                 ->orWhere('slug', $identifier)
+                ->where('status', 'active')
                 ->firstOrFail();
 
             // თუ გსურთ მხოლოდ აქტიური ელემენტები, დაამატეთ ->where('status', 'active')
@@ -350,6 +362,7 @@ class KioskRestaurantController extends Controller
     {
         try {
             $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
                 ->with(['menuCategories', 'menuItems'])
                 ->firstOrFail();
 

@@ -19,7 +19,7 @@ class KioskReservationController extends Controller
 
     public function restaurantForm(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         $reservationDate = $request->input('reservation_date') ?? now()->format('Y-m-d');
 
         $availableSlots = $this->availabilityService->generateAvailableSlots($restaurant, $reservationDate, now()->parse($reservationDate)->format('l'));
@@ -34,7 +34,7 @@ class KioskReservationController extends Controller
 
     public function restaurantReserve(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
 
         $validated = $request->validate([
             'reservation_date' => 'required|date',

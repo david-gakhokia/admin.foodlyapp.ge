@@ -24,7 +24,7 @@ class BookingFormController extends Controller
     // ----------- RESTAURANT FORM -----------
     public function restaurantForm(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l'); // Returns day name like 'Monday'
 
@@ -39,7 +39,7 @@ class BookingFormController extends Controller
 
     public function restaurantReserve(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         $validated = $this->validateReservation($request);
 
         $this->reservationService->createReservation(
@@ -56,7 +56,7 @@ class BookingFormController extends Controller
     // ----------- PLACE FORM -----------
     public function placeForm(Request $request, $restaurant_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $place = Place::where('slug', $slug)->where('restaurant_id', $restaurant->id)->firstOrFail();
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l');
@@ -73,7 +73,7 @@ class BookingFormController extends Controller
 
     public function placeReserve(Request $request, $restaurant_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $place = Place::where('slug', $slug)->where('restaurant_id', $restaurant->id)->firstOrFail();
         $validated = $this->validateReservation($request);
 
@@ -91,7 +91,7 @@ class BookingFormController extends Controller
     // ----------- TABLE FORM -----------
     public function tableForm(Request $request, $restaurant_slug, $place_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $place = Place::where('slug', $place_slug)->where('restaurant_id', $restaurant->id)->firstOrFail();
         $table = Table::where('slug', $slug)->where('place_id', $place->id)->firstOrFail();
         $reservationDate = $request->input('reservation_date', now()->toDateString());
@@ -110,7 +110,7 @@ class BookingFormController extends Controller
 
     public function tableReserve(Request $request, $restaurant_slug, $place_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $place = Place::where('slug', $place_slug)->where('restaurant_id', $restaurant->id)->firstOrFail();
         $table = Table::where('slug', $slug)->where('place_id', $place->id)->firstOrFail();
         $validated = $this->validateReservation($request);
@@ -129,7 +129,7 @@ class BookingFormController extends Controller
     // ----------- TABLE FORM (Direct Restaurant) -----------
     public function tableFormDirect(Request $request, $restaurant_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $table = Table::where('slug', $slug)->where('restaurant_id', $restaurant->id)->whereNull('place_id')->firstOrFail();
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l');
@@ -147,7 +147,7 @@ class BookingFormController extends Controller
 
     public function tableReserveDirect(Request $request, $restaurant_slug, $slug)
     {
-        $restaurant = Restaurant::where('slug', $restaurant_slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $restaurant_slug)->where('status', 'active')->firstOrFail();
         $table = Table::where('slug', $slug)->where('restaurant_id', $restaurant->id)->whereNull('place_id')->firstOrFail();
         $validated = $this->validateReservation($request);
 
@@ -165,7 +165,7 @@ class BookingFormController extends Controller
     // ----------- RESTAURANT OTP & SMS FORMS -----------
     public function restaurantOTPForm(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         
         return view('kiosk.booking.otp-form', [
             'restaurant' => $restaurant,
@@ -174,7 +174,7 @@ class BookingFormController extends Controller
 
     public function restaurantSMSForm(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         
         return view('kiosk.booking.sms-form', [
             'restaurant' => $restaurant,
@@ -184,7 +184,7 @@ class BookingFormController extends Controller
     // ----------- OTP & SMS VERIFICATION METHODS -----------
     public function verifyOTP(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         
         $validated = $request->validate([
             'phone' => 'required|string',
@@ -203,7 +203,7 @@ class BookingFormController extends Controller
 
     public function sendSMS(Request $request, $slug)
     {
-        $restaurant = Restaurant::where('slug', $slug)->firstOrFail();
+        $restaurant = Restaurant::where('slug', $slug)->where('status', 'active')->firstOrFail();
         
         $validated = $request->validate([
             'phone' => 'required|string',

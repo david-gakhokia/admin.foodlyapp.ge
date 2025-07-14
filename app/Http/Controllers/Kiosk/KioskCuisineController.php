@@ -55,8 +55,9 @@ class KioskCuisineController extends Controller
         try {
             $cuisine = Cuisine::where('slug', $slug)->firstOrFail();
 
-            $restaurants = $cuisine->restaurants()   
-                // ->orderBy('rank', 'asc')
+            $restaurants = $cuisine->restaurants()
+                ->where('status', 'active')
+                ->orderBy('rank', 'asc')
                 ->get();
 
             if ($restaurants->isEmpty()) {
@@ -81,8 +82,8 @@ class KioskCuisineController extends Controller
             $cuisine = Cuisine::where('slug', $slug)->firstOrFail();
 
             $restaurants = $cuisine->restaurants()
-                // ->where('status', 1)
-                // ->orderBy('rank', 'asc')
+                ->where('status', 'active')
+                ->orderBy('rank', 'asc')
                 ->take(10)
                 ->get();
 

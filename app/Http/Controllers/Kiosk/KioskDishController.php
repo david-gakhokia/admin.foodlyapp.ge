@@ -60,7 +60,8 @@ class KioskDishController extends Controller
             $dish = Dish::where('slug', $slug)->firstOrFail();
 
             $restaurants = $dish->restaurants()
-                // ->orderBy('rank', 'asc')
+                ->where('status', 'active')
+                ->orderBy('rank', 'asc')
                 ->get();
 
             if ($restaurants->isEmpty()) {
@@ -87,8 +88,8 @@ class KioskDishController extends Controller
             $dish = Dish::where('slug', $slug)->firstOrFail();
 
             $restaurants = $dish->restaurants()
-                // ->where('status', 1)
-                // ->orderBy('rank', 'asc')
+                ->where('status', 'active')
+                ->orderBy('rank', 'asc')
                 ->take(10)
                 ->get();
 

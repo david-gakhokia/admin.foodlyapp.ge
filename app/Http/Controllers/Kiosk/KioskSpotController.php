@@ -57,6 +57,7 @@ class KioskSpotController extends Controller
 
             $restaurants = $spot->restaurants()
                 ->wherePivot('status', 'active')
+                ->where('restaurants.status', 'active')
                 ->orderBy('restaurant_spot.rank', 'asc')
                 ->get();
 
@@ -84,6 +85,7 @@ class KioskSpotController extends Controller
 
             $restaurants = $spot->restaurants()
                 ->wherePivot('status', 'active')
+                ->where('restaurants.status', 'active')
                 ->orderBy('restaurant_spot.rank', 'asc')
                 ->take(10)
                 ->get();

@@ -63,7 +63,7 @@ class KioskSpaceController extends Controller
             $space = Space::where('slug', $slug)->firstOrFail();
 
             $restaurants = $space->restaurants()
-                ->where('status', 1)
+                ->where('status', 'active')
                 ->orderBy('rank', 'asc')
                 ->get();
 
@@ -131,7 +131,7 @@ class KioskSpaceController extends Controller
             $space = Space::where('slug', $slug)->firstOrFail();
 
             $restaurants = $space->restaurants()
-                ->where('status', 1)
+                ->where('status', 'active')
                 ->orderBy('rank', 'asc')
                 ->take(10)
                 ->get();
