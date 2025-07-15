@@ -15,7 +15,8 @@ class MenuCategoryRequest extends FormRequest
 
     public function rules()
     {
-        $id = $this->route('menu_category')?->id ?? null;
+        $menuCategory = request()->route('menuCategory') ?? request()->route('menu_category');
+        $id = $menuCategory?->id ?? null;
 
         $rules = [
             'slug'     => ['nullable', 'string', 'max:250', Rule::unique('menu_categories', 'slug')->ignore($id)], 
@@ -28,9 +29,10 @@ class MenuCategoryRequest extends FormRequest
                 'nullable',
                 'exists:menu_categories,id',
                 function ($attribute, $value, $fail) {
-                    if ($value && $this->input('restaurant_id')) {
+                    $restaurantId = request('restaurant_id');
+                    if ($value && $restaurantId) {
                         $parentCategory = MenuCategory::find($value);
-                        if ($parentCategory && $parentCategory->restaurant_id != $this->input('restaurant_id')) {
+                        if ($parentCategory && $parentCategory->restaurant_id != $restaurantId) {
                             $fail('The selected parent category must belong to the same restaurant.');
                         }
                     }
@@ -39,7 +41,13 @@ class MenuCategoryRequest extends FormRequest
         ];
 
         foreach (config('translatable.locales') as $locale) {
-            $rules[$locale . '.name'] = 'required|string|max:255';
+            if ($locale === config('app.locale')) {
+                // Default locale is required
+                $rules[$locale . '.name'] = 'required|string|max:255';
+            } else {
+                // Other locales are optional
+                $rules[$locale . '.name'] = 'nullable|string|max:255';
+            }
             $rules[$locale . '.description'] = 'nullable|string';
         }
 
@@ -69,12 +77,13 @@ class MenuCategoryRequest extends FormRequest
         $data = $this->validated();
         $translations = [];
 
-        // Extract translations into the nested format
+        // Extract translations into the nested format - include all provided translations
         foreach (config('translatable.locales') as $locale) {
             if (isset($data[$locale])) {
                 $translations[$locale] = $data[$locale];
-                unset($data[$locale]); // Remove from main data
             }
+            // Remove from main data regardless
+            unset($data[$locale]); 
         }
 
         $data['translations'] = $translations;

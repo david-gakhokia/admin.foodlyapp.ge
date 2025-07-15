@@ -256,8 +256,8 @@
                                         Category Name
                                     </label>
                                     <input type="text" name="{{ $locale }}[name]" id="{{ $locale }}_name"
-                                        value="{{ old($locale . '.name', $category?->translate($locale)->name ?? '') }}"
-                                        class="{{ $inputClasses }}" placeholder="Enter category name...">
+                                        value="{{ old($locale . '.name', $category?->translate($locale)?->name ?? '') }}"
+                                        class="{{ $inputClasses }}" placeholder="Enter category name...">>
                                 </div>
 
                                 <div>

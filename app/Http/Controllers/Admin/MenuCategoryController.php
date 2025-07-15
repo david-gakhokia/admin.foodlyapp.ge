@@ -177,18 +177,23 @@ class MenuCategoryController extends Controller
             // Update category without translations first
             $menuCategory->update($data);
 
-            // Clear existing translations that are not in the new data
-            $menuCategory->translations()->delete();
-
-            // Now manually add only the translations that have non-empty names
-            foreach ($translations as $locale => $translation) {
-                if (!empty($translation['name'])) {
-                    $menuCategory->translateOrNew($locale)->fill($translation);
+            // Update translations - preserve existing ones, update only provided ones
+            foreach (config('translatable.locales') as $locale) {
+                $translation = $translations[$locale] ?? null;
+                
+                if ($translation && !empty($translation['name'])) {
+                    // Update with new translation data
+                    $existingTranslation = $menuCategory->translateOrNew($locale);
+                    $existingTranslation->fill($translation);
                 }
+                // If no translation provided or name is empty, keep existing translation unchanged
             }
             
-            // Save the translations
+            // Save all translations at once
             $menuCategory->save();
+            
+            // Refresh the model to get updated translations
+            $menuCategory->refresh();
         } catch (\Exception $e) {
             Log::error('CONTROLLER (update): Error updating MenuCategory ID ' . $menuCategory->id . ':', [
                 'message' => $e->getMessage(),
@@ -433,18 +438,18 @@ class MenuCategoryController extends Controller
             // Update category without translations first
             $menuCategory->update($validated);
 
-            // Clear existing translations that are not in the new data
-            $menuCategory->translations()->delete();
-
-            // Now manually add only the translations that have non-empty names
+            // Update translations - preserve existing ones, update only provided ones
             foreach ($translations as $locale => $translation) {
                 if (!empty($translation['name'])) {
-                    $menuCategory->translateOrNew($locale)->fill($translation);
+                    // Get existing translation or create new one
+                    $existingTranslation = $menuCategory->translateOrNew($locale);
+                    $existingTranslation->fill($translation);
+                    $existingTranslation->save();
                 }
             }
             
-            // Save the translations
-            $menuCategory->save();
+            // Refresh the model to get updated translations
+            $menuCategory->refresh();
         } catch (\Exception $e) {
             Log::error('Error updating MenuCategory:', [
                 'id' => $menuCategory->id,

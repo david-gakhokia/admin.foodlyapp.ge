@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DishRestaurantController;
 use App\Http\Controllers\Admin\RestaurantSpaceController;
 use App\Http\Controllers\Admin\SpaceRestaurantController;
 use App\Http\Controllers\Admin\SpotController;
+use App\Http\Controllers\Admin\SpotRestaurantController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Artisan;
@@ -142,6 +143,23 @@ Route::middleware(['auth'])
         Route::resource('kiosks', KioskController::class)
             ->only(['index', 'show', 'edit', 'update', 'create', 'store', 'destroy']);
 
+
+        // Spots
+        Route::resource('spots', SpotController::class)
+            ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
+        // Spot-Restaurant Management (from Spot perspective)
+        Route::prefix('spots/{spot}/restaurants')->name('spots.restaurants.')->group(function () {
+            Route::get('/', [SpotRestaurantController::class, 'index'])->name('index');
+            Route::get('create', [SpotRestaurantController::class, 'create'])->name('create');
+            Route::post('/', [SpotRestaurantController::class, 'store'])->name('store');
+            Route::get('{restaurant}/edit', [SpotRestaurantController::class, 'edit'])->name('edit');
+            Route::put('{restaurant}', [SpotRestaurantController::class, 'update'])->name('update');
+            Route::delete('{restaurant}', [SpotRestaurantController::class, 'destroy'])->name('destroy');
+            Route::put('/', [SpotRestaurantController::class, 'bulkUpdate'])->name('bulk-update');
+        });
+
+
         Route::resource('cuisines', CuisineController::class)
             ->only(['index', 'show', 'edit', 'update', 'create', 'store', 'destroy']);
 
@@ -164,9 +182,7 @@ Route::middleware(['auth'])
         Route::delete('dishes/{dish}/image', [DishController::class, 'deleteOnlyImage'])
             ->name('dishes.image.delete');
 
-        // Spots
-        Route::resource('spots', SpotController::class)
-            ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
 
         // Dish-Restaurant Management (from Dish perspective)
         Route::prefix('dishes/{dish}/restaurants')->name('dishes.restaurants.')->group(function () {

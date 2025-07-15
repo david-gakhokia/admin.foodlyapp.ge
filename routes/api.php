@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\CuisineController;
 use App\Http\Controllers\Api\CuisineRestaurantController;
+use App\Http\Controllers\Api\SpotRestaurantController;
+use App\Http\Controllers\Api\SpotController;
 use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\RestaurantCuisineController;
 use App\Http\Controllers\Api\RegionController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\Kiosk\KioskReservationController;
 use App\Http\Controllers\Kiosk\KioskSpaceController;
 use App\Http\Controllers\Kiosk\KioskCuisineController;
 use App\Http\Controllers\Kiosk\KioskDishController;
+use App\Http\Controllers\Kiosk\KioskSpotController;
 use App\Http\Controllers\Api\DishRestaurantApiController;
 use App\Http\Controllers\Kiosk\KioskCategoryController;
 use App\Http\Controllers\Kiosk\BookingFormController;
@@ -41,11 +44,6 @@ Route::middleware('auth:sanctum')->get('/users', [UserController::class, 'index'
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 
-
-use App\Http\Controllers\PhotoController;
-
-Route::post('/photos', [PhotoController::class, 'store']);
-Route::get('/photos', [PhotoController::class, 'index']);
 
 
 Route::prefix('phone')->group(function () {
@@ -149,6 +147,28 @@ Route::prefix('software')
                 Route::post('{cuisine}/restaurants', 'attach')->name('restaurants.attach');
                 Route::put('{cuisine}/restaurants/{restaurant}', 'updatePivot')->name('restaurants.update');
                 Route::delete('{cuisine}/restaurants/{restaurant}', 'detach')->name('restaurants.detach');
+            });
+
+        // 📍 Spots Management (Admin CRUD)
+        Route::prefix('spots')
+            ->name('spots.')
+            ->controller(\App\Http\Controllers\Admin\SpotController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');              // List spots
+                Route::get('/{slug}', 'showBySlug')->name('show');    // Show spot by slug
+                Route::post('/', 'store')->name('store');             // Create new spot
+                Route::put('/{id}', 'update')->name('update');        // Update spot
+                Route::delete('/{id}', 'destroy')->name('destroy');   // Delete spot
+            });
+
+        // 📍 Spot-Restaurant Relationships Management
+        Route::prefix('spots')
+            ->name('spots.')
+            ->controller(SpotRestaurantController::class)
+            ->group(function () {
+                Route::post('{spot}/restaurants', 'attach')->name('restaurants.attach');
+                Route::put('{spot}/restaurants/{restaurant}', 'updatePivot')->name('restaurants.update');
+                Route::delete('{spot}/restaurants/{restaurant}', 'detach')->name('restaurants.detach');
             });
 
         // 🍽️ Places Management (Admin CRUD)
@@ -276,6 +296,18 @@ Route::prefix('kiosk')->group(function () {
                 Route::get('/{slug}/restaurants', 'restaurantsByDish')->name('restaurants');
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByDish')->name('top-10-restaurants');
             });
+
+        // Spots
+        Route::prefix('spots')
+            ->name('spots.')
+            ->controller(KioskSpotController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
+                Route::get('/{slug}/restaurants', 'restaurantsBySpot')->name('restaurants');
+                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsBySpot')->name('top-10-restaurants');
+            });
+
 
         // 🗂️ Categories for Kiosk
         Route::prefix('categories')
