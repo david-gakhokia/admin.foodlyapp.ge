@@ -43,10 +43,17 @@ use App\Http\Controllers\Manager\Slot\RestaurantSlotController;
 use App\Http\Controllers\Manager\Slot\PlaceSlotController;
 use App\Http\Controllers\Manager\Slot\TableSlotController;
 use App\Http\Controllers\Manager\Booking\OccupancyController;
+use App\Http\Controllers\DocumentationController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Documentation Route
+Route::get('/docs', [DocumentationController::class, 'index'])->name('docs');
+
 
 // სხვა მარშრუტები
 Route::get('/roles-demo', function () {

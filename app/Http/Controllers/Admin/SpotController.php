@@ -208,8 +208,8 @@ class SpotController extends Controller
             }
 
             // Delete associated image using CloudinaryService
-            if ($spot->image_link) {
-                $this->cloudinaryService->deleteImageFromUrl($spot->image_link, 'foodly/spots');
+            if ($spot->image) {
+                $this->cloudinaryService->deleteImageFromUrl($spot->image, 'foodly/spots');
             }
 
             $spot->delete();

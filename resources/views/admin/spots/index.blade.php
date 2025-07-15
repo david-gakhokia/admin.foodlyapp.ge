@@ -206,9 +206,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex-shrink-0 h-12 w-12">
-                                            @if($spot->image_link)
+                                            @if($spot->image)
                                                 <img class="h-12 w-12 rounded-xl object-cover shadow-lg" 
-                                                     src="{{ $spot->image_link }}" 
+                                                     src="{{ $spot->image }}" 
                                                      alt="{{ $spot->name }}">
                                             @else
                                                 <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center shadow-lg">
