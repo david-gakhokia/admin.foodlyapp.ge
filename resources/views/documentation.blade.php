@@ -494,6 +494,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/spaces</code>
+                                    <p class="text-sm text-gray-600 mt-2">აბრუნებს ყველა აქტიურ სივრცეს rank-ის მიხედვით დალაგებულს</p>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -502,6 +503,31 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/spaces/{slug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">კონკრეტული სივრცის დეტალური ინფორმაცია</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Response Example:</h4>
+                                        <pre class="bg-gray-900 text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-json">{
+  "id": 1,
+  "slug": "shopping-mall",
+  "status": "active",
+  "rank": 1,
+  "image": "https://example.com/space.jpg",
+  "image_link": null,
+  "translations": [
+    {
+      "locale": "en",
+      "name": "Shopping Mall",
+      "description": "Large shopping center"
+    },
+    {
+      "locale": "ka",
+      "name": "სავაჭრო ცენტრი",
+      "description": "დიდი სავაჭრო ცენტრი"
+    }
+  ]
+}</code></pre>
+                                    </div>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -510,6 +536,15 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/spaces/{slug}/restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔧 <strong>Fixed:</strong> SQL Column Ambiguity - ახლა იყენებს restaurants.status და restaurant_space.rank</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Query Logic:</h4>
+                                        <pre class="bg-gray-100 p-3 rounded text-sm font-mono">$space->restaurants()
+    ->where('restaurants.status', 'active')
+    ->orderBy('restaurant_space.rank', 'asc')
+    ->get()</pre>
+                                    </div>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -518,6 +553,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/spaces/{slug}/top-10-restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">სივრცის მიხედვით ტოპ 10 რესტორანი pivot ცხრილის rank-ის მიხედვით</p>
                                 </div>
                             </div>
                         </div>
@@ -532,6 +568,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/cuisines</code>
+                                    <p class="text-sm text-gray-600 mt-2">აბრუნებს ყველა აქტიურ სამზარეულოს ტიპს rank-ის მიხედვით</p>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -540,6 +577,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/cuisines/{slug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">კონკრეტული სამზარეულოს ტიპის დეტალური ინფორმაცია</p>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -548,6 +586,17 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/cuisines/{slug}/restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔧 <strong>Fixed:</strong> იყენებს restaurants.status და cuisine_restaurant.rank</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Common Cuisine Slugs:</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <code class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">georgian</code>
+                                            <code class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">italian</code>
+                                            <code class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">asian</code>
+                                            <code class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">european</code>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -556,6 +605,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/cuisines/{slug}/top-10-restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">სამზარეულოს ტიპის მიხედვით ტოპ 10 რესტორანი</p>
                                 </div>
                             </div>
                         </div>
@@ -570,6 +620,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/dishes</code>
+                                    <p class="text-sm text-gray-600 mt-2">აბრუნებს ყველა კერძს MenuCategory-ების ინფორმაციით</p>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -578,6 +629,63 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/dishes/{slug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">კერძის დეტალური ინფორმაცია მენიუს კატეგორიებით და თარგმანებით</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Response Example:</h4>
+                                        <pre class="bg-gray-900 text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-json">{
+  "id": 1,
+  "status": "active",
+  "slug": "pizza",
+  "rank": 1,
+  "image": "https://example.com/pizza.jpg",
+  "image_link": null,
+  "icon": null,
+  "icon_link": null,
+  "menu_categories": [
+    {
+      "id": 4,
+      "restaurant_id": 1,
+      "slug": "pizza",
+      "rank": 4,
+      "status": "active",
+      "image": "https://example.com/menu-pizza.jpg",
+      "image_link": null,
+      "translations": [
+        {
+          "locale": "en",
+          "name": "Pizza",
+          "description": ""
+        },
+        {
+          "locale": "ka",
+          "name": "პიცა",
+          "description": ""
+        },
+        {
+          "locale": "ru",
+          "name": "пицца",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "translations": [
+    {
+      "locale": "en",
+      "name": "Pizza"
+    },
+    {
+      "locale": "ka", 
+      "name": "პიცა"
+    },
+    {
+      "locale": "ru",
+      "name": "Pizza34"
+    }
+  ]
+}</code></pre>
+                                    </div>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -586,6 +694,14 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/dishes/{slug}/restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">კერძის მიხედვით ყველა აქტიური რესტორანი</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Query Parameters:</h4>
+                                        <ul class="text-sm text-gray-600 list-disc list-inside">
+                                            <li><code>locale</code> - ენის კოდი (en, ka, ru)</li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
@@ -594,6 +710,7 @@
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/dishes/{slug}/top-10-restaurants</code>
+                                    <p class="text-sm text-gray-600 mt-2">კერძის მიხედვით ტოპ 10 რესტორანი rank-ის მიხედვით</p>
                                 </div>
                             </div>
                         </div>
@@ -684,6 +801,114 @@
     "total": 87
   }
 }</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Technical Details -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">⚙️ Technical Implementation Details</h3>
+                            
+                            <div class="space-y-6">
+                                <!-- Fixed Issues -->
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <h4 class="font-semibold text-green-800 mb-3">🔧 Fixed Issues (16 July, 2025)</h4>
+                                    <div class="space-y-2 text-sm text-green-700">
+                                        <div><strong>SQL Column Ambiguity:</strong> Fixed pivot table column conflicts</div>
+                                        <div><strong>MenuCategory Integration:</strong> Added to Dish resources</div>
+                                        <div><strong>Pivot Relationships:</strong> Created Pizza-Exodus connection</div>
+                                    </div>
+                                </div>
+
+                                <!-- Query Patterns -->
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium mb-3">🔍 Query Patterns Used</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Spaces → Restaurants:</p>
+                                            <pre class="bg-gray-100 p-3 rounded text-xs font-mono mt-1">$space->restaurants()
+    ->where('restaurants.status', 'active')
+    ->orderBy('restaurant_space.rank', 'asc')</pre>
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Cuisines → Restaurants:</p>
+                                            <pre class="bg-gray-100 p-3 rounded text-xs font-mono mt-1">$cuisine->restaurants()
+    ->where('restaurants.status', 'active')
+    ->orderBy('cuisine_restaurant.rank', 'asc')</pre>
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Dishes → Restaurants:</p>
+                                            <pre class="bg-gray-100 p-3 rounded text-xs font-mono mt-1">$dish->restaurants()
+    ->where('restaurants.status', 'active')
+    ->orderBy('restaurant_dish.rank', 'asc')</pre>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pivot Tables -->
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium mb-3">🗄️ Pivot Table Structure</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                        <div class="bg-blue-50 p-3 rounded">
+                                            <h5 class="font-medium text-blue-800">restaurant_space</h5>
+                                            <ul class="text-blue-700 mt-1">
+                                                <li>restaurant_id</li>
+                                                <li>space_id</li>
+                                                <li>rank</li>
+                                                <li>status</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="bg-green-50 p-3 rounded">
+                                            <h5 class="font-medium text-green-800">cuisine_restaurant</h5>
+                                            <ul class="text-green-700 mt-1">
+                                                <li>cuisine_id</li>
+                                                <li>restaurant_id</li>
+                                                <li>rank</li>
+                                                <li>status</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="bg-purple-50 p-3 rounded">
+                                            <h5 class="font-medium text-purple-800">restaurant_dish</h5>
+                                            <ul class="text-purple-700 mt-1">
+                                                <li>restaurant_id</li>
+                                                <li>dish_id</li>
+                                                <li>rank</li>
+                                                <li>status</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Error Handling -->
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium mb-3">❌ Error Responses</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Resource Not Found (404):</p>
+                                            <pre class="bg-gray-900 text-white p-3 rounded text-xs mt-1"><code class="language-json">{
+  "error": "Space not found"
+}</code></pre>
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">No Related Data (404):</p>
+                                            <pre class="bg-gray-900 text-white p-3 rounded text-xs mt-1"><code class="language-json">{
+  "error": "No restaurants found for this space"
+}</code></pre>
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Server Error (500):</p>
+                                            <pre class="bg-gray-900 text-white p-3 rounded text-xs mt-1"><code class="language-json">{
+  "error": "Failed to fetch restaurants",
+  "message": "Database connection error"
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
