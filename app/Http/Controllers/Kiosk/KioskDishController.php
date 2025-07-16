@@ -17,7 +17,7 @@ class KioskDishController extends Controller
     public function index()
     {
         try {
-            $dishes = Dish::get();
+            $dishes = Dish::with(['menuCategories.translations'])->get();
             // ->where('status', 1)
             // ->orderBy('rank', 'asc')
             // ->paginate(12);
@@ -40,7 +40,7 @@ class KioskDishController extends Controller
     public function showBySlug($slug)
     {
         try {
-            $dish = Dish::where('slug', $slug)->firstOrFail();
+            $dish = Dish::with(['menuCategories.translations'])->where('slug', $slug)->firstOrFail();
             return new DishResource($dish);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Dish not found'], 404);
@@ -60,8 +60,8 @@ class KioskDishController extends Controller
             $dish = Dish::where('slug', $slug)->firstOrFail();
 
             $restaurants = $dish->restaurants()
-                ->where('status', 'active')
-                ->orderBy('rank', 'asc')
+                ->where('restaurants.status', 'active')
+                ->orderBy('restaurant_dish.rank', 'asc')
                 ->get();
 
             if ($restaurants->isEmpty()) {
@@ -70,7 +70,7 @@ class KioskDishController extends Controller
 
             return RestaurantShortResource::collection($restaurants);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'dish not found'], 404);
+            return response()->json(['error' => 'Dish not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch restaurants',
@@ -88,8 +88,8 @@ class KioskDishController extends Controller
             $dish = Dish::where('slug', $slug)->firstOrFail();
 
             $restaurants = $dish->restaurants()
-                ->where('status', 'active')
-                ->orderBy('rank', 'asc')
+                ->where('restaurants.status', 'active')
+                ->orderBy('restaurant_dish.rank', 'asc')
                 ->take(10)
                 ->get();
 
@@ -99,7 +99,7 @@ class KioskDishController extends Controller
 
             return RestaurantShortResource::collection($restaurants);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'dish not found'], 404);
+            return response()->json(['error' => 'Dish not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch restaurants',

@@ -20,6 +20,7 @@ class CuisineResource extends JsonResource
                 'slug' => $this->slug,
                 'name' => $this->name,
                 'image' => $this->image,
+                'image_link' => $this->image_link,
             ];
         }
 
@@ -28,6 +29,7 @@ class CuisineResource extends JsonResource
             'slug' => $this->slug,
             'status' => $this->status,
             'image' => $this->image,
+            'image_link' => $this->image_link,
         
             'translations' => $this->translations->map(function ($tr) {
                 return [
