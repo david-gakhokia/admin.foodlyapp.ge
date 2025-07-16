@@ -154,6 +154,10 @@ Route::middleware(['auth'])
         // Spots
         Route::resource('spots', SpotController::class)
             ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+        
+        // Spot image delete route
+        Route::delete('spots/{spot}/image', [SpotController::class, 'deleteImage'])
+            ->name('spots.image.delete');
 
         // Spot-Restaurant Management (from Spot perspective)
         Route::prefix('spots/{spot}/restaurants')->name('spots.restaurants.')->group(function () {

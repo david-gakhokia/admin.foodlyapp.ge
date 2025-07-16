@@ -271,4 +271,31 @@ class SpotController extends Controller
             ], 500);
         }
     }
+
+    // Delete image
+    public function deleteImage(Spot $spot)
+    {
+        try {
+            if ($spot->image) {
+                // Delete image from Cloudinary
+                $this->cloudinaryService->deleteImageFromUrl($spot->image, 'foodly/spots');
+                
+                // Remove image reference from database
+                $spot->update(['image' => null]);
+
+                return redirect()
+                    ->route('admin.spots.edit', $spot)
+                    ->with('success', 'Image deleted successfully!');
+            }
+
+            return redirect()
+                ->route('admin.spots.edit', $spot)
+                ->with('error', 'No image to delete!');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.spots.edit', $spot)
+                ->with('error', 'Error deleting image: ' . $e->getMessage());
+        }
+    }
 }
