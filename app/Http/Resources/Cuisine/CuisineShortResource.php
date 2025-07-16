@@ -20,6 +20,7 @@ class CuisineShortResource extends JsonResource
                 'slug' => $this->slug,
                 'name' => $this->name,
                 'image' => $this->image,
+                'image_link' => $this->image_link,
 
 
             ];
@@ -31,6 +32,8 @@ class CuisineShortResource extends JsonResource
             'status' => $this->status,
             'slug' => $this->slug,
             'image' => $this->image,
+            'image_link' => $this->image_link,
+
 
             'translations' => $this->translations->map(function ($tr) {
                 return [

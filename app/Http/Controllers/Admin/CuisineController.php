@@ -9,13 +9,16 @@ use App\Http\Requests\Cuisine\StoreCuisineRequest;
 use App\Http\Requests\Cuisine\UpdateCuisineRequest;
 use App\Services\CloudinaryService;
 use App\Services\SlugService;
+use App\Services\RankService;
 use Illuminate\Http\RedirectResponse;
 
 class CuisineController extends Controller
 {
     public function __construct(
         protected CloudinaryService $cloudinaryService,
-        protected SlugService $slugService
+        protected SlugService $slugService,
+        protected RankService $rankService
+        
     ) {}
 
     public function index(Request $request)
@@ -39,10 +42,16 @@ class CuisineController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->get('sort', 'name');
+        $sortBy = $request->get('sort', 'id');
         switch ($sortBy) {
             case 'slug':
                 $query->orderBy('slug');
+                break;
+            case 'rank':
+                $query->orderBy('rank');
+                break;
+            case 'id':
+                $query->orderBy('id');
                 break;
             case 'status':
                 $query->orderBy('status');
@@ -52,7 +61,7 @@ class CuisineController extends Controller
                 break;
             case 'name':
             default:
-                $query->orderBy('slug'); // Since name is translatable, we'll order by slug as fallback
+                $query->orderBy('id'); // Default to ID ordering
                 break;
         }
 
@@ -75,16 +84,18 @@ class CuisineController extends Controller
         // Prepare basic data
         $data = [
             'status' => $validated['status'],
-            'rank' => $validated['rank'] ?? 0,
         ];
+        
+        // Auto-assign rank using RankService
+        $data = $this->rankService->assignRankIfEmpty($data + ['rank' => $validated['rank'] ?? null], Cuisine::class);
 
         // Handle image upload
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->cloudinaryService->upload($request->file('image'), 'foodly/cuisines');
+        if (isset($validated['image']) && $validated['image']) {
+            $data['image'] = $this->cloudinaryService->upload($validated['image'], 'foodly/cuisines');
         }
 
         // Generate slug from the default locale name
-        $defaultLocale = config('app.locale', 'ka');
+        $defaultLocale = config('app.locale');
         $defaultName = $validated['name'][$defaultLocale] ?? $validated['name']['en'] ?? '';
         $data['slug'] = $this->slugService->generate(new Cuisine, $defaultName);
 
@@ -118,20 +129,22 @@ class CuisineController extends Controller
         // Prepare basic data
         $data = [
             'status' => $validated['status'],
-            'rank' => $validated['rank'] ?? $cuisine->rank,
         ];
+        
+        // Auto-assign rank using RankService if not provided
+        $data = $this->rankService->assignRankIfEmpty($data + ['rank' => $validated['rank'] ?? $cuisine->rank], Cuisine::class);
 
         // Handle image upload
-        if ($request->hasFile('image')) {
+        if (isset($validated['image']) && $validated['image']) {
             if ($cuisine->image) {
                 $publicId = $this->cloudinaryService->extractPublicIdFromUrl($cuisine->image, 'foodly/cuisines');
                 $this->cloudinaryService->deleteImage($publicId);
             }
-            $data['image'] = $this->cloudinaryService->upload($request->file('image'), 'foodly/cuisines');
+            $data['image'] = $this->cloudinaryService->upload($validated['image'], 'foodly/cuisines');
         }
 
         // Generate slug from the default locale name
-        $defaultLocale = config('app.locale', 'ka');
+        $defaultLocale = config('app.locale');
         $defaultName = $validated['name'][$defaultLocale] ?? $validated['name']['en'] ?? $cuisine->name;
         $data['slug'] = $this->slugService->generateForUpdate($cuisine, $defaultName, $cuisine->id);
 

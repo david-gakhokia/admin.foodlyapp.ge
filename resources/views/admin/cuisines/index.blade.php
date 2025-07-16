@@ -172,8 +172,10 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Sort By') }}</label>
                             <select name="sort" 
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors text-sm bg-gray-50 focus:bg-white">
+                                <option value="id" {{ request('sort', 'id') == 'id' ? 'selected' : '' }}>{{ __('ID') }}</option>
                                 <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __('Name') }}</option>
                                 <option value="slug" {{ request('sort') == 'slug' ? 'selected' : '' }}>{{ __('Slug') }}</option>
+                                <option value="rank" {{ request('sort') == 'rank' ? 'selected' : '' }}>{{ __('Rank') }}</option>
                                 <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
                                 <option value="created_at" {{ request('sort') == 'created_at' ? 'selected' : '' }}>{{ __('Date Created') }}</option>
                             </select>
@@ -188,6 +190,14 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200">
                     <tr>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                            <div class="flex items-center gap-2">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                                </svg>
+                                {{ __('ID / Rank') }}
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             <div class="flex items-center gap-2">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,6 +251,14 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($cuisines as $cuisine)
                         <tr class="hover:bg-purple-50 transition-colors duration-200 group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col gap-1">
+                                    <div class="text-sm font-medium text-gray-900 bg-gray-50 px-3 py-1 rounded-lg font-mono">#{{ $cuisine->id }}</div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        🏆 {{ $cuisine->rank ?? 0 }}
+                                    </span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if ($cuisine->image)
                                     <img src="{{ $cuisine->image }}" alt="{{ $cuisine->name }}" class="h-16 w-16 rounded-xl object-cover shadow-md ring-2 ring-purple-100 group-hover:ring-purple-200 transition-all duration-200">
@@ -313,7 +331,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-16 text-center">
+                            <td colspan="7" class="px-6 py-16 text-center">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="p-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl mb-4">
                                         <svg class="h-16 w-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

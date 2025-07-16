@@ -15,9 +15,9 @@ class KioskCuisineController extends Controller
     public function index()
     {
         try {
-            $cuisines = Cuisine::get();
-                // ->where('status', 1)
-                // ->orderBy('rank', 'asc')
+            $cuisines = Cuisine::where('status', 'active')
+                ->orderBy('rank', 'asc')
+                ->get();
                 // ->paginate(12);
 
             if ($cuisines->isEmpty()) {

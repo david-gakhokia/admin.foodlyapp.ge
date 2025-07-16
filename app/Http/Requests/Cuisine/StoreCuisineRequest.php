@@ -29,6 +29,22 @@ class StoreCuisineRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Forward hasFile method to maintain IDE support
+     */
+    public function hasFile($key)
+    {
+        return parent::hasFile($key);
+    }
+
+    /**
+     * Forward file method to maintain IDE support  
+     */
+    public function file($key = null, $default = null)
+    {
+        return parent::file($key, $default);
+    }
+
     public function validatedData(): array
     {
         return $this->validated();
