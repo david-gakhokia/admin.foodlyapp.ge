@@ -80,12 +80,7 @@
                 <div class="flex flex-wrap items-end gap-4">
                     {{-- Search Input --}}
                     <div class="flex-1 min-w-80">
-                        <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <svg class="w-4 h-4 inline mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            ძიების ტექსტი
-                        </label>
+                     
                         <div class="relative">
                             <input type="text" id="search" name="search" value="{{ request('search') }}" 
                                    placeholder="მოძებნეთ ქვეკატეგორია სახელით..." 
@@ -100,12 +95,7 @@
 
                     {{-- Status Filter --}}
                     <div class="w-48">
-                        <label for="status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <svg class="w-4 h-4 inline mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            სტატუსი
-                        </label>
+                  
                         <select id="status" name="status" 
                                 class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 dark:bg-gray-700 dark:text-white text-base font-medium transition-all duration-300 shadow-lg">
                             <option value="">ყველა სტატუსი</option>
@@ -174,21 +164,21 @@
             </form>
         </div>
 
-        {{-- Sub Categories Grid Container - 3 cards per row with larger size --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+        {{-- Sub Categories Grid Container - 4 cards per row with compact size --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse ($menuCategories as $index => $category)
-                <div class="group bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 transform">
+                <div class="group bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-white/30 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-102 transform">
                     {{-- Category Image --}}
-                    <div class="relative h-64 bg-gradient-to-br from-emerald-100 via-teal-50 to-cyan-100 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
+                    <div class="relative h-48 bg-gradient-to-br from-emerald-100 via-teal-50 to-cyan-100 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
                         @if ($category->image)
                             <img src="{{ $category->image }}" 
                                  alt="{{ $category->translate('en')->name ?? 'Category Image' }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full flex items-center justify-center relative">
                                 <div class="absolute inset-0 bg-gradient-to-br from-emerald-200/50 to-teal-200/50"></div>
-                                <div class="relative w-20 h-20 bg-white/80 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <div class="relative w-14 h-14 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                     </svg>
                                 </div>
@@ -196,31 +186,31 @@
                         @endif
                         
                         {{-- Status Badge --}}
-                        <div class="absolute top-4 right-4">
+                        <div class="absolute top-3 right-3">
                             @if ($category->status === 'active')
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-green-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></div>
                                     აქტიური
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-gray-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white/70 rounded-full mr-2"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white/70 rounded-full mr-1.5"></div>
                                     არააქტიური
                                 </span>
                             @endif
                         </div>
 
                         {{-- Rank Badge --}}
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm">
+                        <div class="absolute top-3 left-3">
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-white/90 text-gray-700 shadow-md backdrop-blur-sm">
                                 <span class="text-emerald-600">#</span>{{ $category->rank ?? 0 }}
                             </span>
                         </div>
 
                         {{-- Sub-category Badge --}}
-                        <div class="absolute bottom-4 left-4">
-                            <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-emerald-500/90 text-white shadow-lg backdrop-blur-sm">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="absolute bottom-3 left-3">
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-emerald-500/90 text-white shadow-md backdrop-blur-sm">
+                                <svg class="w-2.5 h-2.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                 </svg>
                                 ქვეკატეგორია
@@ -232,19 +222,19 @@
                     </div>
 
                     {{-- Card Content --}}
-                    <div class="p-8">
+                    <div class="p-5">
                         {{-- Category Name --}}
-                        <h3 class="text-2xl font-bold mb-4 line-clamp-2 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-semibold mb-3 line-clamp-2 text-gray-900 dark:text-gray-100">
                             {{ $category->name ?? 'უსახელო კატეგორია' }}
                         </h3>
 
                         {{-- Statistics Section --}}
-                        <div class="space-y-4 mb-8">
+                        <div class="space-y-3 mb-5">
                             {{-- Items Count --}}
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center text-base font-medium text-gray-600 dark:text-gray-400">
-                                    <div class="w-10 h-10 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center mr-4">
-                                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    <div class="w-7 h-7 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-lg flex items-center justify-center mr-3">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                         </svg>
                                     </div>
@@ -253,11 +243,11 @@
                                     @endphp
                                     @if($itemsCount > 0)
                                         <a href="{{ route('admin.menu.items.index') }}?category_id={{ $category->id }}&restaurant_id={{ $restaurant->id }}" 
-                                           class="text-lg text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors duration-200 hover:underline">
+                                           class="text-sm text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors duration-200 hover:underline">
                                             {{ $itemsCount }} მენიუს აითემი
                                         </a>
                                     @else
-                                        <span class="text-lg">{{ $itemsCount }} მენიუს აითემი</span>
+                                        <span class="text-sm">{{ $itemsCount }} მენიუს აითემი</span>
                                     @endif
                                 </div>
                             </div>
@@ -265,14 +255,14 @@
                             {{-- Parent Category --}}
                             @if($category->parent)
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center text-base font-medium text-gray-600 dark:text-gray-400">
-                                        <div class="w-10 h-10 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mr-4">
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        <div class="w-7 h-7 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mr-3">
+                                            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                             </svg>
                                         </div>
                                         <a href="{{ route('admin.restaurants.menu.categories.index', $restaurant) }}" 
-                                           class="text-lg text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 hover:underline">
+                                           class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 hover:underline">
                                             {{ $category->parent->name }}
                                         </a>
                                     </div>
@@ -281,28 +271,28 @@
 
                             {{-- Last Updated --}}
                             <div class="flex items-center justify-end">
-                                <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full font-medium">
+                                <span class="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full font-medium">
                                     {{ $category->updated_at->diffForHumans() }}
                                 </span>
                             </div>
                         </div>
                         
                         {{-- Action Buttons --}}
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2">
                             <a href="{{ route('admin.restaurants.menu.categories.edit', [$restaurant, $category]) }}"
-                               class="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
-                                რედაქტირება
+                                
                             </a>
 
                             <a href="{{ route('admin.menu.items.create') }}?category_id={{ $category->id }}&restaurant_id={{ $restaurant->id }}"
-                               class="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-emerald-600 bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 dark:text-emerald-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-emerald-600 bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 dark:text-emerald-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                 </svg>
-                                Item დამატება
+                                 დამატება
                             </a>
                             
                             <form action="{{ route('admin.restaurants.menu.categories.destroy', [$restaurant, $category]) }}" 
@@ -312,8 +302,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        class="w-full inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                    <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                     წაშლა
@@ -324,17 +314,17 @@
                 </div>
         @empty
             {{-- Empty State with Glassmorphism --}}
-            <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center">
-                <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-3xl p-12 max-w-md mx-auto shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-                        <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="col-span-full flex flex-col items-center justify-center py-16 px-4 text-center">
+                <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-2xl p-8 max-w-sm mx-auto shadow-xl">
+                    <div class="w-16 h-16 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-4">
+                    <h3 class="text-lg font-semibold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-3">
                         ქვეკატეგორია არ მოიძებნა
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
                         @if(isset($parentCategory))
                             "{{ $parentCategory->name }}" კატეგორიისთვის ჯერ არ შექმნილა ქვეკატეგორია.
                         @else
@@ -343,8 +333,8 @@
                         დაამატეთ პირველი ქვეკატეგორია დასაწყებად.
                     </p>
                     <a href="{{ route('admin.restaurants.menu.categories.create', $restaurant) }}{{ isset($parentCategory) ? '?parent_id=' . $parentCategory->id : '' }}" 
-                       class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         ქვეკატეგორიის დამატება
