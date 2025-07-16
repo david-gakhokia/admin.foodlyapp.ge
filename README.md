@@ -1,6 +1,29 @@
 # FOODLYAPP API
 
-**Laravel REST API for Restaurant Management & Reservations**
+**Laravel## 📱 Core Features
+
+- **🏪 Restaurant Management** - Multi-language support with translations
+- **📅 Reservation System** - Table booking with time slots
+- **🍽️ Menu Management** - Categories, items, dishes with photos
+- **👥 User Management** - Role-based permissions (Spatie)
+- **📊 Analytics** - Page views and booking statistics  
+- **🖥️ Kiosk System** - QR code digital menus
+- **🔐 API Authentication** - Laravel Sanctum tokens
+
+## 📬 API Testing
+
+### Postman Collection
+Import our Kiosk Availability API collection directly from GitHub:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/create?source=rip_markdown&url=https://raw.githubusercontent.com/david-gakhokia/api.foodlyapp.ge/main/docs/postman/Kiosk_Availability_API.postman_collection.json)
+
+**Direct URL:**
+```
+https://raw.githubusercontent.com/david-gakhokia/api.foodlyapp.ge/main/docs/postman/Kiosk_Availability_API.postman_collection.json
+```
+
+### API Documentation
+- **Kiosk Availability API:** [docs/KIOSK_AVAILABILITY_API.md](docs/KIOSK_AVAILABILITY_API.md) for Restaurant Management & Reservations**
 
 ## 🚀 Quick Start
 
@@ -33,8 +56,9 @@ npm run dev           # Vite Assets (Port 5173)
 - **🍽️ Menu Management** - Categories, items, dishes with photos
 - **👥 User Management** - Role-based permissions (Spatie)
 - **📊 Analytics** - Page views and booking statistics  
-- **🖥️ Kiosk System** - QR code digital menus
+- **🖥️ Kiosk System** - QR code digital menus & availability API
 - **🔐 API Authentication** - Laravel Sanctum tokens
+- **⏰ Availability API** - Real-time restaurant, place & table availability
 
 ## 🛠️ Tech Stack
 

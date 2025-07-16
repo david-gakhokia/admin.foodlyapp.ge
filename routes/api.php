@@ -28,6 +28,7 @@ use App\Http\Controllers\Kiosk\KioskDishController;
 use App\Http\Controllers\Kiosk\KioskSpotController;
 use App\Http\Controllers\Api\DishRestaurantApiController;
 use App\Http\Controllers\Kiosk\KioskCategoryController;
+use App\Http\Controllers\Kiosk\KioskAvailabilityController;
 use App\Http\Controllers\Kiosk\BookingFormController;
 use App\Http\Controllers\Kiosk\BookingController;
 
@@ -316,6 +317,24 @@ Route::prefix('kiosk')->group(function () {
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{slug}', 'showBySlug')->name('show');
+            });
+
+        // 🕐 Availability hours and slots
+        Route::prefix('availability')
+            ->name('availability.')
+            ->controller(KioskAvailabilityController::class)
+            ->group(function () {
+                // Restaurant availability
+                Route::get('/restaurant/{slug}', 'restaurantAvailability')->name('restaurant');
+                
+                // Place availability  
+                Route::get('/restaurant/{restaurantSlug}/place/{placeSlug}', 'placeAvailability')->name('place');
+                
+                // Table availability (with place)
+                Route::get('/restaurant/{restaurantSlug}/place/{placeSlug}/table/{tableSlug}', 'tableAvailability')->name('table');
+                
+                // Direct table availability (without place)
+                Route::get('/restaurant/{restaurantSlug}/table/{tableSlug}', 'directTableAvailability')->name('table.direct');
             });
     });
 

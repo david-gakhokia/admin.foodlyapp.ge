@@ -1,8 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'დროის ლოტები')
-
-@section('content')
+<x-layouts.app :title="'Place Slots Management - ' . ($place->translations->where('locale', 'ka')->first()?->name ?? $place->translations->where('locale', 'en')->first()?->name ?? 'უცნობი ადგილი')">
 <div class="container mx-auto py-8">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-800">დროის ლოტები (TimeSlots)</h1>
@@ -66,4 +62,4 @@
         </table>
     </div>
 </div>
-@endsection
+</x-layouts.app>

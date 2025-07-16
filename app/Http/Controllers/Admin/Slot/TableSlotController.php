@@ -12,49 +12,49 @@ use Illuminate\Http\Request;
 
 class TableSlotController extends Controller
 {
-    public function index(Table $table)
+    public function index(Restaurant $restaurant, Place $place, Table $table)
     {
         $slots = $table->reservationSlots()->orderBy('day_of_week')->orderBy('time_from')->get();
         
-        return view('admin.restaurants.tables.slots.index', compact('table', 'slots'));
+        return view('admin.restaurants.places.tables.slots.index', compact('restaurant', 'place', 'table', 'slots'));
     }
 
-    public function create(Table $table)
+    public function create(Restaurant $restaurant, Place $place, Table $table)
     {
-        return view('admin.restaurants.tables.slots.create', compact('table'));
+        return view('admin.restaurants.places.tables.slots.create', compact('restaurant', 'place', 'table'));
     }
 
-    public function store(TableReservationSlotRequest $request, Table $table)
+    public function store(TableReservationSlotRequest $request, Restaurant $restaurant, Place $place, Table $table)
     {
         $table->reservationSlots()->create($request->validated());
 
-        return redirect()->route('admin.tables.slots.index', $table)
-            ->with('success', 'Slot წარმატებით შეიქმნა!');
+        return redirect()->route('admin.restaurants.places.tables.slots.index', [$restaurant, $place, $table])
+            ->with('success', 'TimeSlot წარმატებით შეიქმნა!');
     }
 
-    public function show(Table $table, TableReservationSlot $slot)
+    public function show(Restaurant $restaurant, Place $place, Table $table, TableReservationSlot $slot)
     {
-        return view('admin.restaurants.tables.slots.show', compact('table', 'slot'));
+        return view('admin.restaurants.places.tables.slots.show', compact('restaurant', 'place', 'table', 'slot'));
     }
 
-    public function edit(Table $table, TableReservationSlot $slot)
+    public function edit(Restaurant $restaurant, Place $place, Table $table, TableReservationSlot $slot)
     {
-        return view('admin.restaurants.tables.slots.edit', compact('table', 'slot'));
+        return view('admin.restaurants.places.tables.slots.edit', compact('restaurant', 'place', 'table', 'slot'));
     }
 
-    public function update(TableReservationSlotRequest $request, Table $table, TableReservationSlot $slot)
+    public function update(TableReservationSlotRequest $request, Restaurant $restaurant, Place $place, Table $table, TableReservationSlot $slot)
     {
         $slot->update($request->validated());
 
-        return redirect()->route('admin.tables.slots.index', $table)
+        return redirect()->route('admin.restaurants.places.tables.slots.index', [$restaurant, $place, $table])
             ->with('success', 'Slot წარმატებით განახლდა!');
     }
 
-    public function destroy(Table $table, TableReservationSlot $slot)
+    public function destroy(Restaurant $restaurant, Place $place, Table $table, TableReservationSlot $slot)
     {
         $slot->delete();
 
-        return redirect()->route('admin.tables.slots.index', $table)
+        return redirect()->route('admin.restaurants.places.tables.slots.index', [$restaurant, $place, $table])
             ->with('success', 'Slot წარმატებით წაიშალა!');
     }
 

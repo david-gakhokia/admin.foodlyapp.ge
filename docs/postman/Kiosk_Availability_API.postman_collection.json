@@ -1,0 +1,197 @@
+{
+  "info": {
+    "name": "Kiosk Availability API",
+    "description": "API endpoints for kiosk availability hours and slots",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "{{base_url}}/api/kiosk/availability",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "{{kiosk_token}}",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Restaurant Availability",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/restaurant/{{restaurant_slug}}?date={{date}}",
+          "host": ["{{base_url}}"],
+          "path": ["restaurant", "{{restaurant_slug}}"],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}",
+              "description": "Optional date in Y-m-d format"
+            }
+          ]
+        },
+        "description": "Get restaurant availability hours and time slots"
+      },
+      "response": []
+    },
+    {
+      "name": "Place Availability",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/restaurant/{{restaurant_slug}}/place/{{place_slug}}?date={{date}}",
+          "host": ["{{base_url}}"],
+          "path": ["restaurant", "{{restaurant_slug}}", "place", "{{place_slug}}"],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}",
+              "description": "Optional date in Y-m-d format"
+            }
+          ]
+        },
+        "description": "Get place availability hours and time slots"
+      },
+      "response": []
+    },
+    {
+      "name": "Table Availability (with Place)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/restaurant/{{restaurant_slug}}/place/{{place_slug}}/table/{{table_slug}}?date={{date}}",
+          "host": ["{{base_url}}"],
+          "path": ["restaurant", "{{restaurant_slug}}", "place", "{{place_slug}}", "table", "{{table_slug}}"],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}",
+              "description": "Optional date in Y-m-d format"
+            }
+          ]
+        },
+        "description": "Get table availability hours and time slots within a place"
+      },
+      "response": []
+    },
+    {
+      "name": "Direct Table Availability",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/restaurant/{{restaurant_slug}}/table/{{table_slug}}?date={{date}}",
+          "host": ["{{base_url}}"],
+          "path": ["restaurant", "{{restaurant_slug}}", "table", "{{table_slug}}"],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}",
+              "description": "Optional date in Y-m-d format"
+            }
+          ]
+        },
+        "description": "Get direct table availability hours and time slots (without place)"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set default values if not provided",
+          "if (!pm.variables.get('restaurant_slug')) {",
+          "    pm.variables.set('restaurant_slug', 'example-restaurant');",
+          "}",
+          "",
+          "if (!pm.variables.get('place_slug')) {",
+          "    pm.variables.set('place_slug', 'example-place');",
+          "}",
+          "",
+          "if (!pm.variables.get('table_slug')) {",
+          "    pm.variables.set('table_slug', 'example-table');",
+          "}",
+          "",
+          "if (!pm.variables.get('date')) {",
+          "    // Set today's date in Y-m-d format",
+          "    const today = new Date();",
+          "    const year = today.getFullYear();",
+          "    const month = String(today.getMonth() + 1).padStart(2, '0');",
+          "    const day = String(today.getDate()).padStart(2, '0');",
+          "    pm.variables.set('date', `${year}-${month}-${day}`);",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test for successful response",
+          "pm.test('Status code is 200', function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "// Test response structure",
+          "pm.test('Response has success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "    pm.expect(jsonData.success).to.be.true;",
+          "});",
+          "",
+          "// Test data structure",
+          "pm.test('Response has data field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('data');",
+          "    pm.expect(jsonData.data).to.have.property('available_slots');",
+          "    pm.expect(jsonData.data).to.have.property('weekly_hours');",
+          "});"
+        ]
+      }
+    }
+  ]
+}
