@@ -63,17 +63,17 @@ class KioskSpaceController extends Controller
             $space = Space::where('slug', $slug)->firstOrFail();
 
             $restaurants = $space->restaurants()
-                ->where('status', 'active')
-                ->orderBy('rank', 'asc')
+                ->where('restaurants.status', 'active')
+                ->orderBy('restaurant_space.rank', 'asc')
                 ->get();
 
             if ($restaurants->isEmpty()) {
-                return response()->json(['error' => 'No restaurants found for this cuisine'], 404);
+                return response()->json(['error' => 'No restaurants found for this space'], 404);
             }
 
             return RestaurantShortResource::collection($restaurants);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Cuisine not found'], 404);
+            return response()->json(['error' => 'Space not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch restaurants',
@@ -131,18 +131,18 @@ class KioskSpaceController extends Controller
             $space = Space::where('slug', $slug)->firstOrFail();
 
             $restaurants = $space->restaurants()
-                ->where('status', 'active')
-                ->orderBy('rank', 'asc')
+                ->where('restaurants.status', 'active')
+                ->orderBy('restaurant_space.rank', 'asc')
                 ->take(10)
                 ->get();
 
             if ($restaurants->isEmpty()) {
-                return response()->json(['error' => 'No restaurants found for this cuisine'], 404);
+                return response()->json(['error' => 'No restaurants found for this space'], 404);
             }
 
             return RestaurantShortResource::collection($restaurants);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Cuisine not found'], 404);
+            return response()->json(['error' => 'Space not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch restaurants',
