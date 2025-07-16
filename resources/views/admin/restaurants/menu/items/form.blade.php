@@ -144,7 +144,7 @@
             <p class="text-gray-600 mt-2">Choose the restaurant and category for this menu item</p>
         </div>
         <div class="p-8">
-            @if(isset($selectedRestaurantId) && $selectedRestaurantId)
+            @if(isset($restaurant) && $restaurant)
                 <!-- Show selected restaurant info -->
                 <div class="mb-8 p-6 bg-gradient-to-br from-indigo-50/70 to-purple-50/50 rounded-2xl border-2 border-indigo-100">
                     <div class="flex items-center space-x-3">
@@ -156,15 +156,15 @@
                         <div>
                             <h4 class="text-lg font-semibold text-gray-900">Selected Restaurant</h4>
                             <p class="text-sm text-gray-600">
-                                {{ $restaurants->find($selectedRestaurantId)?->name ?? 'Restaurant #' . $selectedRestaurantId }}
+                                {{ $restaurant->name ?? 'რესტორანი' }}
                             </p>
                         </div>
                     </div>
                     <!-- Hidden input for restaurant_id -->
-                    <input type="hidden" name="restaurant_id" value="{{ $selectedRestaurantId }}">
+                    <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
                 </div>
 
-                @if(isset($selectedCategoryId) && $selectedCategoryId)
+                @if(isset($category) && $category)
                     <!-- Show selected category info -->
                     <div class="p-6 bg-gradient-to-br from-green-50/70 to-emerald-50/50 rounded-2xl border-2 border-green-100">
                         <div class="flex items-center space-x-3">
@@ -176,12 +176,12 @@
                             <div>
                                 <h4 class="text-lg font-semibold text-gray-900">Selected Category</h4>
                                 <p class="text-sm text-gray-600">
-                                    {{ $menuCategories->find($selectedCategoryId)?->name ?? 'Category #' . $selectedCategoryId }}
+                                    {{ $category->name ?? 'კატეგორია' }}
                                 </p>
                             </div>
                         </div>
                         <!-- Hidden input for menu_category_id -->
-                        <input type="hidden" name="menu_category_id" value="{{ $selectedCategoryId }}">
+                        <input type="hidden" name="menu_category_id" value="{{ $category->id }}">
                     </div>
                 @else
                     <!-- Menu Category Selection -->

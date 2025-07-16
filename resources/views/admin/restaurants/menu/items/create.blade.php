@@ -1,4 +1,4 @@
-<x-layouts.app :title="'Create Menu Item'">
+<x-layouts.app :title="'ახალი მენიუს ელემენტი - ' . ($category->name ?? 'კატეგორია') . ' - ' . $restaurant->name">
     <!-- Page Header -->
     <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-8 mb-8 border border-gray-100 shadow-sm">
         <div class="flex items-center justify-between">
@@ -10,13 +10,13 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                        Create Menu Item
+                        ახალი მენიუს ელემენტი
                     </h1>
-                    <p class="text-gray-600 mt-1 text-sm">Add a new item to your restaurant menu</p>
+                    <p class="text-gray-600 mt-1 text-sm">{{ $category->name ?? 'კატეგორია' }} - {{ $restaurant->name }}</p>
                 </div>
             </div>
             
-            <a href="{{ route('admin.menu.items.index') }}"
+            <a href="{{ route('admin.restaurants.menu.categories.show', [$restaurant, $category]) }}"
                 class="group inline-flex items-center px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl hover:bg-white hover:border-gray-300 transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg">
                 <svg class="w-4 h-4 mr-2 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -34,7 +34,7 @@
         <!-- Background decoration -->
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-indigo-50/20 to-purple-50/30 rounded-3xl"></div>
         
-        <form action="{{ route('admin.menu.items.store') }}" method="POST" enctype="multipart/form-data"
+        <form action="{{ route('admin.restaurants.menu.categories.items.store', [$restaurant, $category]) }}" method="POST" enctype="multipart/form-data"
             class="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             
             <!-- Form header with pattern -->

@@ -1,31 +1,70 @@
-<x-layouts.app :title="'Menu Items List'">
+<x-layouts.app :title="'Menu Items' . (isset($selectedCategory) ? ' for ' . $selectedCategory->name : '') . (isset($selectedRestaurant) ? ' - ' . $selectedRestaurant->name : '')">
     <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        {{-- Header Section: Title and Add New Button --}}
+        {{-- Header Section with Breadcrumb --}}
         <div class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 p-8 mb-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-                <div class="text-center sm:text-left">
-                    <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
-                        მენიუს აითემები
-                    </h1>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg font-medium">მენიუს ყველა აითემი</p>
-                </div>
-                <div class="flex gap-3">
-                    @if(request('category_id') && request('restaurant_id'))
-                        <a href="{{ route('admin.restaurants.menu.categories.index', request('restaurant_id')) }}"
-                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 border border-gray-300 rounded-2xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                            კატეგორიებზე დაბრუნება
+            <div class="flex flex-col gap-6">
+                {{-- Breadcrumb --}}
+                @if(isset($selectedRestaurant))
+                    <nav class="flex items-center space-x-3 text-sm">
+                        <a href="{{ route('admin.restaurants.show', $selectedRestaurant) }}" 
+                           class="text-gray-500 hover:text-blue-600 transition-colors duration-200">
+                            {{ $selectedRestaurant->name }}
                         </a>
-                    @endif
-                    <a href="{{ route('admin.menu.items.create') }}{{ request('category_id') ? '?category_id=' . request('category_id') . '&restaurant_id=' . request('restaurant_id') : '' }}"
-                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
-                        ახალი აითემი
-                    </a>
+                        <a href="{{ route('admin.restaurants.menu.categories.index', $selectedRestaurant) }}" 
+                           class="text-gray-500 hover:text-blue-600 transition-colors duration-200">
+                            მთავარი კატეგორიები
+                        </a>
+                        @if(isset($selectedCategory))
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            <span class="text-blue-600 font-medium">{{ $selectedCategory->name ?? 'მენიუს აითემები' }}</span>
+                        @else
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            <span class="text-blue-600 font-medium">მენიუს აითემები</span>
+                        @endif
+                    </nav>
+                @endif
+
+                {{-- Title and Actions --}}
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                            მენიუს აითემები
+                        </h1>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg font-medium">
+                            @if(isset($selectedCategory))
+                                {{ $selectedCategory->name }} - {{ isset($selectedRestaurant) ? $selectedRestaurant->name : 'ყველა რესტორანი' }}
+                            @elseif(isset($selectedRestaurant))
+                                {{ $selectedRestaurant->name }}
+                            @else
+                                ყველა რესტორანი
+                            @endif
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        @if(request('category_id') && request('restaurant_id'))
+                            <a href="{{ route('admin.restaurants.menu.categories.index', request('restaurant_id')) }}"
+                               class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 border border-gray-300 rounded-2xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                კატეგორიებზე დაბრუნება
+                            </a>
+                        @endif
+                        <a href="{{ route('admin.menu.items.create') }}{{ request('category_id') ? '?category_id=' . request('category_id') . '&restaurant_id=' . request('restaurant_id') : '' }}"
+                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            ახალი აითემი
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,25 +189,25 @@
             </form>
         </div>
 
-        {{-- Cards Grid Container --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        {{-- Cards Grid Container - 4 cards per row with compact size --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse ($menuItems as $item)
-                <div class="group bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 transform">
+                <div class="group bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-white/30 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-102 transform">
                     {{-- Item Image --}}
                     <div class="relative h-48 bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
                         @if ($item->image)
                             <img src="{{ $item->image }}" 
                                  alt="{{ $item->translate('en')->name ?? 'Menu Item Image' }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @elseif ($item->image_link)
                             <img src="{{ $item->image_link }}" 
                                  alt="{{ $item->translate('en')->name ?? 'Menu Item Image' }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full flex items-center justify-center relative">
                                 <div class="absolute inset-0 bg-gradient-to-br from-blue-200/50 to-purple-200/50"></div>
-                                <div class="relative w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <div class="relative w-14 h-14 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
                                 </div>
@@ -176,37 +215,37 @@
                         @endif
                         
                         {{-- Status Badge --}}
-                        <div class="absolute top-4 right-4">
+                        <div class="absolute top-3 right-3">
                             @if ($item->status === 'active')
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-green-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></div>
                                     აქტიური
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-gray-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white/70 rounded-full mr-2"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white/70 rounded-full mr-1.5"></div>
                                     არააქტიური
                                 </span>
                             @endif
                         </div>
 
                         {{-- Rank Badge --}}
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm">
+                        <div class="absolute top-3 left-3">
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-white/90 text-gray-700 shadow-md backdrop-blur-sm">
                                 <span class="text-blue-600">#</span>{{ $item->rank ?? 0 }}
                             </span>
                         </div>
 
                         {{-- Special Badges --}}
-                        <div class="absolute bottom-4 left-4 flex gap-2">
+                        <div class="absolute bottom-3 left-3 flex gap-1">
                             @if($item->is_vegan)
-                                <span class="inline-flex items-center px-2 py-1 text-xs font-bold rounded-full bg-green-500 text-white shadow-lg">
-                                    🌱 ვეგანური
+                                <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded-full bg-green-500 text-white shadow-md">
+                                    🌱
                                 </span>
                             @endif
                             @if($item->is_gluten_free)
-                                <span class="inline-flex items-center px-2 py-1 text-xs font-bold rounded-full bg-orange-500 text-white shadow-lg">
-                                    🌾 უგლუტენო
+                                <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded-full bg-orange-500 text-white shadow-md">
+                                    🌾
                                 </span>
                             @endif
                         </div>
@@ -216,39 +255,39 @@
                     </div>
 
                     {{-- Card Content --}}
-                    <div class="p-6">
+                    <div class="p-4">
                         {{-- Item Name --}}
                         @php
                             $defaultLocale = app()->getLocale();
                         @endphp
-                        <h3 class="text-xl font-bold mb-3 line-clamp-2 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-semibold mb-2 line-clamp-2 text-gray-900 dark:text-gray-100">
                             {{ $item->translate($defaultLocale)?->name ?? 'უსახელო აითემი' }}
                         </h3>
 
                         {{-- Description --}}
                         @if($item->translate($defaultLocale)?->description)
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
                                 {{ $item->translate($defaultLocale)->description }}
                             </p>
                         @endif
 
                         {{-- Price Section --}}
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <span class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    <span class="text-lg font-bold text-gray-900 dark:text-gray-100">
                                         ${{ number_format($item->price, 2) }}
                                     </span>
                                     @if($item->unit)
-                                        <span class="text-sm text-gray-500 ml-1">/ {{ $item->unit }}</span>
+                                        <span class="text-xs text-gray-500 ml-1">/ {{ $item->unit }}</span>
                                     @endif
                                 </div>
                                 @if($item->discounted_price)
                                     <div class="text-right">
-                                        <div class="text-lg line-through text-gray-400">
+                                        <div class="text-sm line-through text-gray-400">
                                             ${{ number_format($item->price, 2) }}
                                         </div>
-                                        <div class="text-xl font-bold text-red-600">
+                                        <div class="text-lg font-bold text-red-600">
                                             ${{ number_format($item->discounted_price, 2) }}
                                         </div>
                                     </div>
@@ -256,54 +295,54 @@
                             </div>
                         </div>
 
-                        {{-- Additional Info --}}
-                        <div class="grid grid-cols-2 gap-3 mb-6 text-sm">
+                        {{-- Additional Info - Compact Grid --}}
+                        <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
                             @if($item->calories)
                                 <div class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
                                     </svg>
-                                    {{ $item->calories }} კალორია
+                                    {{ $item->calories }}კალ
                                 </div>
                             @endif
                             @if($item->preparation_time)
                                 <div class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
-                                    {{ $item->preparation_time }} წუთი
+                                    {{ $item->preparation_time }}წთ
                                 </div>
                             @endif
                             @if($item->quantity)
                                 <div class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                     </svg>
-                                    რაოდენობა: {{ $item->quantity }}
+                                    რაოდ: {{ $item->quantity }}
                                 </div>
                             @endif
                             @if($item->available !== null)
                                 <div class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-2 {{ $item->available ? 'text-green-500' : 'text-red-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 mr-1 {{ $item->available ? 'text-green-500' : 'text-red-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item->available ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z' }}"/>
                                     </svg>
-                                    {{ $item->available ? 'ხელმისაწვდომი' : 'არ არის ხელმისაწვდომი' }}
+                                    {{ $item->available ? 'ხელმისაწვდომი' : 'არ არის' }}
                                 </div>
                             @endif
                         </div>
 
                         {{-- Slug Info --}}
-                        <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
-                                Slug: {{ $item->slug }}
+                        <div class="mb-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium truncate">
+                                {{ $item->slug }}
                             </div>
                         </div>
                         
                         {{-- Action Buttons --}}
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2">
                             <a href="{{ route('admin.menu.items.edit', $item) }}"
-                               class="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                                 რედაქტირება
@@ -315,8 +354,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        class="w-full inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                    <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                     წაშლა
@@ -327,21 +366,21 @@
                 </div>
             @empty
                 {{-- Empty State with Glassmorphism --}}
-                <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center">
-                    <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-3xl p-12 max-w-md mx-auto shadow-2xl">
-                        <div class="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-                            <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="col-span-full flex flex-col items-center justify-center py-16 px-4 text-center">
+                    <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-2xl p-8 max-w-sm mx-auto shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-4">
+                        <h3 class="text-lg font-semibold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-3">
                             @if(request('search'))
                                 ძიების შედეგი არ მოიძებნა
                             @else
                                 აითემი არ მოიძებნა
                             @endif
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+                        <p class="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
                             @if(request('search'))
                                 ძიების კრიტერიუმის "{{ request('search') }}" შესაბამისი აითემი არ მოიძებნა.
                             @else
@@ -349,8 +388,8 @@
                             @endif
                         </p>
                         <a href="{{ route('admin.menu.items.create') }}{{ request('category_id') ? '?category_id=' . request('category_id') . '&restaurant_id=' . request('restaurant_id') : '' }}" 
-                           class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>
                             აითემის დამატება

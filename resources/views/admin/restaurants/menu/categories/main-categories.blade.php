@@ -1,7 +1,13 @@
 <x-layouts.app :title="'Menu Categories for ' . $restaurant->name">
     <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        {{-- Header Section: Title and Add New Button --}}
-        <div class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 p-8 mb-8">
+        {{-- Header Section: Title and Add New Button --}}                                    @if($category->children->count() > 0)
+                                        <a href="{{ route('admin.restaurants.menu.categories.index', $restaurant) }}?parent={{ $category->id }}" 
+                                           class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 hover:underline">
+                                            {{ $category->children->count() }} ქვეკატეგორია
+                                        </a>
+                                    @else
+                                        <span class="text-sm">{{ $category->children->count() }} ქვეკატეგორია</span>
+                                    @endif <div class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 p-8 mb-8">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
                 <div class="text-center sm:text-left">
                     <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
@@ -141,21 +147,21 @@
             </form>
         </div>
 
-        {{-- Main Categories Grid Container - 3 cards per row with larger size --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+        {{-- Main Categories Grid Container - 4 cards per row with compact size --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse ($menuCategories as $index => $category)
-                <div class="group bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-white/30 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 transform">
+                <div class="group bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-white/30 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-102 transform">
                     {{-- Category Image --}}
-                    <div class="relative h-64 bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
+                    <div class="relative h-48 bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
                         @if ($category->image)
                             <img src="{{ $category->image }}" 
                                  alt="{{ $category->translate('en')->name ?? 'Category Image' }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full flex items-center justify-center relative">
                                 <div class="absolute inset-0 bg-gradient-to-br from-blue-200/50 to-purple-200/50"></div>
-                                <div class="relative w-20 h-20 bg-white/80 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <div class="relative w-14 h-14 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                                     </svg>
                                 </div>
@@ -163,23 +169,23 @@
                         @endif
                         
                         {{-- Status Badge --}}
-                        <div class="absolute top-4 right-4">
+                        <div class="absolute top-3 right-3">
                             @if ($category->status === 'active')
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-green-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></div>
                                     აქტიური
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-gray-500 text-white shadow-lg backdrop-blur-sm">
-                                    <div class="w-2 h-2 bg-white/70 rounded-full mr-2"></div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-500 text-white shadow-md backdrop-blur-sm">
+                                    <div class="w-1.5 h-1.5 bg-white/70 rounded-full mr-1.5"></div>
                                     არააქტიური
                                 </span>
                             @endif
                         </div>
 
                         {{-- Rank Badge --}}
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm">
+                        <div class="absolute top-3 left-3">
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-white/90 text-gray-700 shadow-md backdrop-blur-sm">
                                 <span class="text-blue-600">#</span>{{ $category->rank ?? 0 }}
                             </span>
                         </div>
@@ -189,38 +195,41 @@
                     </div>
 
                     {{-- Card Content --}}
-                    <div class="p-8">
+                    <div class="p-5">
                         {{-- Category Name --}}
-                        <h3 class="text-2xl font-bold mb-4 line-clamp-2 text-gray-900 dark:text-gray-100">
-                            {{ $category->name ?? 'უსახელო კატეგორია' }}
+                        <h3 class="text-lg font-semibold mb-3 line-clamp-2 text-gray-900 dark:text-gray-100">
+                            <a href="{{ route('admin.restaurants.menu.categories.index', $restaurant) }}?parent={{ $category->id }}" 
+                                class="hover:underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                                {{ $category->name ?? 'უსახელო კატეგორია' }}
+                            </a>
                         </h3>
 
                         {{-- Statistics Section --}}
-                        <div class="space-y-4 mb-8">
+                        <div class="space-y-3 mb-5">
                             {{-- Subcategories Count --}}
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center text-base font-medium text-gray-600 dark:text-gray-400">
-                                    <div class="w-10 h-10 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mr-4">
-                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    <div class="w-7 h-7 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mr-3">
+                                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                         </svg>
                                     </div>
                                     @if($category->children->count() > 0)
-                                        <a href="{{ route('admin.restaurants.menu.categories.index', $restaurant) }}?parent={{ $category->id }}" 
-                                           class="text-lg text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 hover:underline">
+                                        <a href="{{ route('admin.restaurants.menu.parent-categories', $restaurant) }}" 
+                                           class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 hover:underline">
                                             {{ $category->children->count() }} ქვეკატეგორია
                                         </a>
                                     @else
-                                        <span class="text-lg">{{ $category->children->count() }} ქვეკატეგორია</span>
+                                        <span class="text-sm">{{ $category->children->count() }} ქვეკატეგორია</span>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- Total Items Count --}}
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center text-base font-medium text-gray-600 dark:text-gray-400">
-                                    <div class="w-10 h-10 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl flex items-center justify-center mr-4">
-                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    <div class="w-7 h-7 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg flex items-center justify-center mr-3">
+                                        <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                         </svg>
                                     </div>
@@ -232,40 +241,41 @@
                                         }
                                     @endphp
                                     @if($totalItems > 0)
-                                        <a href="{{ route('admin.menu.items.index') }}?category_id={{ $category->id }}&restaurant_id={{ $restaurant->id }}" 
-                                           class="text-lg text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200 hover:underline">
-                                            {{ $totalItems }} მენიუს აითემი
+                                        <a href="{{ route('admin.restaurants.menu.categories.show', [$restaurant, $category]) }}" 
+                                           class="text-sm text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200 hover:underline">
+                                            {{ $totalItems }} კერძი / სასმელი
                                         </a>
                                     @else
-                                        <span class="text-lg">{{ $totalItems }} მენიუს აითემი</span>
+                                        <span class="text-sm">{{ $totalItems }} კერძი / სასმელი</span>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- Last Updated --}}
                             <div class="flex items-center justify-end">
-                                <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full font-medium">
+                                <span class="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full font-medium">
                                     {{ $category->updated_at->diffForHumans() }}
                                 </span>
                             </div>
                         </div>
                         
                         {{-- Action Buttons --}}
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2">
                             <a href="{{ route('admin.restaurants.menu.categories.edit', [$restaurant, $category]) }}"
-                               class="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 dark:text-orange-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
-                                რედაქტირება
+                                
                             </a>
 
-                            <a href="{{ route('admin.menu.items.create') }}?category_id={{ $category->id }}&restaurant_id={{ $restaurant->id }}"
-                               class="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-green-600 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 dark:from-green-900/30 dark:to-green-800/30 dark:text-green-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            <a href="{{ route('admin.restaurants.menu.categories.show', [$restaurant, $category]) }}"
+                               class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-green-600 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 dark:from-green-900/30 dark:to-green-800/30 dark:text-green-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                 </svg>
-                                Item დამატება
+                                 ნახვა
                             </a>
                             
                             <form action="{{ route('admin.restaurants.menu.categories.destroy', [$restaurant, $category]) }}" 
@@ -275,8 +285,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        class="w-full inline-flex items-center justify-center px-3 py-2 text-xs font-semibold text-red-600 bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                                    <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                     წაშლა
@@ -287,22 +297,22 @@
                 </div>
         @empty
             {{-- Empty State with Glassmorphism --}}
-            <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center">
-                <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-3xl p-12 max-w-md mx-auto shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-                        <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="col-span-full flex flex-col items-center justify-center py-16 px-4 text-center">
+                <div class="backdrop-blur-lg bg-white/20 dark:bg-gray-800/20 border border-white/30 dark:border-gray-700/30 rounded-2xl p-8 max-w-sm mx-auto shadow-xl">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-4">
+                    <h3 class="text-lg font-semibold bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 bg-clip-text text-transparent mb-3">
                         მთავარი კატეგორია არ მოიძებნა
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
                         ამ რესტორნისთვის ჯერ არ შექმნილა მენიუს მთავარი კატეგორია. დაამატეთ პირველი კატეგორია დასაწყებად.
                     </p>
                     <a href="{{ route('admin.restaurants.menu.categories.create', $restaurant) }}" 
-                       class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         კატეგორიის დამატება

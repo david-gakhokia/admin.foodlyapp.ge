@@ -62,8 +62,8 @@ class MenuCategoryController extends Controller
 
         $menuCategories = $query->orderBy('parent_id', 'ASC') // ჯერ მშობელი კატეგორიები
             ->orderBy('rank', 'ASC')
-            ->take(200)
-            ->get();
+            ->paginate(12) // 12 კატეგორია თითო გვერდზე (3x4 grid)
+            ->withQueryString(); // შეინარჩუნოს search parameters
 
         // Get all restaurants for the filter dropdown
         $restaurants = Restaurant::with('translations')->orderBy('id')->get();
@@ -306,14 +306,10 @@ class MenuCategoryController extends Controller
             $query->where('restaurant_id', $request->restaurant_id);
         }
 
-        $menuCategories = $query->orderBy('rank')->paginate(15);
+        $menuCategories = $query->orderBy('rank')->paginate(12)->withQueryString(); // 12 კატეგორია გვერდზე
 
-        // Choose the appropriate view based on whether we're showing subcategories or main categories
-        if ($request->filled('parent')) {
-            return view('admin.restaurants.menu.categories.parent-categories', compact('menuCategories', 'restaurant', 'parentCategory'));
-        } else {
-            return view('admin.restaurants.menu.categories.main-categories', compact('menuCategories', 'restaurant'));
-        }
+        // Use the index view for restaurant categories
+        return view('admin.restaurants.menu.categories.index', compact('menuCategories', 'restaurant'));
     }
 
     public function createForRestaurant(Restaurant $restaurant)
@@ -381,7 +377,8 @@ class MenuCategoryController extends Controller
             'translations',
             'parent.translations',
             'restaurant.translations',
-            'menuItems.translations'
+            'menuItems.translations',
+            'children.translations'
         ]);
 
         return view('admin.restaurants.menu.categories.show', compact('menuCategory', 'restaurant'));
@@ -475,5 +472,231 @@ class MenuCategoryController extends Controller
         return redirect()
             ->route('admin.restaurants.menu.categories.index', $restaurant)
             ->with('success', 'Menu category deleted successfully.');
+    }
+
+    /**
+     * Show children categories for a specific parent category
+     */
+    public function showParents(Request $request, Restaurant $restaurant, MenuCategory $menuCategory)
+    {
+        $query = MenuCategory::translatedIn(app()->getLocale())
+            ->where('restaurant_id', $restaurant->id)
+            ->where('parent_id', $menuCategory->id) // Show children of this category
+            ->with([
+                'parent' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'restaurant.translations',
+                'children' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'menuItems' // Load menu items for counting
+            ]);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('translations', function($translationQuery) use ($search) {
+                    $translationQuery->where('name', 'like', "%{$search}%")
+                                   ->orWhere('description', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $menuCategories = $query->orderBy('rank')->paginate(15);
+
+        return view('admin.restaurants.menu.categories.parent-categories', compact('menuCategories', 'restaurant', 'menuCategory'));
+    }
+
+    /**
+     * Show children categories (Level 2) for a specific parent
+     */
+    public function showChildren(Request $request, Restaurant $restaurant, MenuCategory $parent)
+    {
+        $query = MenuCategory::translatedIn(app()->getLocale())
+            ->where('restaurant_id', $restaurant->id)
+            ->where('parent_id', $parent->id)
+            ->with([
+                'parent' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'restaurant.translations',
+                'children' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'menuItems'
+            ]);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('translations', function($translationQuery) use ($search) {
+                    $translationQuery->where('name', 'like', "%{$search}%")
+                                   ->orWhere('description', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $menuCategories = $query->orderBy('rank')->paginate(15);
+
+        return view('admin.restaurants.menu.categories.children', compact('menuCategories', 'restaurant', 'parent'));
+    }
+
+    /**
+     * Create child category for a specific parent (Level 2)
+     */
+    public function createChildForParent(Restaurant $restaurant, MenuCategory $parent)
+    {
+        return view('admin.restaurants.menu.categories.create-child', compact('restaurant', 'parent'));
+    }
+
+    /**
+     * Store child category for a specific parent (Level 2)
+     */
+    public function storeChildForParent(Request $request, Restaurant $restaurant, MenuCategory $parent)
+    {
+        $validated = $request->validate([
+            'name_ka' => 'required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'description_ka' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $slug = $this->slugService->createSlug($validated['name_en'], MenuCategory::class);
+        $rank = $this->rankService->getNextRank(MenuCategory::class, ['restaurant_id' => $restaurant->id, 'parent_id' => $parent->id]);
+
+        $data = [
+            'restaurant_id' => $restaurant->id,
+            'parent_id' => $parent->id,
+            'slug' => $slug,
+            'rank' => $rank,
+            'status' => $validated['status'],
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imageUrl = $this->cloudinaryService->uploadImage($request->file('image'), 'menu-categories');
+            $data['image_url'] = $imageUrl;
+        }
+
+        $menuCategory = MenuCategory::create($data);
+
+        // Create translations
+        $menuCategory->translateOrNew('ka')->name = $validated['name_ka'];
+        $menuCategory->translateOrNew('ka')->description = $validated['description_ka'] ?? '';
+        $menuCategory->translateOrNew('en')->name = $validated['name_en'];
+        $menuCategory->translateOrNew('en')->description = $validated['description_en'] ?? '';
+        $menuCategory->save();
+
+        return redirect()
+            ->route('admin.restaurants.menu.categories.children', [$restaurant, $parent])
+            ->with('success', 'ქვეკატეგორია წარმატებით შეიქმნა!');
+    }
+
+    /**
+     * Show sub-children categories (Level 3) for a specific parent and child
+     */
+    public function showSubChildren(Request $request, Restaurant $restaurant, MenuCategory $parent, MenuCategory $child)
+    {
+        $query = MenuCategory::translatedIn(app()->getLocale())
+            ->where('restaurant_id', $restaurant->id)
+            ->where('parent_id', $child->id)
+            ->with([
+                'parent' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'restaurant.translations',
+                'children' => function($query) {
+                    $query->translatedIn(app()->getLocale());
+                },
+                'menuItems'
+            ]);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('translations', function($translationQuery) use ($search) {
+                    $translationQuery->where('name', 'like', "%{$search}%")
+                                   ->orWhere('description', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $menuCategories = $query->orderBy('rank')->paginate(15);
+
+        return view('admin.restaurants.menu.categories.subchildren', compact('menuCategories', 'restaurant', 'parent', 'child'));
+    }
+
+    /**
+     * Create sub-child category for a specific parent and child (Level 3)
+     */
+    public function createSubChildForChild(Restaurant $restaurant, MenuCategory $parent, MenuCategory $child)
+    {
+        return view('admin.restaurants.menu.categories.create-subchild', compact('restaurant', 'parent', 'child'));
+    }
+
+    /**
+     * Store sub-child category for a specific parent and child (Level 3)
+     */
+    public function storeSubChildForChild(Request $request, Restaurant $restaurant, MenuCategory $parent, MenuCategory $child)
+    {
+        $validated = $request->validate([
+            'name_ka' => 'required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'description_ka' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $slug = $this->slugService->createSlug($validated['name_en'], MenuCategory::class);
+        $rank = $this->rankService->getNextRank(MenuCategory::class, ['restaurant_id' => $restaurant->id, 'parent_id' => $child->id]);
+
+        $data = [
+            'restaurant_id' => $restaurant->id,
+            'parent_id' => $child->id,
+            'slug' => $slug,
+            'rank' => $rank,
+            'status' => $validated['status'],
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imageUrl = $this->cloudinaryService->uploadImage($request->file('image'), 'menu-categories');
+            $data['image_url'] = $imageUrl;
+        }
+
+        $menuCategory = MenuCategory::create($data);
+
+        // Create translations
+        $menuCategory->translateOrNew('ka')->name = $validated['name_ka'];
+        $menuCategory->translateOrNew('ka')->description = $validated['description_ka'] ?? '';
+        $menuCategory->translateOrNew('en')->name = $validated['name_en'];
+        $menuCategory->translateOrNew('en')->description = $validated['description_en'] ?? '';
+        $menuCategory->save();
+
+        return redirect()
+            ->route('admin.restaurants.menu.categories.subchildren', [$restaurant, $parent, $child])
+            ->with('success', 'მესამე დონის კატეგორია წარმატებით შეიქმნა!');
     }
 }

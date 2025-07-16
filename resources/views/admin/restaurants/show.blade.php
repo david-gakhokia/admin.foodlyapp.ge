@@ -626,12 +626,12 @@
                                             მენიუს კატეგორიები
                                         </a>
                                     </h3>
-                                    <p class="text-white/80 text-sm">კერძების კატეგორიები</p>
+                                    
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 text-white border border-white/30">
-                                    {{ $restaurant->menuCategories->whereNull('parent_id')->count() }} მთავარი კატეგორია
+                                    {{ $restaurant->menuCategories->whereNull('parent_id')->count() }} მთავარი 
                                 </span>
                                 <a href="{{ route('admin.restaurants.menu.categories.create', $restaurant) }}" 
                                    class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl font-medium transition-all duration-300 border border-white/30">
@@ -716,7 +716,9 @@
                                                     <svg class="w-3 h-3 mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                                                     </svg>
-                                                    {{ $category->menuItems->count() }} ელემ.
+                                                    <a href="{{ route('admin.restaurants.menu.categories.show', [$restaurant, $category]) }}" class="hover:text-amber-600 transition-colors duration-200">
+                                                        {{ $category->menuItems->count() }} ელემ.
+                                                    </a>
                                                 </div>
                                             </div>
 

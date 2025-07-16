@@ -321,17 +321,47 @@ Route::middleware(['auth'])
                 ->only(['index', 'show', 'edit', 'update', 'destroy']);
         });
 
-        // Restaurant Menu Categories
+        // Restaurant Menu Categories - Hierarchical Structure
         Route::prefix('restaurants/{restaurant}')->name('restaurants.')->group(function () {
             Route::prefix('menu/categories')->name('menu.categories.')->group(function () {
+                
+                // დონე 1 - ძირითადი კატეგორიები
                 Route::get('/', [MenuCategoryController::class, 'indexByRestaurant'])->name('index');
                 Route::get('create', [MenuCategoryController::class, 'createForRestaurant'])->name('create');
                 Route::post('/', [MenuCategoryController::class, 'storeForRestaurant'])->name('store');
+                
+                // დონე 2 - ქვეკატეგორიები (parent-ის შვილები)
+                Route::get('level/{parent}', [MenuCategoryController::class, 'showChildren'])->name('children');
+                Route::get('level/{parent}/create', [MenuCategoryController::class, 'createChildForParent'])->name('children.create');
+                Route::post('level/{parent}', [MenuCategoryController::class, 'storeChildForParent'])->name('children.store');
+                
+                // დონე 3 - მესამე დონე (parent/child-ის შვილები)  
+                Route::get('level/{parent}/sub/{child}', [MenuCategoryController::class, 'showSubChildren'])->name('subchildren');
+                Route::get('level/{parent}/sub/{child}/create', [MenuCategoryController::class, 'createSubChildForChild'])->name('subchildren.create');
+                Route::post('level/{parent}/sub/{child}', [MenuCategoryController::class, 'storeSubChildForChild'])->name('subchildren.store');
+                
+                // კატეგორიის CRUD ოპერაციები (ყველა დონისთვის)
                 Route::get('{menuCategory}', [MenuCategoryController::class, 'showForRestaurant'])->name('show');
                 Route::get('{menuCategory}/edit', [MenuCategoryController::class, 'editForRestaurant'])->name('edit');
                 Route::put('{menuCategory}', [MenuCategoryController::class, 'updateForRestaurant'])->name('update');
                 Route::delete('{menuCategory}', [MenuCategoryController::class, 'destroyForRestaurant'])->name('destroy');
+                
+                // კატეგორიის Items მართვა (ყველა დონის კატეგორიისთვის)
+                Route::prefix('{category}/items')->name('items.')->group(function () {
+                    Route::get('/', [MenuItemController::class, 'indexByCategory'])->name('index');
+                    Route::get('create', [MenuItemController::class, 'createForCategory'])->name('create');
+                    Route::post('/', [MenuItemController::class, 'storeForCategory'])->name('store');
+                    Route::get('{item}', [MenuItemController::class, 'showForCategory'])->name('show');
+                    Route::get('{item}/edit', [MenuItemController::class, 'editForCategory'])->name('edit');
+                    Route::put('{item}', [MenuItemController::class, 'updateForCategory'])->name('update');
+                    Route::delete('{item}', [MenuItemController::class, 'destroyForCategory'])->name('destroy');
+                    Route::delete('{item}/image', [MenuItemController::class, 'deleteImageForCategory'])->name('image.delete');
+                    Route::post('sort', [MenuItemController::class, 'sortForCategory'])->name('sort');
+                });
             });
+            
+            // Parent categories route
+            Route::get('menu/category/{menuCategory}/parents', [MenuCategoryController::class, 'showParents'])->name('menu.category.parents');
         });
 
         // Restaurant Places - Nested routes
