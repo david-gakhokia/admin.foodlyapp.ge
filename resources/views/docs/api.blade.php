@@ -144,8 +144,27 @@
                             <ul class="space-y-2 text-sm">
                                 <li><a href="{{ route('docs.kiosk') }}#authentication" class="text-green-600 hover:text-green-800">🔐 Authentication</a></li>
                                 <li><a href="{{ route('docs.kiosk') }}#restaurants" class="text-green-600 hover:text-green-800">🏡 Restaurants</a></li>
-                                <li><a href="{{ route('docs.kiosk') }}#availability" class="text-green-600 hover:text-green-800">🕐 Availability</a></li>
                                 <li><a href="{{ route('docs.kiosk') }}#menu" class="text-green-600 hover:text-green-800">🍽️ Menu System</a></li>
+                                <li>
+                                    <span class="text-orange-600 text-xs font-medium bg-orange-100 px-2 py-1 rounded mr-2">NEW</span>
+                                    <a href="{{ route('docs.kiosk') }}#availability" class="text-orange-600 hover:text-orange-800 font-medium">🕐 Availability System</a>
+                                </li>
+                                <li class="ml-4">
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <a href="{{ route('docs.kiosk') }}#availability" class="text-green-600 hover:text-green-800 text-xs">Tables Overview</a>
+                                </li>
+                                <li class="ml-4">
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <a href="{{ route('docs.kiosk') }}#availability" class="text-green-600 hover:text-green-800 text-xs">Available Times</a>
+                                </li>
+                                <li class="ml-4">
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <a href="{{ route('docs.kiosk') }}#availability" class="text-green-600 hover:text-green-800 text-xs">Tables by Time</a>
+                                </li>
+                                <li class="ml-4">
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <a href="{{ route('docs.kiosk') }}#availability" class="text-orange-600 hover:text-orange-800 text-xs">Place-Specific Search</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -193,6 +212,113 @@
                             </div>
                             <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/phone/send-otp</code>
                             <p class="text-sm text-gray-600 mt-2">📱 SMS OTP verification system</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- WebApp API Section -->
+                <section id="webapp" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">🌐 WebApp API</h2>
+                    <p class="text-gray-600 mb-6">Public API for web applications and mobile apps</p>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Restaurants</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/restaurants</code>
+                            <p class="text-sm text-gray-600 mt-2">🌍 Public access | Get all restaurants with pagination</p>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Spaces</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/spaces</code>
+                            <p class="text-sm text-gray-600 mt-2">🌍 Public access | Get all culinary spaces</p>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Cuisines</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/cuisines</code>
+                            <p class="text-sm text-gray-600 mt-2">🌍 Public access | Get all cuisine types</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kiosk API Section -->
+                <section id="kiosk" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">🏪 Kiosk API</h2>
+                    <p class="text-gray-600 mb-6">Specialized API for kiosk terminals and touch screens</p>
+                    
+                    <div class="space-y-4">
+                        <!-- Authentication -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Kiosk Login</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/login</code>
+                            <p class="text-sm text-gray-600 mt-2">🔐 Kiosk authentication with identifier and secret</p>
+                        </div>
+
+                        <!-- Restaurants -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Restaurants</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/restaurants</code>
+                            <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | Extended restaurant data</p>
+                        </div>
+
+                        <!-- Availability - NEW SECTION -->
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-green-900 mb-3">🕐 Availability System</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-sm">Tables Overview</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">GET</span>
+                                </div>
+                                <code class="bg-gray-100 px-2 py-1 rounded text-xs font-mono block">/api/kiosk/availability/restaurant/{slug}/tables-overview</code>
+                                <p class="text-xs text-green-700">🎯 For initial page load - shows all tables with status</p>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-sm">Available Times</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">GET</span>
+                                </div>
+                                <code class="bg-gray-100 px-2 py-1 rounded text-xs font-mono block">/api/kiosk/availability/restaurant/{slug}/times</code>
+                                <p class="text-xs text-green-700">🎯 For date selection - shows all available times</p>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-sm">Tables by Time</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">GET</span>
+                                </div>
+                                <code class="bg-gray-100 px-2 py-1 rounded text-xs font-mono block">/api/kiosk/availability/restaurant/{slug}/tables-by-time</code>
+                                <p class="text-xs text-green-700">🎯 For time selection - shows available tables for specific time</p>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-sm">Place Specific Tables</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded">NEW</span>
+                                </div>
+                                <code class="bg-gray-100 px-2 py-1 rounded text-xs font-mono block">/api/kiosk/availability/restaurant/{slug}/{place}/tables-by-time</code>
+                                <p class="text-xs text-green-700">🎯 For place-specific search - shows tables for specific place and time</p>
+                            </div>
+                        </div>
+
+                        <!-- Menu System -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Menu System</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/restaurants/{slug}/menu</code>
+                            <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | Full menu structure</p>
                         </div>
                     </div>
                 </section>
