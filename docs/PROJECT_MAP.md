@@ -93,6 +93,12 @@ MenuCategory (მენიუს კატეგორიები)
 - MenuCategories ინფორმაცია
 - Pivot: `restaurant_dish`
 
+**KioskAvailabilityController**
+- რესტორნების ხელმისაწვდომობა
+- სივრცეების/მაგიდების availability
+- რეალურ დროში სლოტების მართვა
+- AvailabilityService-თან ინტეგრაცია
+
 ## 🏗️ ფაილების სტრუქტურა
 
 ### Controllers
@@ -101,6 +107,7 @@ app/Http/Controllers/Kiosk/
 ├── KioskSpaceController.php
 ├── KioskCuisineController.php
 ├── KioskDishController.php
+├── KioskAvailabilityController.php
 └── ... (სხვა kiosk controllers)
 ```
 

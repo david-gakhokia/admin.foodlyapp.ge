@@ -51,8 +51,22 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Documentation Route
-Route::get('/docs', [DocumentationController::class, 'index'])->name('docs');
+// Documentation Routes
+Route::prefix('docs')->name('docs.')->group(function () {
+    // Main documentation page
+    Route::get('/', [DocumentationController::class, 'index'])->name('index');
+    
+    // API Documentation (general)
+    Route::get('/api', [DocumentationController::class, 'api'])->name('api');
+    
+    // Kiosk API Documentation
+    Route::get('/kiosk', function () {
+        return view('docs.kiosk');
+    })->name('kiosk');
+    
+    // WebApp API Documentation
+    Route::get('/webapp', [DocumentationController::class, 'webapp'])->name('webapp');
+});
 
 
 // სხვა მარშრუტები

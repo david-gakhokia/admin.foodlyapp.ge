@@ -41,6 +41,11 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-sm text-gray-500">Base URL: <code class="bg-gray-100 px-2 py-1 rounded text-xs">{{ config('app.url') }}/api</code></span>
+                    <div class="flex space-x-2">
+                        <a href="{{ route('docs.api') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">API Overview</a>
+                        <a href="{{ route('docs.webapp') }}" class="text-purple-600 hover:text-purple-800 text-sm font-medium">WebApp</a>
+                        <a href="{{ route('docs.kiosk') }}" class="text-green-600 hover:text-green-800 text-sm font-medium">Kiosk</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -715,6 +720,112 @@
                             </div>
                         </div>
 
+                        <!-- Kiosk Availability -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">🕐 Kiosk Availability</h3>
+                            <p class="text-sm text-gray-600 mb-4">რესტორნების, სივრცეების და მაგიდების ხელმისაწვდომი საათების API</p>
+                            
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Restaurant Availability</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{slug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | რესტორნის ხელმისაწვდომი საათები და სლოტები</p>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Query Parameters:</h4>
+                                        <ul class="text-sm text-gray-600 list-disc list-inside">
+                                            <li><code>date</code> - კონკრეტული თარიღი (Y-m-d format, optional)</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-medium mb-2">Response Example:</h4>
+                                        <pre class="bg-gray-900 text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-json">{
+  "success": true,
+  "data": {
+    "restaurant": {
+      "id": 1,
+      "name": "Georgian House",
+      "slug": "georgian-house",
+      "timezone": "Asia/Tbilisi",
+      "working_hours": "10:00-22:00"
+    },
+    "date": "2025-07-20",
+    "day_of_week": "Sunday",
+    "available_slots": [
+      "10:00", "10:30", "11:00", "11:30",
+      "18:00", "18:30", "19:00", "19:30"
+    ],
+    "weekly_hours": {
+      "Monday": [
+        {
+          "day": "Monday",
+          "time_from": "10:00:00",
+          "time_to": "22:00:00",
+          "available": true,
+          "max_guests": 50,
+          "slot_interval_minutes": 30
+        }
+      ]
+    }
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Place Availability</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/place/{placeSlug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | სივრცის ხელმისაწვდომი საათები</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Table Availability (with Place)</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/place/{placeSlug}/table/{tableSlug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | მაგიდის ხელმისაწვდომობა სივრცის ფარგლებში</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Direct Table Availability</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/table/{tableSlug}</code>
+                                    <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | მაგიდის ხელმისაწვდომობა (სივრცის გარეშე)</p>
+                                </div>
+                                
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <h4 class="font-semibold text-blue-800 mb-3">🔧 Availability Features</h4>
+                                    <div class="space-y-2 text-sm text-blue-700">
+                                        <div><strong>რეალურ დროში:</strong> ამოწმებს ფაქტობრივ ჯავშნებს</div>
+                                        <div><strong>სლოტები:</strong> 30 წუთიანი ინტერვალები (კონფიგურაციაში შეცვლადი)</div>
+                                        <div><strong>კვირეული განრიგი:</strong> თითოეული დღისთვის ცალკე</div>
+                                        <div><strong>დროის ზონა:</strong> ავტომატური Asia/Tbilisi</div>
+                                        <div><strong>ტევადობა:</strong> მაქსიმალური სტუმრების კონტროლი</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <h4 class="font-semibold text-yellow-800 mb-3">⚡ Technical Implementation</h4>
+                                    <div class="space-y-2 text-sm text-yellow-700">
+                                        <div><strong>Cache Strategy:</strong> 5 წუთით cache-ირება ხელმისაწვდომი სლოტები</div>
+                                        <div><strong>Database:</strong> Optimized queries with eager loading</div>
+                                        <div><strong>Performance:</strong> Indexed searches by slug</div>
+                                        <div><strong>Monitoring:</strong> Response time tracking</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Kiosk Spots -->
                         <div>
                             <h3 class="text-xl font-semibold mb-4">📍 Kiosk Spots</h3>
@@ -811,11 +922,13 @@
                             <div class="space-y-6">
                                 <!-- Fixed Issues -->
                                 <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                    <h4 class="font-semibold text-green-800 mb-3">🔧 Fixed Issues (16 July, 2025)</h4>
+                                    <h4 class="font-semibold text-green-800 mb-3">🔧 Fixed Issues (17 July, 2025)</h4>
                                     <div class="space-y-2 text-sm text-green-700">
                                         <div><strong>SQL Column Ambiguity:</strong> Fixed pivot table column conflicts</div>
                                         <div><strong>MenuCategory Integration:</strong> Added to Dish resources</div>
                                         <div><strong>Pivot Relationships:</strong> Created Pizza-Exodus connection</div>
+                                        <div><strong>Availability API:</strong> Added comprehensive kiosk availability endpoints</div>
+                                        <div><strong>Documentation:</strong> Updated docs/ folder and blade template</div>
                                     </div>
                                 </div>
 
@@ -842,6 +955,13 @@
                                             <pre class="bg-gray-100 p-3 rounded text-xs font-mono mt-1">$dish->restaurants()
     ->where('restaurants.status', 'active')
     ->orderBy('restaurant_dish.rank', 'asc')</pre>
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">Availability Service:</p>
+                                            <pre class="bg-gray-100 p-3 rounded text-xs font-mono mt-1">$availabilityService->generateAvailableSlots(
+    $restaurant, $date, $dayOfWeek
+)</pre>
                                         </div>
                                     </div>
                                 </div>

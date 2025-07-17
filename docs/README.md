@@ -14,6 +14,21 @@
 - **შემცველობა:** SQL column ambiguity, MenuCategory integration, pivot relationships
 - **გამოყენება:** კონკრეტული პრობლემების და გამოსავლების რეფერენსი
 
+### 🏪 [KIOSK_API_COMPLETE.md](KIOSK_API_COMPLETE.md)
+- **რისთვის:** კიოსკ API-ს სრული დოკუმენტაცია ერთ ფაილში
+- **შემცველობა:** authentication, restaurants, menu, spaces, cuisines, dishes, availability
+- **გამოყენება:** კიოსკ დეველოპერებისთვის complete reference
+
+### 🕐 [KIOSK_AVAILABILITY_API.md](KIOSK_AVAILABILITY_API.md)
+- **რისთვის:** კიოსკ ხელმისაწვდომობის API დეტალური დოკუმენტაცია
+- **შემცველობა:** რესტორნების, სივრცეების და მაგიდების availability endpoints
+- **გამოყენება:** ჯავშნების სისტემის დეველოპმენტისთვის
+
+### 📋 [AVAILABILITY_API_SUMMARY.md](AVAILABILITY_API_SUMMARY.md)
+- **რისთვის:** Availability API-ს სწრაფი მიმოხილვა
+- **შემცველობა:** endpoints table, common parameters, examples
+- **გამოყენება:** სწრაფი რეფერენსისთვის
+
 ## 🎯 როგორ გამოიყენოთ
 
 ### ახალი ჩათის დაწყებისას:
@@ -34,4 +49,4 @@
 
 ---
 
-**ბოლო განახლება:** 16 ივლისი, 2025
+**ბოლო განახლება:** 17 ივლისი, 2025
