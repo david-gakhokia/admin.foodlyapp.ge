@@ -148,6 +148,46 @@ GET /api/kiosk/availability/restaurant/restaurant-example?date=2025-07-20
 ### 2. Place Availability
 სივრცის ხელმისაწვდომი საათების მისაღება
 
+#### 2.1 Get Place Tables List
+**GET** `/api/kiosk/restaurants/{restaurant_slug}/place/{place_slug}/tables`
+
+კონკრეტული სივრცის ყველა მაგიდის ჩამონათვალი (განცალკევებული availability-ს დამატება)
+
+#### Example Request:
+```
+GET /api/kiosk/restaurants/georgian-house/place/summer-terrace/tables
+```
+
+#### Example Response:
+```json
+{
+  "success": true,
+  "data": {
+    "place": {
+      "id": 2,
+      "name": "Summer Terrace",
+      "slug": "summer-terrace"
+    },
+    "tables": [
+      {
+        "id": 1,
+        "name": "Table 01",
+        "slug": "table-01",
+        "capacity": 4
+      },
+      {
+        "id": 2,
+        "name": "Table 02", 
+        "slug": "table-02",
+        "capacity": 6
+      }
+    ]
+  }
+}
+```
+
+#### 2.2 Place Availability Status
+
 **GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/place/{placeSlug}`
 
 #### Parameters:
@@ -391,6 +431,230 @@ GET /api/kiosk/availability/restaurant/georgian-house/table/table-05?date=2025-0
       "19:30",
       "20:00"
     ]
+  }
+}
+```
+
+### 5. Kiosk Specific Endpoints
+
+#### 5.1 Get All Available Times
+მოაქვს ყველა თავისუფალი საათი მოცემული თარიღისთვის
+
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/times`
+
+#### Parameters:
+- `restaurantSlug` (string, required) - რესტორნის slug
+- `date` (string, optional) - კონკრეტული თარიღი (Y-m-d format), default: დღეს
+
+#### Example Request:
+```
+GET /api/kiosk/availability/restaurant/georgian-house/times?date=2025-07-20
+```
+
+#### Example Response:
+```json
+{
+  "success": true,
+  "data": {
+    "restaurant": {
+      "id": 1,
+      "name": "Georgian House",
+      "slug": "georgian-house"
+    },
+    "date": "2025-07-20",
+    "available_times": [
+      "10:00", "10:30", "11:00", "11:30", 
+      "18:00", "18:30", "19:00", "19:30", "20:00"
+    ],
+    "total_slots": 9
+  }
+}
+```
+
+#### 5.2 Get Available Tables by Time
+მოაქვს ხელმისაწვდომი მაგიდები კონკრეტულ საათში
+
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/tables-by-time`
+
+#### Parameters:
+- `restaurantSlug` (string, required) - რესტორნის slug
+- `date` (string, required) - თარიღი (Y-m-d format)
+- `time` (string, required) - საათი (H:i format)
+
+#### Example Request:
+```
+GET /api/kiosk/availability/restaurant/georgian-house/tables-by-time?date=2025-07-20&time=18:30
+```
+
+#### Example Response:
+```json
+{
+  "success": true,
+  "data": {
+    "restaurant": {
+      "id": 1,
+      "name": "Georgian House",
+      "slug": "georgian-house"
+    },
+    "date": "2025-07-20",
+    "time": "18:30",
+    "available_tables": [
+      {
+        "id": 1,
+        "name": "Table 01",
+        "slug": "table-01",
+        "capacity": 4,
+        "place": {
+          "id": 2,
+          "name": "Summer Terrace",
+          "slug": "summer-terrace"
+        }
+      },
+      {
+        "id": 3,
+        "name": "Table 03",
+        "slug": "table-03",
+        "capacity": 6,
+        "place": {
+          "id": 1,
+          "name": "Main Hall",
+          "slug": "main-hall"
+        }
+      }
+    ],
+    "total_available": 2
+  }
+}
+```
+
+#### 5.2.1 Get Available Tables by Time (Place Specific)
+მოაქვს კონკრეტული სივრცის ხელმისაწვდომი მაგიდები კონკრეტულ საათში
+
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/{placeSlug}/tables-by-time`
+
+#### Parameters:
+- `restaurantSlug` (string, required) - რესტორნის slug
+- `placeSlug` (string, required) - სივრცის slug
+- `date` (string, required) - თარიღი (Y-m-d format)
+- `time` (string, required) - საათი (H:i format)
+
+#### Example Request:
+```
+GET /api/kiosk/availability/restaurant/georgian-house/summer-terrace/tables-by-time?date=2025-07-20&time=18:30
+```
+
+#### Example Response:
+```json
+{
+  "success": true,
+  "data": {
+    "restaurant": {
+      "id": 1,
+      "name": "Georgian House",
+      "slug": "georgian-house"
+    },
+    "place": {
+      "id": 2,
+      "name": "Summer Terrace",
+      "slug": "summer-terrace"
+    },
+    "date": "2025-07-20",
+    "time": "18:30",
+    "available_tables": [
+      {
+        "id": 1,
+        "name": "Table 01",
+        "slug": "table-01",
+        "capacity": 4
+      },
+      {
+        "id": 4,
+        "name": "Table 04",
+        "slug": "table-04",
+        "capacity": 2
+      }
+    ],
+    "total_available": 2,
+    "place_total_tables": 6
+  }
+}
+```
+
+#### 5.3 Get All Tables Overview
+მოაქვს ყველა მაგიდა availability status-ით (გვერდის ჩატვირთვისას)
+
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/tables-overview`
+
+#### Parameters:
+- `restaurantSlug` (string, required) - რესტორნის slug
+- `date` (string, optional) - თარიღი (Y-m-d format), default: დღეს
+
+#### Example Request:
+```
+GET /api/kiosk/availability/restaurant/georgian-house/tables-overview?date=2025-07-20
+```
+
+#### Example Response:
+```json
+{
+  "success": true,
+  "data": {
+    "restaurant": {
+      "id": 1,
+      "name": "Georgian House", 
+      "slug": "georgian-house"
+    },
+    "date": "2025-07-20",
+    "tables": [
+      {
+        "id": 1,
+        "name": "Table 01",
+        "slug": "table-01",
+        "capacity": 4,
+        "place": {
+          "id": 2,
+          "name": "Summer Terrace",
+          "slug": "summer-terrace"
+        },
+        "status": "available",
+        "next_available_time": "10:00",
+        "available_slots_count": 8
+      },
+      {
+        "id": 2,
+        "name": "Table 02",
+        "slug": "table-02",
+        "capacity": 2,
+        "place": {
+          "id": 2,
+          "name": "Summer Terrace",
+          "slug": "summer-terrace"
+        },
+        "status": "partially_booked",
+        "next_available_time": "15:30",
+        "available_slots_count": 4
+      },
+      {
+        "id": 5,
+        "name": "Table 05",
+        "slug": "table-05",
+        "capacity": 8,
+        "place": {
+          "id": 1,
+          "name": "Main Hall",
+          "slug": "main-hall"
+        },
+        "status": "fully_booked",
+        "next_available_time": null,
+        "available_slots_count": 0
+      }
+    ],
+    "summary": {
+      "total_tables": 3,
+      "available_tables": 1,
+      "partially_booked_tables": 1,
+      "fully_booked_tables": 1
+    }
   }
 }
 ```

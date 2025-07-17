@@ -89,6 +89,11 @@ Authorization: Bearer {kiosk_token}
 ### Get Tables in Place
 **GET** `/api/kiosk/restaurants/{slug}/place/{place}/tables`
 
+### Get Tables in Place (alternative format)
+**GET** `/api/kiosk/restaurants/{restaurant_slug}/place/{place_slug}/tables`
+- აბრუნებს კონკრეტული სივრცის (place) ყველა მაგიდას
+- Parameters: restaurant_slug, place_slug
+
 ### Get All Restaurant Tables
 **GET** `/api/kiosk/restaurants/{slug}/tables`
 
@@ -328,6 +333,28 @@ Authorization: Bearer {kiosk_token}
 
 ### Direct Table Availability
 **GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/table/{tableSlug}`
+
+### Kiosk Specific Endpoints
+
+#### Get All Available Times
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/times`
+- Parameters: `date` (optional, Y-m-d format)
+- აბრუნებს ყველა თავისუფალ საათს მოცემული თარიღისთვის
+
+#### Get Available Tables by Time
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/tables-by-time`
+- Parameters: `date` (required, Y-m-d), `time` (required, H:i)
+- აბრუნებს ხელმისაწვდომ მაგიდებს კონკრეტულ საათში
+
+#### Get Available Tables by Time (Place Specific)
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/{placeSlug}/tables-by-time`
+- Parameters: `date` (required, Y-m-d), `time` (required, H:i)
+- აბრუნებს კონკრეტული სივრცის ხელმისაწვდომ მაგიდებს კონკრეტულ საათში
+
+#### Get All Tables Overview
+**GET** `/api/kiosk/availability/restaurant/{restaurantSlug}/tables-overview`
+- Parameters: `date` (optional, Y-m-d format)
+- აბრუნებს ყველა მაგიდას availability status-ით
 
 ---
 

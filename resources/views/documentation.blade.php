@@ -434,6 +434,15 @@
                                 
                                 <div class="border border-gray-200 rounded-lg p-4">
                                     <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Tables in Place (alternative format)</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/restaurants/{restaurant_slug}/place/{place_slug}/tables</code>
+                                    <p class="text-sm text-gray-600 mt-2">კონკრეტული სივრცის ყველა მაგიდა</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
                                         <span class="font-medium">Get All Restaurant Tables</span>
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                                     </div>
@@ -801,6 +810,42 @@
                                     </div>
                                     <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/table/{tableSlug}</code>
                                     <p class="text-sm text-gray-600 mt-2">🔒 Requires authentication | მაგიდის ხელმისაწვდომობა (სივრცის გარეშე)</p>
+                                </div>
+                                
+                                <div class="border border-green-200 rounded-lg p-4 bg-green-50">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get All Available Times</span>
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/times</code>
+                                    <p class="text-sm text-green-700 mt-2">🔒 Requires authentication | ყველა თავისუფალი საათი მოცემული თარიღისთვის</p>
+                                </div>
+                                
+                                <div class="border border-purple-200 rounded-lg p-4 bg-purple-50">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Available Tables by Time</span>
+                                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/tables-by-time</code>
+                                    <p class="text-sm text-purple-700 mt-2">🔒 Requires authentication | ხელმისაწვდომი მაგიდები კონკრეტულ საათში</p>
+                                </div>
+                                
+                                <div class="border border-indigo-200 rounded-lg p-4 bg-indigo-50">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get Available Tables by Time (Place Specific)</span>
+                                        <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/{placeSlug}/tables-by-time</code>
+                                    <p class="text-sm text-indigo-700 mt-2">🔒 Requires authentication | კონკრეტული სივრცის ხელმისაწვდომი მაგიდები კონკრეტულ საათში</p>
+                                </div>
+                                
+                                <div class="border border-orange-200 rounded-lg p-4 bg-orange-50">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Get All Tables Overview</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    </div>
+                                    <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/kiosk/availability/restaurant/{restaurantSlug}/tables-overview</code>
+                                    <p class="text-sm text-orange-700 mt-2">🔒 Requires authentication | ყველა მაგიდა availability status-ით</p>
                                 </div>
                                 
                                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
