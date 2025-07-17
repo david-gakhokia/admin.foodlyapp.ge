@@ -335,6 +335,19 @@ Route::prefix('kiosk')->group(function () {
                 
                 // Direct table availability (without place)
                 Route::get('/restaurant/{restaurantSlug}/table/{tableSlug}', 'directTableAvailability')->name('table.direct');
+                
+                // ⭐ NEW: Kiosk specific endpoints
+                // Get all available times for a date
+                Route::get('/restaurant/{restaurantSlug}/times', 'availableTimes')->name('times');
+                
+                // Get available tables by time (all places)
+                Route::get('/restaurant/{restaurantSlug}/tables-by-time', 'tablesByTime')->name('tables-by-time');
+                
+                // Get available tables by time (place specific)
+                Route::get('/restaurant/{restaurantSlug}/{placeSlug}/tables-by-time', 'tablesByTimeInPlace')->name('tables-by-time.place');
+                
+                // Get all tables overview with status
+                Route::get('/restaurant/{restaurantSlug}/tables-overview', 'tablesOverview')->name('tables-overview');
             });
     });
 
