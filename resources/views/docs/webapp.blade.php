@@ -64,7 +64,11 @@
                         <a href="#restaurants" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🏡 Restaurants</a>
                         <a href="#spaces" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🏢 Spaces</a>
                         <a href="#cuisines" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🍽️ Cuisines</a>
+                        <a href="#regions" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">📍 Regions</a>
                         <a href="#cities" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🏙️ Cities</a>
+                        <a href="#dishes" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🍽️ Dishes</a>
+                        <a href="#spots" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">📍 Spots</a>
+                        <a href="#categories" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">🗂️ Categories</a>
                         <a href="#examples" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md">💻 Examples</a>
                     </div>
                 </nav>
@@ -227,6 +231,45 @@
                     </div>
                 </section>
 
+                <!-- Regions Section -->
+                <section id="regions" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">📍 Regions</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get All Regions</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/regions</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Region by Slug</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/regions/{slug}</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Restaurants by Region</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/regions/{slug}/restaurants</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Top 10 Restaurants by Region</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/regions/{slug}/top-10-restaurants</code>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Cities Section -->
                 <section id="cities" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">🏙️ Cities</h2>
@@ -246,6 +289,135 @@
                                 <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
                             </div>
                             <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/cities/{slug}/restaurants</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Top 10 Restaurants by City</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/cities/{slug}/top-10-restaurants</code>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dishes Section -->
+                <section id="dishes" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">🍽️ Dishes</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get All Dishes</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/dishes</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Dish by Slug</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/dishes/{slug}</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Restaurants by Dish</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/dishes/{slug}/restaurants</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Top 10 Restaurants by Dish</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/dishes/{slug}/top-10-restaurants</code>
+                            
+                            <div class="mt-4">
+                                <h4 class="font-medium mb-2">Popular Dish Examples:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <code class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">khachapuri</code>
+                                    <code class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">khinkali</code>
+                                    <code class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">mtsvadi</code>
+                                    <code class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">pizza</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Spots Section -->
+                <section id="spots" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">📍 Spots</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get All Spots</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/spots</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Spot by Slug</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/spots/{slug}</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Restaurants by Spot</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/spots/{slug}/restaurants</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Top 10 Restaurants by Spot</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/spots/{slug}/top-10-restaurants</code>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Categories Section -->
+                <section id="categories" class="api-section bg-white rounded-lg shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">🗂️ Categories</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get All Categories</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/categories</code>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">Get Category by Slug</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                            </div>
+                            <code class="bg-gray-100 px-3 py-1 rounded text-sm font-mono">/api/webapp/categories/{slug}</code>
+                            
+                            <div class="mt-4">
+                                <h4 class="font-medium mb-2">Category Examples:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <code class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">appetizers</code>
+                                    <code class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">main-courses</code>
+                                    <code class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">desserts</code>
+                                    <code class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">beverages</code>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -295,6 +467,51 @@ const webappAPI = {
   // Get all spaces
   async getSpaces() {
     return this.request('/spaces');
+  },
+  
+  // Get all regions
+  async getRegions() {
+    return this.request('/regions');
+  },
+  
+  // Get restaurants by region
+  async getRestaurantsByRegion(regionSlug) {
+    return this.request(`/regions/${regionSlug}/restaurants`);
+  },
+  
+  // Get all cities
+  async getCities() {
+    return this.request('/cities');
+  },
+  
+  // Get restaurants by city
+  async getRestaurantsByCity(citySlug) {
+    return this.request(`/cities/${citySlug}/restaurants`);
+  },
+  
+  // Get all dishes
+  async getDishes() {
+    return this.request('/dishes');
+  },
+  
+  // Get restaurants by dish
+  async getRestaurantsByDish(dishSlug) {
+    return this.request(`/dishes/${dishSlug}/restaurants`);
+  },
+  
+  // Get all spots
+  async getSpots() {
+    return this.request('/spots');
+  },
+  
+  // Get restaurants by spot
+  async getRestaurantsBySpot(spotSlug) {
+    return this.request(`/spots/${spotSlug}/restaurants`);
+  },
+  
+  // Get all categories
+  async getCategories() {
+    return this.request('/categories');
   }
 };
 
@@ -310,6 +527,34 @@ webappAPI.getRestaurants()
 webappAPI.getRestaurantsByCuisine('georgian')
   .then(restaurants => {
     console.log('Georgian restaurants:', restaurants);
+  });
+
+// Get dishes and restaurants by dish
+webappAPI.getDishes()
+  .then(dishes => {
+    console.log('All dishes:', dishes);
+  });
+
+webappAPI.getRestaurantsByDish('khachapuri')
+  .then(restaurants => {
+    console.log('Restaurants serving khachapuri:', restaurants);
+  });
+
+// Get spots and restaurants by spot
+webappAPI.getSpots()
+  .then(spots => {
+    console.log('All spots:', spots);
+  });
+
+// Get regions and cities
+webappAPI.getRegions()
+  .then(regions => {
+    console.log('All regions:', regions);
+  });
+
+webappAPI.getCities()
+  .then(cities => {
+    console.log('All cities:', cities);
   });</code></pre>
                         </div>
 
@@ -334,6 +579,34 @@ curl -X GET "{{ config('app.url') }}/api/webapp/spaces" \
 
 # Get restaurants by space
 curl -X GET "{{ config('app.url') }}/api/webapp/spaces/shopping-mall/restaurants" \
+  -H "Accept: application/json"
+
+# Get all dishes
+curl -X GET "{{ config('app.url') }}/api/webapp/dishes" \
+  -H "Accept: application/json"
+
+# Get restaurants by dish
+curl -X GET "{{ config('app.url') }}/api/webapp/dishes/khachapuri/restaurants" \
+  -H "Accept: application/json"
+
+# Get all spots
+curl -X GET "{{ config('app.url') }}/api/webapp/spots" \
+  -H "Accept: application/json"
+
+# Get restaurants by spot
+curl -X GET "{{ config('app.url') }}/api/webapp/spots/tourist-area/restaurants" \
+  -H "Accept: application/json"
+
+# Get all regions
+curl -X GET "{{ config('app.url') }}/api/webapp/regions" \
+  -H "Accept: application/json"
+
+# Get all cities
+curl -X GET "{{ config('app.url') }}/api/webapp/cities" \
+  -H "Accept: application/json"
+
+# Get all categories
+curl -X GET "{{ config('app.url') }}/api/webapp/categories" \
   -H "Accept: application/json"</code></pre>
                         </div>
 
@@ -357,6 +630,16 @@ function useWebAppAPI() {
     getRestaurant: (slug) => request(`/restaurants/${slug}`),
     getSpaces: () => request('/spaces'),
     getCuisines: () => request('/cuisines'),
+    getRegions: () => request('/regions'),
+    getCities: () => request('/cities'),
+    getDishes: () => request('/dishes'),
+    getSpots: () => request('/spots'),
+    getCategories: () => request('/categories'),
+    getRestaurantsByCuisine: (slug) => request(`/cuisines/${slug}/restaurants`),
+    getRestaurantsByRegion: (slug) => request(`/regions/${slug}/restaurants`),
+    getRestaurantsByCity: (slug) => request(`/cities/${slug}/restaurants`),
+    getRestaurantsByDish: (slug) => request(`/dishes/${slug}/restaurants`),
+    getRestaurantsBySpot: (slug) => request(`/spots/${slug}/restaurants`),
   };
 }
 

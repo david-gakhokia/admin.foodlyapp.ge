@@ -76,6 +76,7 @@
 
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
             <div class="space-y-2">
                 <label for="status" class="block text-sm font-medium text-gray-700">
                     სტატუსი <span class="text-red-500">*</span>
@@ -93,6 +94,24 @@
                     </option>
                 </select>
                 <div class="error-message text-red-500 text-xs hidden"></div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="reservation_type" class="block text-sm font-medium text-gray-700">ჯავშნის ტიპი <span class="text-red-500">*</span></label>
+                <select name="reservation_type" id="reservation_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" required>
+                    @php
+                        use App\Helpers\ReservationTypeHelper;
+                        $reservationTypes = ReservationTypeHelper::all();
+                        $selectedType = old('reservation_type', $restaurant->reservation_type ?? null);
+                    @endphp
+                    <option value="" disabled {{ !$selectedType ? 'selected' : '' }}>აირჩიეთ ტიპი</option>
+                    @foreach($reservationTypes as $type)
+                        <option value="{{ $type }}" {{ $selectedType === $type ? 'selected' : '' }}>{{ __($type) }}</option>
+                    @endforeach
+                </select>
+                @error('reservation_type')
+                    <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="space-y-2">
@@ -124,23 +143,22 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <label for="logo" class="block text-sm font-medium text-gray-700">ლოგო</label>
-                @if ($isEdit && $restaurant->logo)
-                    <div class="mb-4">
-                        <div class="relative inline-block">
-                            <img src="{{ $restaurant->logo }}" alt="Current Logo"
-                                class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
-                            <div class="absolute -top-2 -right-2 bg-green-100 text-green-600 rounded-full p-1">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
+
+            @if ($isEdit && $restaurant->logo)
+                <div class="mb-4">
+                    <div class="relative inline-block">
+                        <img src="{{ $restaurant->logo }}" alt="Current Logo"
+                            class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
+                        <div class="absolute -top-2 -right-2 bg-green-100 text-green-600 rounded-full p-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
                 <div class="flex items-center justify-center w-full">
                     <label for="logo"
                         class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
@@ -305,13 +323,7 @@
                 <input type="text" name="delivery_time" id="delivery_time" value="{{ old('delivery_time', $restaurant->delivery_time ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="30">
             </div>
             <div class="space-y-2">
-                <label for="reservation_type" class="block text-sm font-medium text-gray-700">ჯავშნის ტიპი</label>
-                <select name="reservation_type" id="reservation_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200">
-                    <option value="Restaurant" {{ old('reservation_type', $restaurant->reservation_type ?? '') == 'Restaurant' ? 'selected' : '' }}>Restaurant</option>
-                    <option value="Place" {{ old('reservation_type', $restaurant->reservation_type ?? '') == 'Place' ? 'selected' : '' }}>Place</option>
-                    <option value="Table" {{ old('reservation_type', $restaurant->reservation_type ?? '') == 'Table' ? 'selected' : '' }}>Table</option>
-                    <option value="WhatsApp" {{ old('reservation_type', $restaurant->reservation_type ?? '') == 'WhatsApp' ? 'selected' : '' }}>WhatsApp</option>
-                </select>
+                <!-- დინამიური reservation_type select უკვე ზემოთაა განთავსებული -->
             </div>
             <div class="space-y-2">
                 <label for="price_per_person" class="block text-sm font-medium text-gray-700">ფასი ერთ ადამიანზე</label>

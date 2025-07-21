@@ -10,10 +10,40 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 
+
 class Restaurant extends Model
 {
-
     use Translatable, HasFactory;
+
+
+    /**
+     * Get all available reservation types
+     *
+     * @return array
+     */
+    public static function reservationTypes(): array
+    {
+        return \App\Helpers\ReservationTypeHelper::all();
+    }
+
+    /**
+     * Check if reservation_type is valid
+     *
+     * @param string|null $value
+     * @return bool
+     */
+    public static function isValidReservationType(?string $value): bool
+    {
+        return \App\Helpers\ReservationTypeHelper::isValid($value);
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'reservation_type' => 'string',
+    ];
+
 
     // protected $connection = 'mysql2';
     // protected $table = 'restaurants';
@@ -42,7 +72,6 @@ class Restaurant extends Model
         'working_hours',
         'delivery_time',
         'reservation_type',
-        'time_zone',
         'qr_code_image',
         'qr_code_link',
         'created_by',

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Restaurant;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Helpers\ReservationTypeHelper;
 
 class StoreRestaurantRequest extends FormRequest
 {
@@ -32,6 +33,7 @@ class StoreRestaurantRequest extends FormRequest
             'map_link' => 'nullable|string',
             'delivery_time' => 'nullable|string',
             'working_hours' => 'nullable|string',
+            'reservation_type' => 'required|string|in:' . implode(',', ReservationTypeHelper::all()),
         ];
 
         // ვალიდაცია ყველა ენისთვის
@@ -63,6 +65,8 @@ class StoreRestaurantRequest extends FormRequest
             'ka.name.max' => 'რესტორნის დასახელება ძალიან გრძელია',
             'en.name.required' => 'რესტორნის დასახელება (ინგლისური) აუცილებელია',
             'en.name.max' => 'რესტორნის დასახელება ძალიან გრძელია',
+            'reservation_type.required' => 'გთხოვთ აირჩიოთ ჯავშნის ტიპი',
+            'reservation_type.in' => 'ჯავშნის ტიპი უნდა იყოს მხოლოდ Restaurant, Place ან Table',
         ];
     }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\CuisineController;
+use App\Http\Controllers\Api\DishController;
 use App\Http\Controllers\Api\CuisineRestaurantController;
 use App\Http\Controllers\Api\SpotRestaurantController;
 use App\Http\Controllers\Api\SpotController;
@@ -117,6 +118,37 @@ Route::webapp()
                 Route::get('/{slug}/details', 'showDetails')->name('details'); // დეტალები კონკრეტული რესტორნისთვის
                 // Route::get('/{slug}/menu', 'menu')->name('menu'); // მენიუ კონკრეტული რესტორნისთვის
                 // Route::get('/{slug}/impressions', 'impressions')->name('impressions'); // რესტორნის შთაბეჭდილებები
+            });
+
+        // 🍽️ Dishes
+        Route::prefix('dishes')
+            ->name('dishes.')
+            ->controller(DishController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
+                Route::get('/{slug}/restaurants', 'restaurantsByDish')->name('restaurants');
+                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByDish')->name('top');
+            });
+
+        // 📍 Spots
+        Route::prefix('spots')
+            ->name('spots.')
+            ->controller(SpotController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
+                Route::get('/{slug}/restaurants', 'restaurantsBySpot')->name('restaurants');
+                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsBySpot')->name('top');
+            });
+
+        // 🗂️ Categories
+        Route::prefix('categories')
+            ->name('categories.')
+            ->controller(CategoryController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
             });
     });
 
@@ -285,6 +317,28 @@ Route::prefix('kiosk')->group(function () {
                 Route::get('/{slug}', 'showBySlug')->name('show');
                 Route::get('/{slug}/restaurants', 'restaurantsByCuisine')->name('restaurants');
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByCuisine')->name('top-10-restaurants');
+            });
+
+        // 📍 Regions
+        Route::prefix('regions')
+            ->name('regions.')
+            ->controller(RegionController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
+                Route::get('/{slug}/restaurants', 'restaurantsByRegion')->name('restaurants');
+                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByRegion')->name('top-10-restaurants');
+            });
+
+        // 🏙 Cities
+        Route::prefix('cities')
+            ->name('cities.')
+            ->controller(CityController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{slug}', 'showBySlug')->name('show');
+                Route::get('/{slug}/restaurants', 'restaurantsByCity')->name('restaurants');
+                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByCity')->name('top-10-restaurants');
             });
 
         // Dishes
