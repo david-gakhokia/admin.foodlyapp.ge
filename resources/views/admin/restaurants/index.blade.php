@@ -194,6 +194,9 @@
                                     Status & Location
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Reservation Type
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     Contact Info
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -235,6 +238,20 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @php
+                                            $type = $restaurant->reservation_type;
+                                            $typeColors = [
+                                                'Restaurant' => 'bg-blue-100 text-blue-800',
+                                                'Place' => 'bg-green-100 text-green-800',
+                                                'Table' => 'bg-purple-100 text-purple-800',
+                                            ];
+                                            $badgeClass = $typeColors[$type] ?? 'bg-gray-100 text-gray-800';
+                                        @endphp
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $badgeClass }}">
+                                            {{ __($type) }}
+                                        </span>
+                                    </td>
                                         <div class="space-y-2">
                                             @if ($restaurant->status === 'active')
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
