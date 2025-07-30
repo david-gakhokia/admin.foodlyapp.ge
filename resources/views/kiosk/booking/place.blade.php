@@ -7,7 +7,7 @@
         <div class="card shadow-lg border-0" style="max-width: 500px; width: 100%; background: #f8fafc;">
             <div class="card-body px-4 py-4">
 
-                <h2 class="card-title text-center mb-3 fw-bold">Reservation - {{ $place->name }}</h2>
+                <h2 class="card-title text-center mb-3 fw-bold">Reservation at {{ $restaurant->name }} <br> {{ $place->name }}</h2>
 
                 @if (session('success'))
                     <div class="alert alert-success text-center">{{ session('success') }}</div>

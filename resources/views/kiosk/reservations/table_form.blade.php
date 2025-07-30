@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">Reserve at Table #{{ $table->id }}</h2>
+    <h2 class="mb-4">Reserve at რესტორანი{{ $restaurant->name }} | სივრცე {{ $place->name }} #{{ $table->id }}</h2>
 
     <form method="GET" class="mb-4">
         <div class="form-group">
