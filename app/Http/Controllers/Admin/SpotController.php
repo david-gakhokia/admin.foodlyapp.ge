@@ -21,7 +21,7 @@ class SpotController extends Controller
     protected RankService $rankService;
 
     public function __construct(
-        CloudinaryService $cloudinaryService, 
+        CloudinaryService $cloudinaryService,
         SlugService $slugService,
         RankService $rankService
     ) {
@@ -32,14 +32,13 @@ class SpotController extends Controller
 
     public function index(Request $request)
     {
-        $query = Spot::translatedIn(app()->getLocale())
-            ->with('translations');
+        $query = Spot::query()->with('translations');
 
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->whereHas('translations', function($translationQuery) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('translations', function ($translationQuery) use ($search) {
                     $translationQuery->where('name', 'like', "%{$search}%");
                 });
             });
@@ -51,8 +50,8 @@ class SpotController extends Controller
         }
 
         $spots = $query->orderBy('rank', 'asc')
-                      ->orderBy('created_at', 'desc')
-                      ->paginate(12);
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
 
         // Get statistics
         $statistics = [
@@ -109,7 +108,6 @@ class SpotController extends Controller
             return redirect()
                 ->route('admin.spots.index')
                 ->with('success', 'Spot created successfully!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return back()
@@ -120,10 +118,10 @@ class SpotController extends Controller
 
     public function show(Spot $spot)
     {
-        $spot->load(['translations', 'restaurants' => function($query) {
+        $spot->load(['translations', 'restaurants' => function ($query) {
             $query->withPivot(['rank', 'status'])
-                  ->withTimestamps()
-                  ->orderBy('pivot_rank', 'ASC');
+                ->withTimestamps()
+                ->orderBy('pivot_rank', 'ASC');
         }]);
 
         // Get statistics for this spot
@@ -154,7 +152,7 @@ class SpotController extends Controller
                 if ($spot->image) {
                     $this->cloudinaryService->deleteImageFromUrl($spot->image, 'foodly/spots');
                 }
-                
+
                 $data['image'] = $this->cloudinaryService->upload(request()->file('image_file'), 'foodly/spots');
             }
 
@@ -166,7 +164,7 @@ class SpotController extends Controller
             $defaultLocale = config('app.locale');
             $currentName = $spot->translate($defaultLocale)?->name;
             $newName = $translations[$defaultLocale]['name'] ?? '';
-            
+
             if ($currentName !== $newName) {
                 $data['slug'] = $this->slugService->generateForUpdate($spot, $newName, $spot->id);
             }
@@ -174,8 +172,7 @@ class SpotController extends Controller
             // Update spot
             $spot->update($data);
 
-            // Clear existing translations and add new ones
-            $spot->translations()->delete();
+            // Update or add translations, but do not delete existing ones
             foreach ($translations as $locale => $translationData) {
                 if (!empty($translationData['name'])) {
                     $spot->translateOrNew($locale)->fill($translationData);
@@ -188,7 +185,6 @@ class SpotController extends Controller
             return redirect()
                 ->route('admin.spots.index')
                 ->with('success', 'Spot updated successfully!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return back()
@@ -219,7 +215,6 @@ class SpotController extends Controller
             return redirect()
                 ->route('admin.spots.index')
                 ->with('success', 'Spot deleted successfully!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Error deleting spot: ' . $e->getMessage());
@@ -240,7 +235,6 @@ class SpotController extends Controller
                 'message' => "Spot {$status} successfully!",
                 'status' => $spot->status
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -263,7 +257,6 @@ class SpotController extends Controller
                 'success' => true,
                 'message' => 'Rank updated successfully!'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -279,7 +272,7 @@ class SpotController extends Controller
             if ($spot->image) {
                 // Delete image from Cloudinary
                 $this->cloudinaryService->deleteImageFromUrl($spot->image, 'foodly/spots');
-                
+
                 // Remove image reference from database
                 $spot->update(['image' => null]);
 
@@ -291,7 +284,6 @@ class SpotController extends Controller
             return redirect()
                 ->route('admin.spots.edit', $spot)
                 ->with('error', 'No image to delete!');
-
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.spots.edit', $spot)
