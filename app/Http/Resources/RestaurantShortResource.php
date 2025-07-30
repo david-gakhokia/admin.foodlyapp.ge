@@ -26,7 +26,7 @@ class RestaurantShortResource extends JsonResource
                 'price_per_person' => $this->price_per_person,
                 'working_hours' => $this->working_hours,
                 'qr_code_image' => $this->qr_code_image,
-                
+                'reservation_type' => $this->reservation_type,
 
             ];
         }
@@ -40,7 +40,8 @@ class RestaurantShortResource extends JsonResource
             'discount_rate' => $this->discount_rate,
             'price_per_person' => $this->price_per_person,
             'qr_code_image' => $this->qr_code_image,
-        
+            'reservation_type' => $this->reservation_type,
+
             'translations' => $this->translations->map(function ($tr) {
                 return [
                     'locale' => $tr->locale,

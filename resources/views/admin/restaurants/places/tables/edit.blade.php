@@ -101,6 +101,7 @@
                                    name="translations[{{ $locale }}][name]" 
                                    value="{{ old('translations.' . $locale . '.name', $table->translateOrNew($locale)->name) }}"
                                    placeholder="{{ $localePlaceholders[$locale] ?? '' }}"
+                                   @if(in_array($locale, ['ka', 'en'])) required @endif
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 @error('translations.' . $locale . '.name') border-red-500 @enderror">
                             @error('translations.' . $locale . '.name')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -148,6 +149,7 @@
                                min="1"
                                max="50"
                                placeholder="მაგ: 4"
+                               required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 @error('seats') border-red-500 @enderror">
                         @error('seats')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -159,10 +161,10 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             სტატუსი <span class="text-red-500">*</span>
                         </label>
-                        <select name="status" 
+                        <select name="status" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 @error('status') border-red-500 @enderror">
-                            <option value="active" {{ old('status', $table->status) === 'active' ? 'selected' : '' }}>აქტიური</option>
-                            <option value="inactive" {{ old('status', $table->status) === 'inactive' ? 'selected' : '' }}>არააქტიური</option>
+                            <option value="true" {{ old('status', $table->status) == true ? 'selected' : '' }}>აქტიური</option>
+                            <option value="false" {{ old('status', $table->status) == false ? 'selected' : '' }}>არააქტიური</option>
                         </select>
                         @error('status')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
