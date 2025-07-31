@@ -28,7 +28,14 @@ class BookingFormController extends Controller
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l'); // Returns day name like 'Monday'
 
-        $slots = $this->availabilityService->generateAvailableSlots($restaurant, $reservationDate, $dayOfWeek);
+        $allSlots = $this->availabilityService->generateAvailableSlots($restaurant, $reservationDate, $dayOfWeek);
+        $now = now();
+        $slots = collect($allSlots)->filter(function($slot) use ($reservationDate, $now) {
+            if ($reservationDate === $now->toDateString()) {
+                return $slot > $now->format('H:i');
+            }
+            return true;
+        })->values();
 
         return view('kiosk.booking.restaurant', [
             'restaurant' => $restaurant,
