@@ -54,9 +54,8 @@
             font-weight: 500;
         }
     </style>
-
-
 @endsection
+
 
 
 @section('content')

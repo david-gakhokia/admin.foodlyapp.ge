@@ -61,7 +61,16 @@ class BookingFormController extends Controller
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l');
 
-        $slots = $this->availabilityService->generateAvailableSlots($place, $reservationDate, $dayOfWeek);
+        $allSlots = $this->availabilityService->generateAvailableSlots($place, $reservationDate, $dayOfWeek);
+
+        // Filter out past times for today
+        $now = now();
+        $slots = collect($allSlots)->filter(function($slot) use ($reservationDate, $now) {
+            if ($reservationDate === $now->toDateString()) {
+                return $slot > $now->format('H:i');
+            }
+            return true;
+        })->values();
 
         return view('kiosk.booking.place', [
             'restaurant' => $restaurant,
@@ -97,7 +106,14 @@ class BookingFormController extends Controller
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l');
 
-        $slots = $this->availabilityService->generateAvailableSlots($table, $reservationDate, $dayOfWeek);
+        $allSlots = $this->availabilityService->generateAvailableSlots($table, $reservationDate, $dayOfWeek);
+        $now = now();
+        $slots = collect($allSlots)->filter(function($slot) use ($reservationDate, $now) {
+            if ($reservationDate === $now->toDateString()) {
+                return $slot > $now->format('H:i');
+            }
+            return true;
+        })->values();
 
         return view('kiosk.booking.table', [
             'restaurant' => $restaurant,
@@ -134,7 +150,14 @@ class BookingFormController extends Controller
         $reservationDate = $request->input('reservation_date', now()->toDateString());
         $dayOfWeek = now()->parse($reservationDate)->format('l');
 
-        $slots = $this->availabilityService->generateAvailableSlots($table, $reservationDate, $dayOfWeek);
+        $allSlots = $this->availabilityService->generateAvailableSlots($table, $reservationDate, $dayOfWeek);
+        $now = now();
+        $slots = collect($allSlots)->filter(function($slot) use ($reservationDate, $now) {
+            if ($reservationDate === $now->toDateString()) {
+                return $slot > $now->format('H:i');
+            }
+            return true;
+        })->values();
 
         return view('kiosk.booking.table', [
             'restaurant' => $restaurant,
