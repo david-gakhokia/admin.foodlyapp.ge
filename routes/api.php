@@ -89,8 +89,8 @@ Route::webapp()
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{slug}', 'showBySlug')->name('show');
-                Route::get('/{slug}/restaurants', 'restaurantsByRegion')->name('restaurants');
-                Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByRegion')->name('top');
+                // ახალი როუტი: რესტორნები კატეგორიის მიხედვით
+                Route::get('/{slug}/{categorySlug}/restaurants', 'restaurantsByCategory')->name('category.restaurants');
             });
 
         // 🏙 Cities
@@ -350,6 +350,8 @@ Route::prefix('kiosk')->group(function () {
                 Route::get('/{slug}', 'showBySlug')->name('show');
                 Route::get('/{slug}/restaurants', 'restaurantsByDish')->name('restaurants');
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByDish')->name('top-10-restaurants');
+                // ახალი როუტი: რესტორნები კატეგორიის მიხედვით
+                Route::get('/{slug}/{categorySlug}/restaurants', 'restaurantsByCategory')->name('category.restaurants');
             });
 
         // Spots
