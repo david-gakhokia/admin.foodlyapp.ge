@@ -348,10 +348,14 @@ Route::prefix('kiosk')->group(function () {
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{slug}', 'showBySlug')->name('show');
-                Route::get('/{slug}/restaurants', 'restaurantsByDish')->name('restaurants');
+                // Route::get('/{slug}/restaurants', 'restaurantsByDish')->name('restaurants');
                 Route::get('/{slug}/top-10-restaurants', 'top10RestaurantsByDish')->name('top-10-restaurants');
+                // ყველა კატეგორიის, პროდუქტის და რესტორნის წამოღება კერძის მიხედვით
+                Route::get('/{slug}/categories-items-restaurants', 'categoriesItemsRestaurantsByDish')->name('categories-items-restaurants');
                 // ახალი როუტი: რესტორნები კატეგორიის მიხედვით
-                Route::get('/{slug}/{categorySlug}/restaurants', 'restaurantsByCategory')->name('category.restaurants');
+                Route::get('/{slug}/{categorySlug}', 'restaurantsByCategory')->name('category');
+                
+                
             });
 
         // Spots

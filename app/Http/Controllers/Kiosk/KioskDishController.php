@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 class KioskDishController extends Controller
+
 {
     // 1. Get all Dishes
     public function index()
@@ -140,6 +141,37 @@ class KioskDishController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch restaurants',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // Get all related categories, items, and restaurants by dish slug
+    public function categoriesItemsRestaurantsByDish($slug)
+    {
+        try {
+            $dish = \App\Models\Dish::with(['menuCategories.menuItems.restaurant', 'menuCategories.restaurants'])->where('slug', $slug)->firstOrFail();
+
+            $result = [];
+            foreach ($dish->menuCategories as $category) {
+                // თითოეული კატეგორიისთვის ყველა რესტორანი
+                foreach ($category->restaurants as $restaurant) {
+                    $products = $category->menuItems->where('restaurant_id', $restaurant->id)->values();
+                    $result[] = [
+                        'restaurant' => new \App\Http\Resources\RestaurantShortResource($restaurant),
+                        'category' => new \App\Http\Resources\Menu\MenuCategoryResource($category),
+                        'products' => \App\Http\Resources\Menu\MenuItemResource::collection($products),
+                    ];
+                }
+            }
+
+            return response()->json(['data' => $result]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Dish not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to fetch data',
                 'message' => $e->getMessage()
             ], 500);
         }
