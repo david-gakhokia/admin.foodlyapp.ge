@@ -281,6 +281,7 @@ Route::prefix('kiosk')->group(function () {
                 Route::get('/{slug}/menu/categories', 'menuCategories')->name('menu.categories'); // მენიუ კატეგორები კონკრეტული რესტორნისთვის
                 Route::get('/{slug}/menu/items', 'menuItems')->name('menu.items'); // მენიუ ელემენტები კონკრეტული რესტორნისთვის
                 Route::get('/{slug}/menu', 'showMenu')->name('menu'); // მენიუ კონკრეტული რესტორნისთვის
+                Route::get('/{slug}/full-menu', 'showFullMenu')->name('full-menu'); // მენიუ კონკრეტული რესტორნისთვის
 
             });
 

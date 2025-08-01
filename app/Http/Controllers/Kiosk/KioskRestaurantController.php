@@ -379,6 +379,61 @@ class KioskRestaurantController extends Controller
 
                 return [
                     'parent_category' => new MenuCategoryResource($mainCategory),
+                    // 'children' => $childCategories->map(function ($childCategory) use ($restaurant) {
+                    //     // შვილობილი კატეგორიის პროდუქტები
+                    //     $items = $restaurant->menuItems
+                    //         ->where('menu_category_id', $childCategory->id)
+                    //         ->values();
+
+                    //     return [
+                    //         'category' => new MenuCategoryResource($childCategory),
+                    //         'items' => MenuItemResource::collection($items),
+                    //     ];
+                    // }),
+                    // მშობელი კატეგორიის პროდუქტები (თუ აქვს)
+                    // 'items' => MenuItemResource::collection(
+                    //     $restaurant->menuItems
+                    //         ->where('menu_category_id', $mainCategory->id)
+                    //         ->values()
+                    // ),
+                ];
+            });
+
+            return response()->json([
+                'data' => [
+                    'restaurant' => new RestaurantShortResource($restaurant),
+                    'menu' => $menuTree,
+                ]
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Restaurant not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch menu tree', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    // Get full menu with categories and items for a restaurant by slug
+    public function showFullMenu(string $slug)
+    {
+        try {
+            $restaurant = Restaurant::where('slug', $slug)
+                ->where('status', 'active')
+                ->with(['menuCategories', 'menuItems'])
+                ->firstOrFail();
+
+            // მშობელი კატეგორიები
+            $mainCategories = $restaurant->menuCategories
+                ->whereNull('parent_id')
+                ->values();
+
+            $menuTree = $mainCategories->map(function ($mainCategory) use ($restaurant) {
+                // შვილობილი კატეგორიები
+                $childCategories = $restaurant->menuCategories
+                    ->where('parent_id', $mainCategory->id)
+                    ->values();
+
+                return [
+                    'parent_category' => new MenuCategoryResource($mainCategory),
                     'children' => $childCategories->map(function ($childCategory) use ($restaurant) {
                         // შვილობილი კატეგორიის პროდუქტები
                         $items = $restaurant->menuItems
