@@ -265,14 +265,17 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $slug
- * @property int $status
+ * @property string $status
  * @property int $rank
  * @property string|null $image
  * @property string|null $image_link
- * @property int $category_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Category $category
+ * @property-read \App\Models\Category|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MenuCategory> $menuCategories
+ * @property-read int|null $menu_categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MenuItem> $menuItems
+ * @property-read int|null $menu_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Restaurant> $restaurants
  * @property-read int|null $restaurants_count
  * @property-read \App\Models\DishTranslation|null $translation
@@ -288,7 +291,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish translated()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish translatedIn(?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereImage($value)
@@ -300,9 +302,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereTranslationLike(string $translationField, $value, ?string $locale = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dish withTranslation(?string $locale = null)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MenuCategory> $menuCategories
- * @property-read int|null $menu_categories_count
  */
 	class Dish extends \Eloquent {}
 }
@@ -872,7 +871,6 @@ namespace App\Models{
  * @property string|null $price_currency
  * @property string|null $working_hours
  * @property int|null $delivery_time
- * @property string|null $reservation_type
  * @property string|null $map_link
  * @property string|null $latitude
  * @property string|null $longitude
@@ -882,6 +880,7 @@ namespace App\Models{
  * @property int|null $created_by
  * @property int|null $updated_by
  * @property int $version
+ * @property string $reservation_type
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AnalyticsSummary> $analyticsSummary
  * @property-read int|null $analytics_summary_count
  * @property-read \App\Models\User|null $creator
