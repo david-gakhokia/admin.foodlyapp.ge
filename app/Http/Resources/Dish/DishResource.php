@@ -44,7 +44,8 @@ class DishResource extends JsonResource
                                 'slug' => $item->slug,
                                 'name' => $item->name,
                                 'price' => $item->price,
-                                'logo' => $restaurant ? $restaurant->logo : null,
+                                'image' => $item->image,
+                                'image_link' => $item->image_link,
                             ];
                         })->values(),
                     ];

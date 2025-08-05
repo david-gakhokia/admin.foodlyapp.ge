@@ -7,6 +7,7 @@ use App\Models\MenuCategory;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use App\Http\Requests\MenuCategory\MenuCategoryRequest;
+use App\Http\Requests\MenuCategory\UpdateMenuCategoryRequest;
 use App\Services\CloudinaryService;
 use App\Services\SlugService;
 use App\Services\RankService;
@@ -132,7 +133,7 @@ class MenuCategoryController extends Controller
 
 
 
-    public function update(MenuCategoryRequest $request, MenuCategory $menuCategory) // Route Model Binding
+public function update(UpdateMenuCategoryRequest $request, MenuCategory $menuCategory) // Route Model Binding
     {
         $data = $request->validatedData(); // Use validatedData() like DishController
         Log::info('CONTROLLER (update): Validated Data for MenuCategory ID ' . $menuCategory->id . ':', $data);
@@ -177,22 +178,13 @@ class MenuCategoryController extends Controller
             // Update category without translations first
             $menuCategory->update($data);
 
-            // Update translations - preserve existing ones, update only provided ones
-            foreach (config('translatable.locales') as $locale) {
-                $translation = $translations[$locale] ?? null;
-                
-                if ($translation && !empty($translation['name'])) {
-                    // Update with new translation data
-                    $existingTranslation = $menuCategory->translateOrNew($locale);
-                    $existingTranslation->fill($translation);
+            // Update only provided translations, leave others unchanged (SpotController style)
+            foreach ($translations as $locale => $translation) {
+                if (!empty($translation['name'])) {
+                    $menuCategory->translateOrNew($locale)->fill($translation);
                 }
-                // If no translation provided or name is empty, keep existing translation unchanged
             }
-            
-            // Save all translations at once
             $menuCategory->save();
-            
-            // Refresh the model to get updated translations
             $menuCategory->refresh();
         } catch (\Exception $e) {
             Log::error('CONTROLLER (update): Error updating MenuCategory ID ' . $menuCategory->id . ':', [
@@ -391,24 +383,20 @@ class MenuCategoryController extends Controller
         return view('admin.restaurants.menu.categories.edit', compact('menuCategory', 'restaurant'));
     }
 
-    public function updateForRestaurant(Request $request, Restaurant $restaurant, MenuCategory $menuCategory)
+    public function updateForRestaurant(UpdateMenuCategoryRequest $request, Restaurant $restaurant, MenuCategory $menuCategory)
     {
-        // Validate using the MenuCategoryRequest rules
-        $menuCategoryRequest = new MenuCategoryRequest();
-        $validated = $request->validate($menuCategoryRequest->rules());
-        
-        // Set restaurant context
+        $validated = $request->validatedData();
         $validated['restaurant_id'] = $restaurant->id;
-        
+
         // Generate slug from primary language name if not provided or changed
         if (empty($validated['slug']) && !empty($validated['translations']['en']['name'])) {
             $validated['slug'] = $this->slugService->generateForUpdate(
-                new MenuCategory, 
+                new MenuCategory,
                 $validated['translations']['en']['name'],
                 $menuCategory->id
             );
         }
-        
+
         // Keep existing rank if not provided
         if (empty($validated['rank'])) {
             $validated['rank'] = $menuCategory->rank;
@@ -420,14 +408,12 @@ class MenuCategoryController extends Controller
             if ($menuCategory->image) {
                 $this->cloudinaryService->deleteImage($menuCategory->image);
             }
-            
             $validated['image'] = $this->cloudinaryService->upload(
-                $request->file('image'), 
+                $request->file('image'),
                 'foodly/menu_categories'
             );
         }
 
-        // Extract translations and remove from main data
         $translations = $validated['translations'] ?? [];
         unset($validated['translations']);
 
@@ -435,17 +421,13 @@ class MenuCategoryController extends Controller
             // Update category without translations first
             $menuCategory->update($validated);
 
-            // Update translations - preserve existing ones, update only provided ones
+            // Update only provided translations, leave others unchanged
             foreach ($translations as $locale => $translation) {
                 if (!empty($translation['name'])) {
-                    // Get existing translation or create new one
-                    $existingTranslation = $menuCategory->translateOrNew($locale);
-                    $existingTranslation->fill($translation);
-                    $existingTranslation->save();
+                    $menuCategory->translateOrNew($locale)->fill($translation);
                 }
             }
-            
-            // Refresh the model to get updated translations
+            $menuCategory->save();
             $menuCategory->refresh();
         } catch (\Exception $e) {
             Log::error('Error updating MenuCategory:', [
@@ -576,7 +558,7 @@ class MenuCategoryController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $slug = $this->slugService->createSlug($validated['name_en'], MenuCategory::class);
+        $slug = $this->slugService->generate(new MenuCategory(), $validated['name_en']);
         $rank = $this->rankService->getNextRank(MenuCategory::class, ['restaurant_id' => $restaurant->id, 'parent_id' => $parent->id]);
 
         $data = [
@@ -669,7 +651,7 @@ class MenuCategoryController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $slug = $this->slugService->createSlug($validated['name_en'], MenuCategory::class);
+        $slug = $this->slugService->generate(new MenuCategory(), $validated['name_en']);
         $rank = $this->rankService->getNextRank(MenuCategory::class, ['restaurant_id' => $restaurant->id, 'parent_id' => $child->id]);
 
         $data = [
