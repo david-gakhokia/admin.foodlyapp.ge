@@ -3,6 +3,7 @@
 namespace App\Http\Requests\City;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCityRequest extends FormRequest
 {
@@ -14,7 +15,16 @@ class UpdateCityRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'slug' => 'nullable|string|max:255|unique:cities,slug,' . $this->route('city'),
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('cities', 'slug')->ignore(
+                    $this->route('city') instanceof \App\Models\City
+                        ? $this->route('city')->id
+                        : $this->route('city')
+                ),
+            ],
             'status' => 'required|string|in:active,inactive,maintenance',
             'rank' => 'nullable|integer|min:1',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
