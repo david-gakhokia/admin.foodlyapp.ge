@@ -137,11 +137,15 @@ namespace App\Models{
 /**
  * 
  *
+ * @property-read string $status_color
+ * @property-read string $status_label
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Restaurant> $restaurants
  * @property-read int|null $restaurants_count
  * @property-read \App\Models\CityTranslation|null $translation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CityTranslation> $translations
  * @property-read int|null $translations_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City inactive()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City listsTranslations(string $translationField)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City newQuery()
@@ -155,7 +159,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslation(string $translationField, $value, ?string $locale = null, string $method = 'whereHas', string $operator = '=')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslationLike(string $translationField, $value, ?string $locale = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City withTranslation(?string $locale = null)
- * @mixin \Eloquent
  */
 	class City extends \Eloquent implements \Astrotomic\Translatable\Contracts\Translatable {}
 }
@@ -167,7 +170,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation query()
- * @mixin \Eloquent
  */
 	class CityTranslation extends \Eloquent {}
 }

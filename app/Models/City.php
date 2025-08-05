@@ -2,52 +2,86 @@
 
 namespace App\Models;
 
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 
-/**
- * 
- *
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Restaurant> $restaurants
- * @property-read int|null $restaurants_count
- * @property-read \App\Models\CityTranslation|null $translation
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CityTranslation> $translations
- * @property-read int|null $translations_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City listsTranslations(string $translationField)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City notTranslatedIn(?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City orWhereTranslation(string $translationField, $value, ?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City orWhereTranslationLike(string $translationField, $value, ?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City orderByTranslation(string $translationField, string $sortMethod = 'asc')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City translated()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City translatedIn(?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslation(string $translationField, $value, ?string $locale = null, string $method = 'whereHas', string $operator = '=')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslationLike(string $translationField, $value, ?string $locale = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|City withTranslation(?string $locale = null)
- * @mixin \Eloquent
- */
 class City extends Model implements TranslatableContract
 {
-    use Translatable;
+    use HasFactory, Translatable;
 
-    // protected $connection = 'mysql2';
-    // protected $table = 'cities';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_MAINTENANCE = 'maintenance';
 
+    protected $fillable = [
+        'slug',
+        'rank',
+        'image',
+        'image_link',
+        'status',
+    ];
 
-    protected $guarded = ['id'];
-    public $translatedAttributes = ['name'];
-    protected $fillable = ['slug', 'image', 'svg', 'rank', 'status'];
+    public $translatedAttributes = [
+        'name',
+        'description',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+    ];
 
+    protected static function booted()
+    {
+        static::creating(function ($city) {
+            if (is_null($city->rank)) {
+                $city->rank = (static::max('rank') ?? 0) + 1;
+            }
+            if (is_null($city->status)) {
+                $city->status = static::STATUS_ACTIVE;
+            }
+        });
+    }
 
-    
-    // Relationship with restaurants
+    public static function getStatuses(): array
+    {
+        return [
+            static::STATUS_ACTIVE => 'Active',
+            static::STATUS_INACTIVE => 'Inactive',
+            static::STATUS_MAINTENANCE => 'Maintenance',
+        ];
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return static::getStatuses()[$this->status] ?? 'Unknown';
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match ($this->status) {
+            static::STATUS_ACTIVE => 'green',
+            static::STATUS_INACTIVE => 'red',
+            static::STATUS_MAINTENANCE => 'yellow',
+            default => 'gray',
+        };
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', static::STATUS_ACTIVE);
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('status', static::STATUS_INACTIVE);
+    }
+
+    // Example relationship (change as needed)
     public function restaurants()
     {
-        return $this->belongsToMany(Restaurant::class);
+        return $this->belongsToMany(Restaurant::class)
+            ->withPivot(['rank', 'status'])
+            ->withTimestamps();
     }
 }
