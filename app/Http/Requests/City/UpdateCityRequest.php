@@ -73,3 +73,4 @@ class UpdateCityRequest extends FormRequest
         unset($data['image_file']);
         return $data;
     }
+}
