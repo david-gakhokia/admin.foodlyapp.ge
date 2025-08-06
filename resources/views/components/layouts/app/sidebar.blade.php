@@ -34,7 +34,8 @@
                     <flux:navlist.item icon="cake" :href="route('admin.dishes.index')" :current="request()->routeIs('admin.dishes.*')" wire:navigate>{{ __('Dishes') }}</flux:navlist.item>
                     <flux:navlist.item icon="map-pin" :href="route('admin.spots.index')" :current="request()->routeIs('admin.spots.*')" wire:navigate>{{ __('Spots') }}</flux:navlist.item>
                     <flux:navlist.item icon="building-office" :href="route('admin.spaces.index')" :current="request()->routeIs('admin.spaces.*')" wire:navigate>{{ __('Spaces') }}</flux:navlist.item>
-            
+                    <flux:navlist.item icon="building-storefront" :href="route('admin.cities.index')" :current="request()->routeIs('admin.cities.*')" wire:navigate>{{ __('Cities') }}</flux:navlist.item>
+
                 </flux:navlist.group>
             </flux:navlist>
 

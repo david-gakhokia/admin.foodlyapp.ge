@@ -186,6 +186,13 @@
                 <p class="mt-1 text-xs text-gray-500">Provide an external image URL if you prefer not to upload a file
                 </p>
             </div>
+
+            @if (isset($city) && !empty($city->image))
+                <div class="mt-4 flex items-center gap-4">
+                    <img src="{{ $city->image }}" alt="City Image" class="w-32 h-24 object-cover rounded-xl border">
+                    <!-- სურათის წაშლის ფორმა ცალკე -->
+                </div>
+            @endif
         </div>
     </div>
 
@@ -203,6 +210,7 @@
             </button>
         </div>
     </div>
+
 </div>
 
 
