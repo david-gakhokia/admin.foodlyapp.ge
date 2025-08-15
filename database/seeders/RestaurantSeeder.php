@@ -37,9 +37,11 @@ class RestaurantSeeder extends Seeder
                 'working_hours' => '10:00 - 23:00',
                 'delivery_time' => rand(20, 40),
                 'map_embed_link' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28978697.826078452!2d18.49043837121392!3d27.548892232987846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x406787193beaf967%3A0x75f44586c0ed0c08!2sEXODUS!5e0!3m2!1ska!2sge!4v1704409030659!5m2!1ska!2sge',
-                'reservation_type' => collect(['Table', 'Place', 'Yes', 'No'])->random(),
-                'created_by' => 1, // Admin user
-                'updated_by' => 1,
+                // Ensure only valid enum values are used
+                'reservation_type' => collect(['Table', 'Place', 'Restaurant'])->random(),
+                // Leave creator/updater null in local seeds to avoid FK issues
+                'created_by' => null,
+                'updated_by' => null,
                 'version' => 1,
                 'translations' => [
                     'en' => [
@@ -72,18 +74,20 @@ class RestaurantSeeder extends Seeder
         // 3. cuisine-ების მიბმა თითო რესტორანს (random 2)
         $allCuisineIds = Cuisine::pluck('id')->toArray();
 
-        Restaurant::all()->each(function ($restaurant) use ($allCuisineIds) {
-            $cuisineIds = collect($allCuisineIds)->random(2);
+        if (!empty($allCuisineIds)) {
+            Restaurant::all()->each(function ($restaurant) use ($allCuisineIds) {
+                $cuisineIds = collect($allCuisineIds)->random(min(2, count($allCuisineIds)));
 
-            $pivotData = [];
-            foreach ($cuisineIds as $id) {
-                $pivotData[$id] = [
-                    'rank' => rand(1, 5),
-                    'status' => 'active',
-                ];
-            }
+                $pivotData = [];
+                foreach ($cuisineIds as $id) {
+                    $pivotData[$id] = [
+                        'rank' => rand(1, 5),
+                        'status' => 'active',
+                    ];
+                }
 
-            $restaurant->cuisines()->syncWithoutDetaching($pivotData);
-        });
+                $restaurant->cuisines()->syncWithoutDetaching($pivotData);
+            });
+        }
     }
 }
