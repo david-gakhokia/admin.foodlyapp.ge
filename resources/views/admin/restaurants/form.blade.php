@@ -15,10 +15,9 @@
     <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-6 border border-yellow-200 section-animate">
         <div class="flex items-center mb-6">
             <div class="flex items-center justify-center w-10 h-10 bg-yellow-600 rounded-lg mr-3">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 5h12M9 3v2m4 13l4-4M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5"></path>
+                        d="M3 5h12M9 3v2m4 13l4-4M7.5 21L3 16.5M3 16.5L7.5 12M3 16.5h13.5" />
                 </svg>
             </div>
             <h3 class="text-lg font-semibold text-gray-900">თარგმანები</h3>
@@ -154,76 +153,101 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            @if ($isEdit && $restaurant->logo)
-                <div class="mb-4">
-                    <div class="relative inline-block">
-                        <img src="{{ $restaurant->logo }}" alt="Current Logo"
-                            class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
-                        <div class="absolute -top-2 -right-2 bg-green-100 text-green-600 rounded-full p-1">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
+            <!-- Logo card -->
+            <div class="relative bg-white rounded-lg border border-gray-200 p-4 flex items-center gap-4">
+                <div id="logo-preview-wrapper" class="w-28 h-28 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200">
+                    @if ($isEdit && $restaurant->logo)
+                        <img id="logo-preview" src="{{ $restaurant->logo }}" alt="Logo preview" class="w-full h-full object-cover">
+                    @else
+                        <div id="logo-placeholder" class="text-gray-400 text-xs">ლოგო არ არის</div>
+                        <img id="logo-preview" src="" alt="Logo preview" class="w-full h-full object-cover hidden">
+                    @endif
+                </div>
+
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="logo-change-btn" class="px-3 py-1 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700">ჩანაცვლება</button>
+                        <button type="button" id="logo-remove-btn" class="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm border border-red-100 hover:bg-red-100">წაშლა</button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">PNG, JPG, WEBP · მაქს. 0.5MB · რეკომენდირებული: 200×200px</p>
+                    <div class="mt-3">
+                        <input type="file" name="logo" id="logo" class="hidden" accept="image/*">
+                        <input type="hidden" name="remove_logo" id="remove_logo" value="0">
+                        <div id="logo-filename" class="text-xs text-gray-600 mt-1">{{ $isEdit && $restaurant->logo ? basename(parse_url($restaurant->logo, PHP_URL_PATH)) : '' }}</div>
                     </div>
                 </div>
-            @endif
-                <div class="flex items-center justify-center w-full">
-                    <label for="logo"
-                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">ლოგოს ატვირთვა</span>
-                            </p>
-                            <p class="text-xs text-gray-500">PNG, JPG, WEBP მაქს. 0.5MB</p>
-                        </div>
-                        <input type="file" name="logo" id="logo" class="hidden" accept="image/*">
-                    </label>
-                </div>
-                <p class="text-xs text-gray-500">რეკომენდირებული: 200x200px.</p>
             </div>
 
-            <div class="space-y-4">
-                <label for="image" class="block text-sm font-medium text-gray-700">ძირითადი სურათი</label>
-                @if ($isEdit && $restaurant->image)
-                    <div class="mb-4">
-                        <div class="relative inline-block">
-                            <img src="{{ $restaurant->image }}" alt="Current Image"
-                                class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
-                            <div class="absolute -top-2 -right-2 bg-green-100 text-green-600 rounded-full p-1">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                <div class="flex items-center justify-center w-full">
-                    <label for="image"
-                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">სურათის ატვირთვა</span>
-                            </p>
-                            <p class="text-xs text-gray-500">PNG, JPG, WEBP მაქს. 2MB</p>
-                        </div>
-                        <input type="file" name="image" id="image" class="hidden" accept="image/*">
-                    </label>
+            <!-- Main image card -->
+            <div class="relative bg-white rounded-lg border border-gray-200 p-4 flex items-center gap-4">
+                <div id="image-preview-wrapper" class="w-40 h-28 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200">
+                    @if ($isEdit && $restaurant->image)
+                        <img id="image-preview" src="{{ $restaurant->image }}" alt="Image preview" class="w-full h-full object-cover">
+                    @else
+                        <div id="image-placeholder" class="text-gray-400 text-xs">ძირითადი სურათი არ არის</div>
+                        <img id="image-preview" src="" alt="Image preview" class="w-full h-full object-cover hidden">
+                    @endif
                 </div>
-                <p class="text-xs text-gray-500">რეკომენდირებული: 800x600px.</p>
+
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="image-change-btn" class="px-3 py-1 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700">ჩანაცვლება</button>
+                        <button type="button" id="image-remove-btn" class="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm border border-red-100 hover:bg-red-100">წაშლა</button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">PNG, JPG, WEBP · მაქს. 2MB · რეკომენდირებული: 800×600px</p>
+                    <div class="mt-3">
+                        <input type="file" name="image" id="image" class="hidden" accept="image/*">
+                        <input type="hidden" name="remove_image" id="remove_image" value="0">
+                        <div id="image-filename" class="text-xs text-gray-600 mt-1">{{ $isEdit && $restaurant->image ? basename(parse_url($restaurant->image, PHP_URL_PATH)) : '' }}</div>
+                    </div>
+                </div>
             </div>
+
         </div>
+
+        <script>
+            (function(){
+                function setupPreview(inputId, previewId, placeholderId, filenameId, removeInputId, changeBtnId, removeBtnId) {
+                    const input = document.getElementById(inputId);
+                    const preview = document.getElementById(previewId);
+                    const placeholder = document.getElementById(placeholderId);
+                    const filenameEl = document.getElementById(filenameId);
+                    const removeInput = document.getElementById(removeInputId);
+                    const changeBtn = document.getElementById(changeBtnId);
+                    const removeBtn = document.getElementById(removeBtnId);
+
+                    if (!input) return;
+
+                    changeBtn && changeBtn.addEventListener('click', function(){ input.click(); });
+
+                    input.addEventListener('change', function(e){
+                        const file = input.files && input.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = function(evt){
+                            if (preview) { preview.src = evt.target.result; preview.classList.remove('hidden'); }
+                            if (placeholder) { placeholder.style.display = 'none'; }
+                            if (filenameEl) filenameEl.textContent = file.name;
+                            if (removeInput) removeInput.value = '0';
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    removeBtn && removeBtn.addEventListener('click', function(){
+                        if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+                        if (placeholder) { placeholder.style.display = ''; }
+                        if (input) { input.value = ''; }
+                        if (filenameEl) filenameEl.textContent = '';
+                        if (removeInput) removeInput.value = '1';
+                    });
+                }
+
+                document.addEventListener('DOMContentLoaded', function(){
+                    setupPreview('logo', 'logo-preview', 'logo-placeholder', 'logo-filename', 'remove_logo', 'logo-change-btn', 'logo-remove-btn');
+                    setupPreview('image', 'image-preview', 'image-placeholder', 'image-filename', 'remove_image', 'image-change-btn', 'image-remove-btn');
+                });
+            })();
+        </script>
     </div>
 
     <!-- Contact Information Section -->
@@ -315,31 +339,47 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900">სისტემური პარამეტრები</h3>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <label for="timezone" class="block text-sm font-medium text-gray-700">დროის სარტყელი (Timezone) <span class="text-red-500">*</span></label>
-                <select name="timezone" id="timezone" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" required>
-                    @foreach(config('timezones.list') as $tzValue => $tzLabel)
-                        <option value="{{ $tzValue }}" {{ old('timezone', $restaurant->timezone ?? 'Asia/Tbilisi') == $tzValue ? 'selected' : '' }}>{{ $tzLabel }}</option>
-                    @endforeach
-                </select>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label for="timezone" class="block text-sm font-medium text-gray-700 mb-2">დროის სარტყელი (Timezone) <span class="text-red-500">*</span></label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <select name="timezone" id="timezone" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" required>
+                        @foreach(config('timezones.list') as $tzValue => $tzLabel)
+                            <option value="{{ $tzValue }}" {{ old('timezone', $restaurant->timezone ?? 'Asia/Tbilisi') == $tzValue ? 'selected' : '' }}>{{ $tzLabel }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="space-y-2">
-                <label for="working_hours" class="block text-sm font-medium text-gray-700">სამუშაო საათები</label>
-                <input type="text" name="working_hours" id="working_hours" value="{{ old('working_hours', $restaurant->working_hours ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="10:00-22:00">
+
+            <div>
+                <label for="working_hours" class="block text-sm font-medium text-gray-700 mb-2">სამუშაო საათები</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="text" name="working_hours" id="working_hours" value="{{ old('working_hours', $restaurant->working_hours ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="10:00-22:00">
+                </div>
+                <div class="text-red-500 text-xs hidden mt-1" id="error-working_hours"></div>
             </div>
-            <div class="space-y-2">
-                <label for="delivery_time" class="block text-sm font-medium text-gray-700">მიტანის დრო (წთ)</label>
-                <input type="text" name="delivery_time" id="delivery_time" value="{{ old('delivery_time', $restaurant->delivery_time ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="30">
+
+            <div>
+                <label for="delivery_time" class="block text-sm font-medium text-gray-700 mb-2">მიტანის დრო (წთ)</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="number" name="delivery_time" id="delivery_time" value="{{ old('delivery_time', $restaurant->delivery_time ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="30" min="0">
+                </div>
+                <div class="text-red-500 text-xs hidden mt-1" id="error-delivery_time"></div>
             </div>
-            <div class="space-y-2">
-                <!-- დინამიური reservation_type select უკვე ზემოთაა განთავსებული -->
+
+            <div class="md:col-span-2">
+                <label for="map_link" class="block text-sm font-medium text-gray-700 mb-2">Google Maps ბმული</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="text" name="map_link" id="map_link" value="{{ old('map_link', $restaurant->map_link ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="https://maps.google.com/...">
+                </div>
+
             </div>
-            <div class="space-y-2">
-                <label for="price_per_person" class="block text-sm font-medium text-gray-700">ფასი ერთ ადამიანზე</label>
-                <div class="flex gap-2">
-                    <input type="number" step="0.01" min="0" name="price_per_person" id="price_per_person" value="{{ old('price_per_person', $restaurant->price_per_person ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="50">
-                    <select name="price_currency" id="price_currency" class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200">
+
+            <div>
+                <label for="price_per_person" class="block text-sm font-medium text-gray-700 mb-2">ფასი ერთ ადამიანზე</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm flex gap-2 items-center">
+                    <input type="number" step="0.01" min="0" name="price_per_person" id="price_per_person" value="{{ old('price_per_person', $restaurant->price_per_person ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="50">
+                    <select name="price_currency" id="price_currency" class="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200">
                         <option value="GEL" {{ old('price_currency', $restaurant->price_currency ?? 'GEL') == 'GEL' ? 'selected' : '' }}>GEL - ლარი</option>
                         <option value="USD" {{ old('price_currency', $restaurant->price_currency ?? 'USD') == 'USD' ? 'selected' : '' }}>USD - აშშ დოლარი</option>
                         <option value="EUR" {{ old('price_currency', $restaurant->price_currency ?? 'EUR') == 'EUR' ? 'selected' : '' }}>EUR - ევრო</option>
@@ -349,52 +389,41 @@
                     </select>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label for="map_link" class="block text-sm font-medium text-gray-700">Google Maps ბმული</label>
-                <input type="text" name="map_link" id="map_link" value="{{ old('map_link', $restaurant->map_link ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="https://maps.google.com/...">
-            </div>
-            <div class="space-y-2">
-                <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
-                <input type="text" name="latitude" id="latitude" value="{{ old('latitude', $restaurant->latitude ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="41.7151">
-            </div>
-            <div class="space-y-2">
-                <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
-                <input type="text" name="longitude" id="longitude" value="{{ old('longitude', $restaurant->longitude ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="44.8271">
-            </div>
-            <div class="space-y-2 md:col-span-2">
-                <label for="map_embed_link" class="block text-sm font-medium text-gray-700">Google Maps Embed Link</label>
-                <input type="text" name="map_embed_link" id="map_embed_link" value="{{ old('map_embed_link', $restaurant->map_embed_link ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200" placeholder="<iframe ...></iframe>">
-            </div>
-        </div>
-    </div>
 
-    <!-- Discount Rate Section -->
-    <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200 section-animate">
-        <div class="flex items-center mb-6">
-            <div class="flex items-center justify-center w-10 h-10 bg-orange-600 rounded-lg mr-3">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div>
+                <label for="discount_rate" class="block text-sm font-medium text-gray-700 mb-2">ფასდაკლების პროცენტი (%)</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm flex items-center gap-4">
+                    <input type="number" name="discount_rate" id="discount_rate" value="{{ old('discount_rate', $restaurant->discount_rate ?? 0) }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="0" min="0" max="100">
+                    <div class="text-gray-500 text-sm">%</div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">ფასდაკლების პროცენტი (0-100).</p>
+                <div class="text-red-500 text-xs hidden mt-1" id="error-discount_rate"></div>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900">ფასდაკლება</h3>
-        </div>
 
-        <div class="space-y-2">
-            <label for="discount_rate" class="block text-sm font-medium text-gray-700">ფასდაკლების პროცენტი
-                (%)</label>
-            <div class="relative">
-                <input type="number" name="discount_rate" id="discount_rate"
-                    value="{{ old('discount_rate', $restaurant->discount_rate ?? 0) }}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
-                    placeholder="0" min="0" max="100">
-                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span class="text-gray-500 text-sm">%</span>
+            <div>
+                <label for="latitude" class="block text-sm font-medium text-gray-700 mb-2">Latitude</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="text" name="latitude" id="latitude" value="{{ old('latitude', $restaurant->latitude ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="41.7151">
                 </div>
             </div>
-            <p class="text-xs text-gray-500">ფასდაკლების პროცენტი (0-100).</p>
+
+            <div>
+                <label for="longitude" class="block text-sm font-medium text-gray-700 mb-2">Longitude</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="text" name="longitude" id="longitude" value="{{ old('longitude', $restaurant->longitude ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="44.8271">
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="map_embed_link" class="block text-sm font-medium text-gray-700 mb-2">Google Maps Embed Link</label>
+                <div class="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                    <input type="text" name="map_embed_link" id="map_embed_link" value="{{ old('map_embed_link', $restaurant->map_embed_link ?? '') }}" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-200" placeholder="<iframe ...></iframe>">
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Discount Rate moved into System Parameters -->
 
 
 

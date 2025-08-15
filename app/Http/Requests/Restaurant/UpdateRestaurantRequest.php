@@ -24,6 +24,8 @@ class UpdateRestaurantRequest extends FormRequest
             'email' => 'nullable|email|max:100',
             'website' => 'nullable|url|max:255',
             'discount_rate' => 'nullable|integer|min:0|max:100',
+            'remove_logo' => 'nullable|boolean',
+            'remove_image' => 'nullable|boolean',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
             'price_per_person' => 'nullable|numeric|min:0',

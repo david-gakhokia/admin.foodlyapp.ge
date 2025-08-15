@@ -90,12 +90,17 @@ class RestaurantController extends Controller
             $data = $this->rankService->assignRankIfEmpty($data, Restaurant::class);
         }
 
-        // Handle file uploads
-        if ($request->hasFile('logo')) {
+        // Handle file uploads / removals
+        // If client explicitly requests removal on create, ensure attribute stays null and skip upload
+        if ($request->filled('remove_logo') && $request->boolean('remove_logo')) {
+            $data['logo'] = null;
+        } elseif ($request->hasFile('logo')) {
             $data['logo'] = $this->cloudinaryService->upload($request->file('logo'), 'foodly/restaurants/logos');
         }
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('remove_image') && $request->boolean('remove_image')) {
+            $data['image'] = null;
+        } elseif ($request->hasFile('image')) {
             $data['image'] = $this->cloudinaryService->upload($request->file('image'), 'foodly/restaurants/images');
         }
 
@@ -195,7 +200,7 @@ class RestaurantController extends Controller
             unset($validatedData['timezone']);
         }
 
-        // Handle file uploads only if new files are uploaded
+        // Handle file uploads and explicit removals
         if ($request->hasFile('logo')) {
             // Delete old logo if exists
             if ($restaurant->logo) {
@@ -205,6 +210,15 @@ class RestaurantController extends Controller
                 }
             }
             $validatedData['logo'] = $this->cloudinaryService->upload($request->file('logo'), 'foodly/restaurants/logos');
+        } elseif ($request->filled('remove_logo') && $request->boolean('remove_logo')) {
+            // Client asked to remove existing logo
+            if ($restaurant->logo) {
+                $publicId = $this->cloudinaryService->extractPublicIdFromUrl($restaurant->logo, 'foodly/restaurants/logos');
+                if ($publicId) {
+                    $this->cloudinaryService->deleteImage($publicId);
+                }
+            }
+            $validatedData['logo'] = null;
         }
 
         if ($request->hasFile('image')) {
@@ -216,6 +230,15 @@ class RestaurantController extends Controller
                 }
             }
             $validatedData['image'] = $this->cloudinaryService->upload($request->file('image'), 'foodly/restaurants/images');
+        } elseif ($request->filled('remove_image') && $request->boolean('remove_image')) {
+            // Client asked to remove existing image
+            if ($restaurant->image) {
+                $publicId = $this->cloudinaryService->extractPublicIdFromUrl($restaurant->image, 'foodly/restaurants/images');
+                if ($publicId) {
+                    $this->cloudinaryService->deleteImage($publicId);
+                }
+            }
+            $validatedData['image'] = null;
         }
 
         // Extract translations using configured locales
