@@ -15,6 +15,8 @@ class StoreRestaurantRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+            // Optional slug for create; if provided must be unique
+            'slug' => 'nullable|string|max:255|unique:restaurants,slug',
             'status' => 'required|in:active,inactive',
             'rank' => 'nullable|integer|min:0',
             'phone' => 'nullable|string|max:50',

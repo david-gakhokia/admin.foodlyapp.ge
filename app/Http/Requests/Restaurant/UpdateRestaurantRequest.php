@@ -15,6 +15,8 @@ class UpdateRestaurantRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+            // Slug should be unique except for current restaurant
+            'slug' => function_exists('request') ? 'required|string|max:255' : 'required|string|max:255',
             'status' => 'required|in:active,inactive',
             'rank' => 'nullable|integer|min:0',
             'phone' => 'nullable|string|max:50',
@@ -35,6 +37,18 @@ class UpdateRestaurantRequest extends FormRequest
             'working_hours' => 'nullable|string',
             'reservation_type' => 'required|string|in:' . implode(',', ReservationTypeHelper::all()),
         ];
+
+        // Apply unique rule for slug when updating
+        $restaurantId = null;
+        if ($this->route('restaurant')) {
+            $restaurantId = is_object($this->route('restaurant')) ? $this->route('restaurant')->id : $this->route('restaurant');
+        }
+
+        if ($restaurantId) {
+            $rules['slug'] = 'required|string|max:255|unique:restaurants,slug,' . $restaurantId . ',id';
+        } else {
+            $rules['slug'] = 'required|string|max:255|unique:restaurants,slug';
+        }
 
         // ვალიდაცია ყველა ენისთვის
         foreach (config('translatable.locales', ['en', 'ka']) as $locale) {

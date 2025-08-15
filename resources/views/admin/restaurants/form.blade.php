@@ -97,6 +97,16 @@
             </div>
 
             <div class="space-y-2">
+                <label for="slug" class="block text-sm font-medium text-gray-700">Slug <span class="text-gray-400 text-xs">(auto from English name)</span></label>
+                <input type="text" name="slug" id="slug" value="{{ old('slug', $restaurant->slug ?? '') }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="example-restaurant-slug">
+                @error('slug')
+                    <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="space-y-2">
                 <label for="reservation_type" class="block text-sm font-medium text-gray-700">ჯავშნის ტიპი <span class="text-red-500">*</span></label>
                 <select name="reservation_type" id="reservation_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" required>
                     @php

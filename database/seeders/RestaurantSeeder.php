@@ -13,7 +13,7 @@ class RestaurantSeeder extends Seeder
     {
         // 1. ხელით დამატებული კონკრეტული რესტორანი
         $restaurants = [];
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $restaurants[] = [
                 'slug' => 'rest-' . Str::random(4),
                 'qr_code' => 'QR' . strtoupper(Str::random(8)),
@@ -45,13 +45,13 @@ class RestaurantSeeder extends Seeder
                 'version' => 1,
                 'translations' => [
                     'en' => [
-                        'name' => "Exodus {$i}",
-                        'description' => "Exodus restaurant {$i} for demo purposes",
+                        'name' => "Restaurant {$i}",
+                        'description' => "Restaurant {$i} for demo purposes",
                         'address' => "Batumi, Khimshiashvili {$i}",
                     ],
                     'ka' => [
-                        'name' => "ექსოდუსი {$i}",
-                        'description' => "ექსოდუსი რესტორანი {$i} დემოსთვის",
+                        'name' => "რესტორანი {$i}",
+                        'description' => "რესტორანი {$i} დემოსთვის",
                         'address' => "ბათუმი , ხიმშიაშვილის {$i}",
                     ],
                 ],

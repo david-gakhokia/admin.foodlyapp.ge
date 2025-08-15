@@ -45,14 +45,7 @@
 
         <!-- Form Content -->
         <div class="p-6">
-            <form action="{{ route('admin.restaurants.update', $restaurant) }}" method="POST" enctype="multipart/form-data" id="restaurant-form" class="space-y-6">
-                @csrf
-                @method('PUT')
-                
-                @include('admin.restaurants.form', ['restaurant' => $restaurant])
-                
-
-            </form>
+            @include('admin.restaurants.form', ['restaurant' => $restaurant])
         </div>
     </div>
 @push('scripts')

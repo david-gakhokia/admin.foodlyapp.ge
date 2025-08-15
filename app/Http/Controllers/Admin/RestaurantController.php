@@ -115,8 +115,8 @@ class RestaurantController extends Controller
             }
         }
 
-        // Generate slug from the default name
-        if ($defaultName) {
+        // If slug provided by user, use it; otherwise generate from default name
+        if (empty($data['slug']) && $defaultName) {
             $data['slug'] = $this->slugService->generate(new Restaurant, $defaultName);
         }
 
