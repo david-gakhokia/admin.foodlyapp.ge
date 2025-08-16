@@ -452,3 +452,10 @@ Route::prefix('booking')
 //     Route::get('/{dish}/restaurants', 'getRestaurantsByDish')->name('api.dishes.restaurants');
 //     Route::get('/search', 'searchRestaurantsByDishName')->name('dishes.search-restaurants');
 // });
+
+// 📱 Android API Test Routes
+Route::prefix('android')->name('android.')->group(function () {
+    Route::get('test', function () {
+        return response()->json(['message' => 'Android API Working!', 'platform' => 'android']);
+    })->name('test');
+});
