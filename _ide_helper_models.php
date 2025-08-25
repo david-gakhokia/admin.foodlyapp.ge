@@ -137,6 +137,14 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property string $slug
+ * @property int|null $rank
+ * @property string|null $image
+ * @property string|null $image_link
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $status_color
  * @property-read string $status_label
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Restaurant> $restaurants
@@ -156,8 +164,16 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City translated()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City translatedIn(?string $locale = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereImageLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereRank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslation(string $translationField, $value, ?string $locale = null, string $method = 'whereHas', string $operator = '=')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereTranslationLike(string $translationField, $value, ?string $locale = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City withTranslation(?string $locale = null)
  */
 	class City extends \Eloquent implements \Astrotomic\Translatable\Contracts\Translatable {}
@@ -167,9 +183,29 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property int $city_id
+ * @property string $locale
+ * @property string $name
+ * @property string|null $description
+ * @property string|null $meta_title
+ * @property string|null $meta_description
+ * @property string|null $meta_keywords
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereCityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereLocale($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereMetaDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereMetaKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereMetaTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CityTranslation whereUpdatedAt($value)
  */
 	class CityTranslation extends \Eloquent {}
 }
@@ -543,6 +579,156 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MenuItemTranslation whereUpdatedAt($value)
  */
 	class MenuItemTranslation extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $notification_event_id
+ * @property string $recipient_email
+ * @property string $recipient_type
+ * @property string $template_id
+ * @property array<array-key, mixed>|null $template_data
+ * @property string $provider
+ * @property string|null $provider_message_id
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $sent_at
+ * @property \Illuminate\Support\Carbon|null $delivered_at
+ * @property \Illuminate\Support\Carbon|null $opened_at
+ * @property \Illuminate\Support\Carbon|null $clicked_at
+ * @property string|null $error_message
+ * @property array<array-key, mixed>|null $webhook_data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\NotificationEvent $notificationEvent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery byRecipientType(string $recipientType)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery byStatus(string $status)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereClickedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereDeliveredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereErrorMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereNotificationEventId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereProviderMessageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereRecipientEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereRecipientType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereSentAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereTemplateData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationDelivery whereWebhookData($value)
+ */
+	class NotificationDelivery extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $event_key
+ * @property string $event_type
+ * @property int|null $reservation_id
+ * @property array<array-key, mixed>|null $payload
+ * @property string $idempotency_key
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $processed_at
+ * @property string|null $error_message
+ * @property int $retry_count
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationDelivery> $deliveries
+ * @property-read int|null $deliveries_count
+ * @property-read \App\Models\Reservation|null $reservation
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent failed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent pending()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereErrorMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereEventKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereEventType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereIdempotencyKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent wherePayload($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereProcessedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereReservationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereRetryCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationEvent whereUpdatedAt($value)
+ */
+	class NotificationEvent extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $event_key
+ * @property string $recipient_type
+ * @property array<array-key, mixed>|null $conditions
+ * @property int $delay_minutes
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule forEvent(string $eventKey)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereConditions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereDelayMinutes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereEventKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereRecipientType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationRule whereUpdatedAt($value)
+ */
+	class NotificationRule extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $event_key
+ * @property string $recipient_type
+ * @property string $provider
+ * @property string $provider_template_id
+ * @property string|null $subject_template
+ * @property array<array-key, mixed>|null $default_data
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate forEvent(string $eventKey, string $recipientType)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereDefaultData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereEventKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereProviderTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereRecipientType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereSubjectTemplate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationTemplate whereUpdatedAt($value)
+ */
+	class NotificationTemplate extends \Eloquent {}
 }
 
 namespace App\Models{

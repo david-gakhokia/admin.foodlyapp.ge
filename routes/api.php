@@ -459,3 +459,25 @@ Route::prefix('android')->name('android.')->group(function () {
         return response()->json(['message' => 'Android API Working!', 'platform' => 'android']);
     })->name('test');
 });
+
+// 🔔 Email Notification Webhooks
+Route::prefix('webhooks')->name('webhooks.')->group(function () {
+    Route::post('sendgrid', [App\Http\Controllers\Webhooks\SendGridWebhookController::class, 'handle'])
+        ->name('sendgrid');
+});
+
+// 📊 Admin Notification Dashboard
+Route::prefix('admin/notifications')->name('admin.notifications.')->group(function () {
+    Route::get('dashboard', [App\Http\Controllers\Admin\NotificationController::class, 'dashboard'])
+        ->name('dashboard');
+    Route::get('events', [App\Http\Controllers\Admin\NotificationController::class, 'events'])
+        ->name('events');
+    Route::get('events/{event}', [App\Http\Controllers\Admin\NotificationController::class, 'show'])
+        ->name('events.show');
+    Route::post('events/{event}/retry', [App\Http\Controllers\Admin\NotificationController::class, 'retry'])
+        ->name('events.retry');
+    Route::get('deliveries', [App\Http\Controllers\Admin\NotificationController::class, 'deliveries'])
+        ->name('deliveries');
+    Route::get('templates', [App\Http\Controllers\Admin\NotificationController::class, 'templates'])
+        ->name('templates');
+});

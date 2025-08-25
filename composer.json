@@ -20,6 +20,7 @@
         "livewire/volt": "^1.7.0",
         "mpdf/mpdf": "^8.2",
         "power-components/livewire-powergrid": "^6.3",
+        "sendgrid/sendgrid": "^8.1",
         "spatie/laravel-permission": "^6.17",
         "spatie/laravel-sluggable": "^3.7"
     },

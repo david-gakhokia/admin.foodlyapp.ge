@@ -24741,6 +24741,28 @@ namespace Illuminate\Routing {
          * @see \App\Providers\RouteServiceProvider::boot()
          * @static 
          */
+        public static function android()
+        {
+            return \Illuminate\Routing\Router::android();
+        }
+
+        /**
+         * 
+         *
+         * @see \App\Providers\RouteServiceProvider::boot()
+         * @static 
+         */
+        public static function ios()
+        {
+            return \Illuminate\Routing\Router::ios();
+        }
+
+        /**
+         * 
+         *
+         * @see \App\Providers\RouteServiceProvider::boot()
+         * @static 
+         */
         public static function vendorApi()
         {
             return \Illuminate\Routing\Router::vendorApi();
