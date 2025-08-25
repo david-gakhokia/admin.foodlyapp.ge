@@ -69,22 +69,22 @@ class RecipientResolver
 
         $reservation = Reservation::find($event->reservation_id);
         
-        if (!$reservation || !$reservation->client_email) {
+        if (!$reservation || !$reservation->email) {
             return null;
         }
 
         return [
-            'email' => $reservation->client_email,
-            'name' => $reservation->client_name,
+            'email' => $reservation->email,
+            'name' => $reservation->name,
             'data' => [
-                'client_name' => $reservation->client_name,
-                'client_phone' => $reservation->client_phone,
+                'customer_name' => $reservation->name,
+                'customer_phone' => $reservation->phone,
             ]
         ];
     }
 
     /**
-     * Resolve manager recipient from restaurant
+     * Resolve manager recipient from restaurant via reservable relationship
      */
     private function resolveManagerRecipient(NotificationEvent $event): ?array
     {
@@ -92,25 +92,36 @@ class RecipientResolver
             return null;
         }
 
-        $reservation = Reservation::with('restaurant')->find($event->reservation_id);
+        $reservation = Reservation::with('reservable')->find($event->reservation_id);
         
-        if (!$reservation || !$reservation->restaurant) {
+        if (!$reservation || !$reservation->reservable) {
             return null;
         }
 
-        $restaurant = $reservation->restaurant;
-        $managerEmail = $restaurant->manager_email ?? $restaurant->email;
+        // Get restaurant through Place/Table relationship
+        $restaurant = null;
+        
+        if ($reservation->reservable_type === 'App\\Models\\Place') {
+            $place = $reservation->reservable;
+            $restaurant = \App\Models\Restaurant::find($place->restaurant_id);
+        } elseif ($reservation->reservable_type === 'App\\Models\\Table') {
+            $table = $reservation->reservable;
+            $restaurant = \App\Models\Restaurant::find($table->restaurant_id);
+        } elseif ($reservation->reservable_type === 'App\\Models\\Restaurant') {
+            $restaurant = $reservation->reservable;
+        }
 
-        if (!$managerEmail) {
+        if (!$restaurant || !$restaurant->email) {
             return null;
         }
 
         return [
-            'email' => $managerEmail,
-            'name' => $restaurant->manager_name ?? $restaurant->name,
+            'email' => $restaurant->email,
+            'name' => $restaurant->name,
             'data' => [
                 'restaurant_name' => $restaurant->name,
-                'manager_name' => $restaurant->manager_name,
+                'manager_name' => $restaurant->name, // Use restaurant name as manager name
+                'restaurant_phone' => $restaurant->phone,
             ]
         ];
     }
@@ -165,24 +176,38 @@ class RecipientResolver
 
     private function getReservationRequestedRecipients(int $reservationId): Collection
     {
-        $reservation = Reservation::with('restaurant')->find($reservationId);
+        $reservation = Reservation::with('reservable')->find($reservationId);
         $recipients = collect();
 
+        if (!$reservation) {
+            return $recipients;
+        }
+
+        // Get restaurant through polymorphic relationship
+        $restaurant = null;
+        if ($reservation->reservable_type === 'App\\Models\\Place') {
+            $restaurant = \App\Models\Restaurant::find($reservation->reservable->restaurant_id);
+        } elseif ($reservation->reservable_type === 'App\\Models\\Table') {
+            $restaurant = \App\Models\Restaurant::find($reservation->reservable->restaurant_id);
+        } elseif ($reservation->reservable_type === 'App\\Models\\Restaurant') {
+            $restaurant = $reservation->reservable;
+        }
+
         // Manager notification
-        if ($reservation->restaurant && $reservation->restaurant->manager_email) {
+        if ($restaurant && $restaurant->email) {
             $recipients->push([
-                'email' => $reservation->restaurant->manager_email,
+                'email' => $restaurant->email,
                 'type' => 'manager',
-                'name' => $reservation->restaurant->manager_name,
+                'name' => $restaurant->name,
             ]);
         }
 
         // Client confirmation
-        if ($reservation->client_email) {
+        if ($reservation->email) {
             $recipients->push([
-                'email' => $reservation->client_email,
+                'email' => $reservation->email,
                 'type' => 'client',
-                'name' => $reservation->client_name,
+                'name' => $reservation->name,
             ]);
         }
 
@@ -195,11 +220,11 @@ class RecipientResolver
         $recipients = collect();
 
         // Client notification
-        if ($reservation->client_email) {
+        if ($reservation && $reservation->email) {
             $recipients->push([
-                'email' => $reservation->client_email,
+                'email' => $reservation->email,
                 'type' => 'client',
-                'name' => $reservation->client_name,
+                'name' => $reservation->name,
             ]);
         }
 

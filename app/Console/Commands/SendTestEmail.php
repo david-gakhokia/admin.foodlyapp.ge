@@ -48,19 +48,29 @@ class SendTestEmail extends Command
                 'confirmation_code' => 'TEST123'
             ];
         } else {
+            // Safely handle time_from field
+            $timeFrom = $reservation->time_from;
+            if (is_object($timeFrom) && method_exists($timeFrom, 'format')) {
+                $timeString = $timeFrom->format('H:i');
+            } else {
+                $timeString = (string) $timeFrom;
+            }
+
             $sampleData = [
                 'customer_name' => $reservation->name ?? 'Test Customer',
                 'restaurant_name' => $reservation->reservable?->name ?? 'Test Restaurant',
                 'reservation_date' => $reservation->reservation_date?->format('Y-m-d') ?? now()->format('Y-m-d'),
-                'reservation_time' => $reservation->time_from ?? '19:00',
-                'party_size' => $reservation->guests_count ?? 2,
+                'reservation_time' => $timeString ?? '19:00',
+                'party_size' => (int) $reservation->guests_count ?? 2,
                 'confirmation_code' => 'RES' . $reservation->id
             ];
         }
 
         $this->line("📝 Sample data:");
         foreach ($sampleData as $key => $value) {
-            $this->line("   {$key}: {$value}");
+            // Convert arrays and objects to strings safely
+            $displayValue = is_array($value) || is_object($value) ? json_encode($value) : $value;
+            $this->line("   {$key}: {$displayValue}");
         }
 
         if ($dryRun) {
@@ -85,6 +95,9 @@ class SendTestEmail extends Command
 
         } catch (\Exception $e) {
             $this->error("❌ Exception occurred: " . $e->getMessage());
+            $this->error("File: " . $e->getFile() . " Line: " . $e->getLine());
+            $this->error("Stack trace:");
+            $this->line($e->getTraceAsString());
             return 1;
         }
 

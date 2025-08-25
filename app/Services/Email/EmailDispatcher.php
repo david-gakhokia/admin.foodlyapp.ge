@@ -46,7 +46,12 @@ class EmailDispatcher
             
             // Add dynamic template data
             if (!empty($templateData)) {
-                $mail->addDynamicTemplateData($templateData);
+                // Manually add each key-value pair to avoid array key issues
+                foreach ($templateData as $key => $value) {
+                    $stringKey = (string) $key;
+                    $stringValue = is_scalar($value) ? (string) $value : json_encode($value);
+                    $mail->addDynamicTemplateData($stringKey, $stringValue);
+                }
             }
 
             // Add idempotency key for duplicate prevention
