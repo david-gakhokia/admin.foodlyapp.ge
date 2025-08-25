@@ -57,7 +57,7 @@
                                 კატეგორიებზე დაბრუნება
                             </a>
                         @endif
-                        <a href="{{ route('admin.menu.items.create') }}{{ request('category_id') ? '?category_id=' . request('category_id') . '&restaurant_id=' . request('restaurant_id') : '' }}"
+                        <a href="{{ route('admin.restaurants.menu.categories.items.create', [$restaurant, $menuCategory]) }}"
                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -387,7 +387,7 @@
                                 ჯერ არ შექმნილა მენიუს აითემი. დაამატეთ პირველი აითემი დასაწყებად.
                             @endif
                         </p>
-                        <a href="{{ route('admin.menu.items.create') }}{{ request('category_id') ? '?category_id=' . request('category_id') . '&restaurant_id=' . request('restaurant_id') : '' }}" 
+                        <a href="{{ route('admin.restaurants.menu.categories.items.create', [$restaurant, $menuCategory]) }}" 
                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>

@@ -331,6 +331,23 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                         </svg>
                                     </a>
+                                    <form action="{{ route('admin.restaurants.menu.categories.items.destroy', [$restaurant, $menuCategory, $item]) }}" method="POST" onsubmit="return confirm('ნამდვილად გსურთ წაშლა?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" aria-label="წაშლა" title="წაშლა"
+                                                class="relative inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors duration-200 group">
+                                            <!-- Decorative pulse ring behind the icon -->
+                                            <span class="absolute left-3 w-7 h-7 rounded-full flex items-center justify-center pointer-events-none">
+                                                <span class="absolute inset-0 rounded-full bg-red-300 opacity-30 animate-ping"></span>
+                                                <span class="absolute inset-0 rounded-full bg-red-100/60"></span>
+                                            </span>
+
+                                            <!-- Icon -->
+                                            <svg class="relative w-4 h-4 text-red-600 transform transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M7 7h10"/>
+                                            </svg>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

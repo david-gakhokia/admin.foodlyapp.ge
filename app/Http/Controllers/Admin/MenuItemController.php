@@ -142,7 +142,10 @@ class MenuItemController extends Controller
         // Save the translations
         $menuItem->save();
 
-        return redirect()->route('admin.menu.items.index', ['restaurant_id' => $data['restaurant_id']])->with('success', 'Menu Item created successfully.');
+        return redirect()->route('admin.restaurants.menu.categories.show', [
+            'restaurant' => $data['restaurant_id'], 
+            'category' => $data['menu_category_id']
+        ])->with('success', 'Menu Item created successfully.');
     }
 
     public function edit(MenuItem $menuItem): View
@@ -353,7 +356,7 @@ class MenuItemController extends Controller
         $menuItem->save();
 
         return redirect()
-            ->route('admin.restaurants.menu.categories.items.index', [$restaurant, $category])
+            ->route('admin.restaurants.menu.categories.show', [$restaurant, $category])
             ->with('success', 'მენიუს ელემენტი წარმატებით შეიქმნა!');
     }
 
@@ -429,7 +432,7 @@ class MenuItemController extends Controller
         $item->save();
 
         return redirect()
-            ->route('admin.restaurants.menu.categories.items.index', [$restaurant, $category])
+            ->route('admin.restaurants.menu.categories.show', [$restaurant, $category])
             ->with('success', 'მენიუს ელემენტი წარმატებით განახლდა!');
     }
 
@@ -452,7 +455,7 @@ class MenuItemController extends Controller
         $item->delete();
 
         return redirect()
-            ->route('admin.restaurants.menu.categories.items.index', [$restaurant, $category])
+            ->route('admin.restaurants.menu.categories.show', [$restaurant, $category])
             ->with('success', 'მენიუს ელემენტი წარმატებით წაიშალა!');
     }
 
