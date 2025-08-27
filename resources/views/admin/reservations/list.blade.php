@@ -71,7 +71,8 @@
 
                 <!-- Quick Calendar Toggle -->
                 <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-4">
-                    <button id="toggleCalendarBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+                    <a href="{{ route('admin.reservation.calendar') }}" 
+                       class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
@@ -79,7 +80,7 @@
                             <line x1="3" y1="10" x2="21" y2="10"/>
                         </svg>
                         <span>კალენდარი</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -183,28 +184,7 @@
                         </div>
                     </form>
 
-                    <!-- Legend -->
-                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
-                        <h4 class="text-sm font-semibold text-gray-900 mb-3">ლეგენდა</h4>
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
-                                <span class="text-sm text-gray-700">მოლოდინში</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                                <span class="text-sm text-gray-700">დადასტურებული</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
-                                <span class="text-sm text-gray-700">შემოვიდა</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                                <span class="text-sm text-gray-700">გაუქმებული</span>
-                            </div>
-                        </div>
-                    </div>
+                  
                 </div>
             </aside>
 
@@ -215,15 +195,6 @@
                         <h3 class="text-lg font-semibold text-gray-900">ჯავშნების სია</h3>
                         <div class="flex items-center space-x-4">
                             <div class="text-sm text-gray-500">სულ: {{ $reservations->total() }} ჯავშანი</div>
-                            <button id="toggleCalendarBtn" class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                                კალენდარი
-                            </button>
                         </div>
                     </div>
 
@@ -406,25 +377,12 @@
                 </div>
             </main>
         </div>
-
-        <!-- Calendar Modal -->
-        <div id="calendarModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl mx-auto overflow-hidden max-h-[90vh]">
-                <div class="flex items-center justify-between p-5 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">კალენდარი</h3>
-                    <button id="calendarModalClose" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <line x1="18" y1="6" x2="6" y2="18"/>
-                            <line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="p-6 max-h-[70vh] overflow-y-auto">
-                    <div id="calendar" class="w-full"></div>
-                </div>
-            </div>
-        </div>
     </div>
+
+    <!-- Simple test for navigation -->
+    <script>
+        console.log('✅ ჯავშნების მართვა გვერდი ჩაიტვირთა');
+    </script>
 
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
@@ -448,46 +406,118 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('🚀 JavaScript loaded');
+                
                 // Calendar Modal Functionality
                 const toggleCalendarBtn = document.getElementById('toggleCalendarBtn');
                 const calendarModal = document.getElementById('calendarModal');
                 const calendarModalClose = document.getElementById('calendarModalClose');
                 
+                console.log('📋 Elements found:', {
+                    toggleBtn: !!toggleCalendarBtn,
+                    modal: !!calendarModal,
+                    close: !!calendarModalClose
+                });
+                
                 let calendar = null;
 
                 if (toggleCalendarBtn && calendarModal) {
+                    console.log('✅ Adding click listener to calendar button');
                     toggleCalendarBtn.addEventListener('click', function() {
+                        console.log('🖱️ Calendar button clicked!');
                         calendarModal.classList.remove('hidden');
                         calendarModal.classList.add('flex');
                         
                         // Initialize calendar if not already done
                         if (!calendar) {
+                            console.log('📅 Initializing FullCalendar...');
                             const calendarEl = document.getElementById('calendar');
+                            
+                            if (!window.FullCalendar) {
+                                console.error('❌ FullCalendar library not loaded!');
+                                alert('კალენდარის ბიბლიოთეკა ჩატვირთული არ არის. გთხოვთ განაახლოთ გვერდი.');
+                                return;
+                            }
+                            
                             calendar = new FullCalendar.Calendar(calendarEl, {
                                 initialView: 'dayGridMonth',
                                 height: 'auto',
+                                locale: 'ka',
                                 headerToolbar: {
-                                    left: 'prev,next',
+                                    left: 'prev,next today',
                                     center: 'title',
-                                    right: 'today'
+                                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                                 },
-                                events: @json($calendarEvents ?? []),
-                                eventClick: function(info) {
-                                    const reservationId = info.event.id;
-                                    if (reservationId) {
-                                        window.location.href = `/admin/reservations/${reservationId}`;
+                                buttonText: {
+                                    today: 'დღეს',
+                                    month: 'თვე',
+                                    week: 'კვირა',
+                                    day: 'დღე',
+                                    list: 'სია'
+                                },
+                                // Use AJAX to fetch events
+                                events: {
+                                    url: '/api/reservations/events/all',
+                                    method: 'GET',
+                                    extraParams: function() {
+                                        // Get current filter values
+                                        const urlParams = new URLSearchParams(window.location.search);
+                                        return {
+                                            status: urlParams.get('status') || '',
+                                            restaurant_id: urlParams.get('restaurant_id') || ''
+                                        };
+                                    },
+                                    failure: function() {
+                                        console.error('კალენდარის events-ების ჩატვირთვა ვერ მოხერხდა');
                                     }
                                 },
                                 eventDisplay: 'block',
                                 dayMaxEvents: 3,
                                 moreLinkClick: 'popover',
-                                locale: 'ka'
+                                eventClick: function(info) {
+                                    // Show event details in modal instead of navigation
+                                    showEventDetails(info.event);
+                                    info.jsEvent.preventDefault(); // Don't follow the URL
+                                },
+                                eventMouseEnter: function(info) {
+                                    // Show tooltip on hover
+                                    const props = info.event.extendedProps;
+                                    const tooltip = `
+                                        <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 shadow-lg">
+                                            <div><strong>${props.customerName}</strong></div>
+                                            <div>📞 ${props.customerPhone}</div>
+                                            <div>👥 ${props.partySize} სტუმარი</div>
+                                            <div>📍 ${props.reservableName}</div>
+                                            <div>📋 ${props.status}</div>
+                                        </div>
+                                    `;
+                                    // Simple tooltip implementation
+                                    info.el.title = `${props.customerName} - ${props.partySize} სტუმარი - ${props.status}`;
+                                },
+                                loading: function(isLoading) {
+                                    if (isLoading) {
+                                        console.log('კალენდარი იტვირთება...');
+                                    }
+                                },
+                                // Date click to create new reservation
+                                dateClick: function(info) {
+                                    const selectedDate = info.dateStr;
+                                    // TODO: Open create reservation modal with pre-filled date
+                                    console.log('ახალი ჯავშნის შექმნა:', selectedDate);
+                                }
                             });
+                            console.log('🎯 Calendar initialized, rendering...');
                             calendar.render();
+                            console.log('✅ Calendar rendered successfully!');
+                        } else {
+                            console.log('🔄 Refetching calendar events...');
+                            // Refetch events if calendar already exists
+                            calendar.refetchEvents();
                         }
                     });
 
                     calendarModalClose.addEventListener('click', function() {
+                        console.log('❌ Closing calendar modal');
                         calendarModal.classList.add('hidden');
                         calendarModal.classList.remove('flex');
                     });
@@ -499,6 +529,159 @@
                             calendarModal.classList.remove('flex');
                         }
                     });
+                }
+
+                // Event Details Modal Function
+                function showEventDetails(event) {
+                    const props = event.extendedProps;
+                    const startTime = new Date(event.start).toLocaleTimeString('ka-GE', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    const endTime = event.end ? new Date(event.end).toLocaleTimeString('ka-GE', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : '';
+
+                    const detailsHTML = `
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">სტუმრის სახელი</label>
+                                    <p class="text-lg font-semibold">${props.customerName}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">სტატუსი</label>
+                                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
+                                        ${getStatusClass(props.status)}">
+                                        ${getStatusText(props.status)}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">დრო</label>
+                                    <p>${startTime}${endTime ? ' - ' + endTime : ''}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">სტუმრების რაოდენობა</label>
+                                    <p>${props.partySize} სტუმარი</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">ლოკაცია</label>
+                                <p>${props.reservableName}</p>
+                            </div>
+                            
+                            ${props.customerPhone ? `
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">ტელეფონი</label>
+                                    <p>${props.customerPhone}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${props.customerEmail ? `
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">ელ. ფოსტა</label>
+                                    <p>${props.customerEmail}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    // Show in existing quick modal
+                    const quickModal = document.getElementById('reservationQuickModal');
+                    const quickModalTitle = document.getElementById('quickModalTitle');
+                    const quickModalContent = document.getElementById('quickModalContent');
+                    
+                    if (quickModal && quickModalTitle && quickModalContent) {
+                        quickModalTitle.textContent = 'ჯავშნის დეტალები';
+                        quickModalContent.innerHTML = detailsHTML;
+                        quickModal.classList.remove('hidden');
+                        quickModal.classList.add('flex');
+                    }
+                }
+
+                // Helper functions for status
+                function getStatusClass(status) {
+                    switch (status) {
+                        case 'Pending': return 'bg-amber-100 text-amber-800';
+                        case 'Confirmed': return 'bg-green-100 text-green-800';
+                        case 'Cancelled': return 'bg-red-100 text-red-800';
+                        case 'Completed': return 'bg-blue-100 text-blue-800';
+                        default: return 'bg-gray-100 text-gray-800';
+                    }
+                }
+
+                function getStatusText(status) {
+                    switch (status) {
+                        case 'Pending': return 'მოლოდინში';
+                        case 'Confirmed': return 'დადასტურებული';
+                        case 'Cancelled': return 'გაუქმებული';
+                        case 'Completed': return 'დასრულებული';
+                        default: return status;
+                    }
+                }
+
+                // Quick Modal Close Functionality
+                const quickModal = document.getElementById('reservationQuickModal');
+                const quickModalClose = document.getElementById('quickModalClose');
+                const quickModalCloseBottom = document.getElementById('quickModalCloseBottom');
+
+                function closeQuickModal() {
+                    if (quickModal) {
+                        quickModal.classList.add('hidden');
+                        quickModal.classList.remove('flex');
+                    }
+                }
+
+                if (quickModalClose) {
+                    quickModalClose.addEventListener('click', closeQuickModal);
+                }
+                if (quickModalCloseBottom) {
+                    quickModalCloseBottom.addEventListener('click', closeQuickModal);
+                }
+                if (quickModal) {
+                    quickModal.addEventListener('click', function(e) {
+                        if (e.target === quickModal) {
+                            closeQuickModal();
+                        }
+                    });
+                }
+
+                // Calendar Filters Functionality
+                const calendarStatusFilter = document.getElementById('calendarStatusFilter');
+                const calendarRestaurantFilter = document.getElementById('calendarRestaurantFilter');
+                const calendarRefresh = document.getElementById('calendarRefresh');
+
+                function refreshCalendarWithFilters() {
+                    if (calendar) {
+                        // Update the events source with new filters
+                        calendar.removeAllEventSources();
+                        calendar.addEventSource({
+                            url: '/api/reservations/events/all',
+                            method: 'GET',
+                            extraParams: {
+                                status: calendarStatusFilter?.value || '',
+                                restaurant_id: calendarRestaurantFilter?.value || ''
+                            },
+                            failure: function() {
+                                console.error('კალენდარის events-ების ჩატვირთვა ვერ მოხერხდა');
+                            }
+                        });
+                    }
+                }
+
+                if (calendarStatusFilter) {
+                    calendarStatusFilter.addEventListener('change', refreshCalendarWithFilters);
+                }
+                if (calendarRestaurantFilter) {
+                    calendarRestaurantFilter.addEventListener('change', refreshCalendarWithFilters);
+                }
+                if (calendarRefresh) {
+                    calendarRefresh.addEventListener('click', refreshCalendarWithFilters);
                 }
 
                 // Filter functionality

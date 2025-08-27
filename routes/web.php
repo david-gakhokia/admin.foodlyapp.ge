@@ -467,9 +467,6 @@ Route::middleware(['auth'])
 
         Route::get('reservation/calendar', [ReservationController::class, 'calendarAll'])
             ->name('reservation.calendar');
-
-        Route::get('reservations/events/all', [ReservationController::class, 'eventsAll'])
-            ->name('reservations.events.all');
     });
 
 

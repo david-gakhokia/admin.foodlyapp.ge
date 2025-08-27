@@ -270,9 +270,63 @@ class ReservationController extends Controller
             $query->where('status', $request->status);
         }
 
-        $reservations = $query->orderBy('reservation_date', 'desc')->paginate(30);
+        if ($request->filled('restaurant_id')) {
+            $restaurant_id = $request->restaurant_id;
+            $query->where(function ($q) use ($restaurant_id) {
+                // Restaurant reservations
+                $q->where(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'restaurant')
+                        ->where('reservable_type', 'App\\Models\\Restaurant')
+                        ->where('reservable_id', $restaurant_id);
+                })
+                // Place reservations
+                ->orWhere(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'place')
+                        ->whereHasMorph('reservable', [\App\Models\Place::class], function ($q3) use ($restaurant_id) {
+                            $q3->where('restaurant_id', $restaurant_id);
+                        });
+                })
+                // Table reservations
+                ->orWhere(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'table')
+                        ->whereHasMorph('reservable', [\App\Models\Table::class], function ($q3) use ($restaurant_id) {
+                            $q3->whereHas('place', function ($q4) use ($restaurant_id) {
+                                $q4->where('restaurant_id', $restaurant_id);
+                            });
+                        });
+                });
+            });
+        }
 
-        return view('admin.reservations.list', compact('reservations'));
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'LIKE', "%{$search}%")
+                  ->orWhere('customer_phone', 'LIKE', "%{$search}%")
+                  ->orWhere('customer_email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $reservations = $query->orderBy('reservation_date', 'desc')
+                             ->orderBy('time_from', 'desc')
+                             ->paginate(30);
+
+        // Calculate stats for dashboard cards
+        $today = Carbon::today();
+        $todayReservations = Reservation::whereDate('reservation_date', $today)->count();
+        $confirmedToday = Reservation::whereDate('reservation_date', $today)
+                                   ->where('status', 'Confirmed')
+                                   ->count();
+
+        // Prepare calendar events data
+        $calendarEvents = $this->getCalendarEvents($request);
+
+        return view('admin.reservations.list', compact(
+            'reservations', 
+            'todayReservations', 
+            'confirmedToday', 
+            'calendarEvents'
+        ));
     }
 
     /**
@@ -285,46 +339,200 @@ class ReservationController extends Controller
     }
 
     /**
+     * Get calendar events for FullCalendar
+     */
+    private function getCalendarEvents(Request $request, $limit = 100)
+    {
+        $query = Reservation::with(['reservable']);
+
+        // Default date range: current month ± 1 month
+        $startDate = $request->filled('calendar_start') 
+            ? Carbon::parse($request->calendar_start)
+            : Carbon::now()->startOfMonth()->subMonth();
+            
+        $endDate = $request->filled('calendar_end')
+            ? Carbon::parse($request->calendar_end)
+            : Carbon::now()->endOfMonth()->addMonth();
+
+        $query->whereBetween('reservation_date', [$startDate, $endDate]);
+
+        // Apply same filters as list view
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('restaurant_id')) {
+            $restaurant_id = $request->restaurant_id;
+            $query->where(function ($q) use ($restaurant_id) {
+                $q->where(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'restaurant')
+                        ->where('reservable_type', 'App\\Models\\Restaurant')
+                        ->where('reservable_id', $restaurant_id);
+                })
+                ->orWhere(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'place')
+                        ->whereHasMorph('reservable', [\App\Models\Place::class], function ($q3) use ($restaurant_id) {
+                            $q3->where('restaurant_id', $restaurant_id);
+                        });
+                })
+                ->orWhere(function ($q2) use ($restaurant_id) {
+                    $q2->where('type', 'table')
+                        ->whereHasMorph('reservable', [\App\Models\Table::class], function ($q3) use ($restaurant_id) {
+                            $q3->whereHas('place', function ($q4) use ($restaurant_id) {
+                                $q4->where('restaurant_id', $restaurant_id);
+                            });
+                        });
+                });
+            });
+        }
+
+        $reservations = $query->orderBy('reservation_date', 'asc')
+                             ->orderBy('time_from', 'asc')
+                             ->limit($limit)
+                             ->get();
+
+        $events = [];
+        foreach ($reservations as $reservation) {
+            // Format datetime correctly for FullCalendar
+            $startDateTime = $reservation->reservation_date . 'T' . $reservation->time_from;
+            $endDateTime = $reservation->reservation_date . 'T' . $reservation->time_to;
+            
+            $events[] = [
+                'id' => $reservation->id,
+                'title' => $this->getEventTitle($reservation),
+                'start' => $startDateTime,
+                'end' => $endDateTime,
+                'backgroundColor' => $this->getStatusColor($reservation->status),
+                'borderColor' => $this->getStatusColor($reservation->status),
+                'textColor' => '#ffffff',
+                'url' => '#', // route('admin.reservations.show', $reservation->id),
+                'extendedProps' => [
+                    'status' => $reservation->status,
+                    'customerName' => $reservation->name ?? 'უცნობი',
+                    'customerPhone' => $reservation->phone ?? '',
+                    'customerEmail' => $reservation->email ?? '',
+                    'partySize' => $reservation->guests_count ?? 1,
+                    'type' => $reservation->type,
+                    'reservableName' => $this->getReservableName($reservation)
+                ]
+            ];
+        }
+
+        return $events;
+    }
+
+    /**
+     * Get event title for calendar display
+     */
+    private function getEventTitle($reservation)
+    {
+        $time = Carbon::parse($reservation->time_from)->format('H:i');
+        $name = $reservation->name ?? 'უცნობი';
+        $size = $reservation->guests_count ?? 1;
+        
+        return "{$time} - {$name} ({$size}კ.)";
+    }
+
+    /**
+     * Get status color for calendar events
+     */
+    private function getStatusColor($status)
+    {
+        return match ($status) {
+            'Pending' => '#f59e0b',    // amber-500
+            'Confirmed' => '#10b981',  // emerald-500
+            'Cancelled' => '#ef4444',  // red-500
+            'Completed' => '#3b82f6',  // blue-500
+            default => '#6b7280'       // gray-500
+        };
+    }
+
+    /**
+     * Get reservable name for display
+     */
+    private function getReservableName($reservation)
+    {
+        if (!$reservation->reservable) {
+            return 'N/A';
+        }
+
+        switch ($reservation->type) {
+            case 'restaurant':
+                return $reservation->reservable->name ?? 'რესტორანი';
+            case 'place':
+                return ($reservation->reservable->restaurant->name ?? 'რესტორანი') . ' - ' . ($reservation->reservable->name ?? 'ადგილი');
+            case 'table':
+                $table = $reservation->reservable;
+                $place = $table->place ?? null;
+                $restaurant = $place->restaurant ?? null;
+                return ($restaurant->name ?? 'რესტორანი') . ' - ' . ($place->name ?? 'ადგილი') . ' - მაგიდა ' . ($table->table_number ?? '?');
+            default:
+                return 'N/A';
+        }
+    }
+
+    /**
      * Return events across all restaurants (filtered by date range)
      */
     public function eventsAll(Request $request)
     {
-        $startDate = $request->input('start', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $endDate = $request->input('end', Carbon::now()->endOfMonth()->format('Y-m-d'));
+        try {
+            // Build query with filters
+            $query = \DB::table('reservations')
+                ->select('id', 'name', 'phone', 'email', 'guests_count', 'reservation_date', 'time_from', 'time_to', 'status', 'type');
 
-        $reservations = Reservation::with(['reservable'])
-            ->whereBetween('reservation_date', [$startDate, $endDate])
-            ->orderBy('reservation_date')
-            ->orderBy('time_from')
-            ->get();
+            // Apply status filter
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
 
-        $events = $reservations->map(function ($reservation) {
-            $color = match ($reservation->status) {
-                'Confirmed' => '#10B981',
-                'Pending' => '#F59E0B',
-                'Cancelled' => '#EF4444',
-                'Completed' => '#6B7280',
-                default => '#3B82F6',
-            };
+            // Apply restaurant filter (if needed in future)
+            if ($request->filled('restaurant_id')) {
+                // Future implementation for restaurant filtering
+                // $query->where('restaurant_id', $request->restaurant_id);
+            }
 
-            return [
-                'id' => $reservation->id,
-                'title' => $reservation->name . ' (' . $reservation->guests_count . ' სტუმარი)',
-                'start' => $reservation->reservation_date->format('Y-m-d') . 'T' . $reservation->time_from,
-                'end' => $reservation->reservation_date->format('Y-m-d') . 'T' . $reservation->time_to,
-                'color' => $color,
-                'extendedProps' => [
-                    'type' => $reservation->type,
-                    'status' => $reservation->status,
-                    'phone' => $reservation->phone,
-                    'email' => $reservation->email,
-                    'guests_count' => $reservation->guests_count,
-                    'reservable_name' => $reservation->reservable?->name ?? 'N/A',
-                ],
-            ];
-        });
+            // Apply date filter for "დღეს" (Today) button
+            if ($request->filled('date')) {
+                $query->whereDate('reservation_date', $request->date);
+            }
 
-        return response()->json($events);
+            $reservations = $query->get();
+
+            $events = [];
+            foreach ($reservations as $reservation) {
+                $color = '#3b82f6'; // Default blue color
+                if ($reservation->status === 'Confirmed') $color = '#10b981';
+                if ($reservation->status === 'Pending') $color = '#f59e0b';
+                if ($reservation->status === 'Cancelled') $color = '#ef4444';
+
+                $events[] = [
+                    'id' => $reservation->id,
+                    'title' => ($reservation->name ?? 'უცნობი') . ' (' . ($reservation->guests_count ?? 1) . 'კ.)',
+                    'start' => $reservation->reservation_date . 'T' . $reservation->time_from,
+                    'end' => $reservation->reservation_date . 'T' . $reservation->time_to,
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'textColor' => '#ffffff',
+                    'extendedProps' => [
+                        'customerName' => $reservation->name ?? 'უცნობი',
+                        'customerPhone' => $reservation->phone ?? '',
+                        'customerEmail' => $reservation->email ?? '',
+                        'partySize' => $reservation->guests_count ?? 1,
+                        'status' => $reservation->status,
+                        'type' => $reservation->type ?? 'restaurant',
+                        'reservableName' => 'ზოგადი ჯავშანი'
+                    ]
+                ];
+            }
+            
+            return response()->json($events, 200, ['Content-Type' => 'application/json']);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Database error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
