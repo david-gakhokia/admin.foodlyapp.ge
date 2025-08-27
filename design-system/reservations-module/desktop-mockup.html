@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ka" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>რეზერვაციების მართვა - Desktop Mockup</title>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+            background-color: #FAFAFA;
+            color: #171717;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E5E5;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            color: #737373;
+            font-size: 14px;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 2.75fr 1.25fr;
+            gap: 24px;
+            min-height: 800px;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E5E5;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+        
+        .filters-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #171717;
+        }
+        
+        .filter-group {
+            margin-bottom: 16px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.15s ease;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: 8px 16px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2563EB;
+        }
+        
+        .btn-secondary {
+            padding: 8px 16px;
+            background: #F5F5F5;
+            color: #737373;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #E5E5E5;
+        }
+        
+        .legend {
+            margin-top: 24px;
+            padding: 16px;
+            background: #FAFAFA;
+            border-radius: 8px;
+        }
+        
+        .legend h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #171717;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-color.pending { background: #F59E0B; }
+        .legend-color.confirmed { background: #10B981; }
+        .legend-color.checked-in { background: #3B82F6; }
+        .legend-color.canceled { background: #EF4444; }
+        
+        /* Reservations List Section */
+        .list-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E5E5;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .list-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #171717;
+        }
+        
+        .list-meta {
+            color: #737373;
+            font-size: 14px;
+        }
+        
+        .status-chips {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .status-chip {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #D1D5DB;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+        
+        .status-chip.active {
+            background: #3B82F6;
+            color: white;
+            border-color: #3B82F6;
+        }
+        
+        .status-chip:hover {
+            background: #F3F4F6;
+        }
+        
+        .status-chip.active:hover {
+            background: #2563EB;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #E5E5E5;
+        }
+        
+        .reservations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .reservations-table th {
+            background: #F9FAFB;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 500;
+            color: #737373;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #E5E5E5;
+        }
+        
+        .reservations-table td {
+            padding: 16px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .table-row {
+            transition: background-color 0.15s ease;
+            cursor: pointer;
+        }
+        
+        .table-row:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .guest-info .guest-name {
+            font-weight: 500;
+            color: #171717;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .guest-info .guest-contact {
+            font-size: 12px;
+            color: #737373;
+        }
+        
+        .reservable-info .place-type {
+            font-weight: 500;
+            color: #171717;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .reservable-info .place-details {
+            font-size: 12px;
+            color: #737373;
+        }
+        
+        .datetime-info .date {
+            font-weight: 500;
+            color: #171717;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .datetime-info .time {
+            font-size: 12px;
+            color: #737373;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-badge.pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .status-badge.confirmed {
+            background: #D1FAE5;
+            color: #047857;
+        }
+        
+        .status-badge.checked-in {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .status-badge.canceled {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border: 1px solid #E5E5E5;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+        
+        .action-btn:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn.view {
+            color: #3B82F6;
+        }
+        
+        .action-btn.view:hover {
+            background: #EFF6FF;
+            border-color: #3B82F6;
+        }
+        
+        .action-btn.edit {
+            color: #7C3AED;
+        }
+        
+        .action-btn.edit:hover {
+            background: #F3E8FF;
+            border-color: #7C3AED;
+        }
+        
+        .action-btn.delete {
+            color: #EF4444;
+            border-color: #FEE2E2;
+        }
+        
+        .action-btn.delete:hover {
+            background: #FEF2F2;
+            border-color: #EF4444;
+        }
+        
+        /* Calendar Section */
+        .calendar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E5E5;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+        
+        .calendar-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #171717;
+        }
+        
+        .calendar-mockup {
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .calendar-header {
+            background: #F9FAFB;
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E5E5;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .calendar-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .calendar-nav button {
+            padding: 4px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .calendar-nav button:hover {
+            background: #E5E5E5;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        .calendar-day-header {
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+            color: #737373;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E5E5;
+        }
+        
+        .calendar-day {
+            padding: 8px 4px;
+            min-height: 40px;
+            border-right: 1px solid #F3F4F6;
+            border-bottom: 1px solid #F3F4F6;
+            position: relative;
+        }
+        
+        .calendar-day-number {
+            font-size: 12px;
+            color: #737373;
+        }
+        
+        .calendar-event {
+            background: #D1FAE5;
+            color: #047857;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: 10px;
+            margin-top: 2px;
+            cursor: pointer;
+            border-left: 2px solid #10B981;
+        }
+        
+        .calendar-event.pending {
+            background: #FEF3C7;
+            color: #92400E;
+            border-left-color: #F59E0B;
+        }
+        
+        .calendar-event.confirmed {
+            background: #D1FAE5;
+            color: #047857;
+            border-left-color: #10B981;
+        }
+        
+        .calendar-event.checked-in {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border-left-color: #3B82F6;
+        }
+        
+        .calendar-event.canceled {
+            background: #FEE2E2;
+            color: #B91C1C;
+            border-left-color: #EF4444;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 16px;
+        }
+        
+        .modal-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-width: 720px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E5E5;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #171717;
+        }
+        
+        .modal-close {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #737373;
+        }
+        
+        .modal-close:hover {
+            background: #F3F4F6;
+            color: #171717;
+        }
+        
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #E5E5E5;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* Reservation Details in Modal */
+        .reservation-details {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .detail-group {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #737373;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #171717;
+        }
+        
+        .detail-group.highlight .detail-value {
+            font-weight: 600;
+        }
+        
+        .reservation-note {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        .reservation-note .detail-label {
+            color: #3B82F6;
+        }
+        
+        /* Hidden by default */
+        .modal-overlay.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>რეზერვაციების მართვა</h1>
+            <p>მენეჯმენტი — ყველა რესტორნისთვის</p>
+        </header>
+        
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Filters Section (Left - 20%) -->
+            <aside class="filters-section">
+                <h3>ფილტრები</h3>
+                
+                <div class="filter-group">
+                    <label class="filter-label">დაწყების თარიღი</label>
+                    <input type="date" class="filter-input" value="2025-09-01">
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">დასრულების თარიღი</label>
+                    <input type="date" class="filter-input" value="2025-09-30">
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">ტიპი</label>
+                    <select class="filter-input">
+                        <option value="">ყველა</option>
+                        <option value="restaurant">რესტორანი</option>
+                        <option value="place">ადგილი</option>
+                        <option value="table">მაგიდა</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">სტატუსი</label>
+                    <select class="filter-input">
+                        <option value="">ყველა</option>
+                        <option value="pending">მოლოდინში</option>
+                        <option value="confirmed" selected>დადასტურებული</option>
+                        <option value="checked-in">შემოვიდა</option>
+                        <option value="canceled">გაუქმებული</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">რესტორანი</label>
+                    <select class="filter-input">
+                        <option value="">ყველა რესტორანი</option>
+                        <option value="1" selected>თბილისი რესტორანი</option>
+                        <option value="2">ბათუმი კაფე</option>
+                        <option value="3">ქუთაისი გრილი</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">ძიება (სახელი/ტელეფონი)</label>
+                    <input type="search" class="filter-input" placeholder="სახელი ან ტელეფონი">
+                </div>
+                
+                <div class="filter-buttons">
+                    <button class="btn-primary">ფილტრი</button>
+                    <button class="btn-secondary">გასუფთავება</button>
+                </div>
+                
+                <!-- Legend -->
+                <div class="legend">
+                    <h4>ლეგენდა</h4>
+                    <div class="legend-item">
+                        <span class="legend-color pending"></span>
+                        <span>მოლოდინში</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color confirmed"></span>
+                        <span>დადასტურებული</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color checked-in"></span>
+                        <span>შემოვიდა</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color canceled"></span>
+                        <span>გაუქმებული</span>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Reservations List (Center - 55%) -->
+            <main class="list-section">
+                <div class="list-header">
+                    <h3>ჯავშნების სია</h3>
+                    <div class="list-meta">სულ: 156 ჯავშანი</div>
+                </div>
+                
+                <!-- Quick Status Filter Chips -->
+                <div class="status-chips">
+                    <a href="#" class="status-chip">ყველა</a>
+                    <a href="#" class="status-chip">მოლოდინში</a>
+                    <a href="#" class="status-chip active">დადასტურებული</a>
+                    <a href="#" class="status-chip">შემოვიდა</a>
+                    <a href="#" class="status-chip">გაუქმებული</a>
+                </div>
+                
+                <!-- Reservations Table -->
+                <div class="table-container">
+                    <table class="reservations-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>მომხმარებელი</th>
+                                <th>ადგილი</th>
+                                <th>თარიღი/დრო</th>
+                                <th>სტუმრები</th>
+                                <th>სტატუსი</th>
+                                <th>მოქმედებები</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-row" onclick="openModal('123')">
+                                <td><strong>#123</strong></td>
+                                <td>
+                                    <div class="guest-info">
+                                        <div class="guest-name">გიორგი ალექსიძე</div>
+                                        <div class="guest-contact">+995551234567</div>
+                                        <div class="guest-contact">giorgi@example.com</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reservable-info">
+                                        <div class="place-type">რესტორანი</div>
+                                        <div class="place-details">თბილისი რესტორანი</div>
+                                        <div class="place-details">მაგიდა #5</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <div class="date">01/09/2025</div>
+                                        <div class="time">19:00 - 21:00</div>
+                                    </div>
+                                </td>
+                                <td>4 სტუმარი</td>
+                                <td>
+                                    <span class="status-badge confirmed">დადასტურებული</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="#" class="action-btn view" onclick="event.stopPropagation(); openModal('123')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                <circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                            ნახვა
+                                        </a>
+                                        <a href="#" class="action-btn edit" onclick="event.stopPropagation()">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                                                <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                            რედაქტირება
+                                        </a>
+                                        <button class="action-btn delete" onclick="event.stopPropagation(); confirmDelete('123')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3,6 5,6 21,6"/>
+                                                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                                            </svg>
+                                            წაშლა
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="table-row">
+                                <td><strong>#124</strong></td>
+                                <td>
+                                    <div class="guest-info">
+                                        <div class="guest-name">ნინო ხახუტაშვილი</div>
+                                        <div class="guest-contact">+995555987654</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reservable-info">
+                                        <div class="place-type">ადგილი</div>
+                                        <div class="place-details">ბათუმი კაფე</div>
+                                        <div class="place-details">ტერასა #2</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <div class="date">01/09/2025</div>
+                                        <div class="time">20:30 - 22:30</div>
+                                    </div>
+                                </td>
+                                <td>2 სტუმარი</td>
+                                <td>
+                                    <span class="status-badge pending">მოლოდინში</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="#" class="action-btn view">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                <circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                            ნახვა
+                                        </a>
+                                        <a href="#" class="action-btn edit">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                                                <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                            რედაქტირება
+                                        </a>
+                                        <button class="action-btn delete">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3,6 5,6 21,6"/>
+                                                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                                            </svg>
+                                            წაშლა
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="table-row">
+                                <td><strong>#125</strong></td>
+                                <td>
+                                    <div class="guest-info">
+                                        <div class="guest-name">ლევან მაღლაკელიძე</div>
+                                        <div class="guest-contact">+995551122334</div>
+                                        <div class="guest-contact">levan@company.ge</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reservable-info">
+                                        <div class="place-type">რესტორანი</div>
+                                        <div class="place-details">თბილისი რესტორანი</div>
+                                        <div class="place-details">მაგიდა #10</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <div class="date">02/09/2025</div>
+                                        <div class="time">18:00 - 20:00</div>
+                                    </div>
+                                </td>
+                                <td>6 სტუმარი</td>
+                                <td>
+                                    <span class="status-badge checked-in">შემოვიდა</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="#" class="action-btn view">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                <circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                            ნახვა
+                                        </a>
+                                        <a href="#" class="action-btn edit">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                                                <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                            რედაქტირება
+                                        </a>
+                                        <button class="action-btn delete">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3,6 5,6 21,6"/>
+                                                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                                            </svg>
+                                            წაშლა
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination would go here -->
+                <div style="margin-top: 16px; display: flex; justify-content: between; align-items: center; color: #737373; font-size: 14px;">
+                    <span>გვერდი 1 სულ 16-დან</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button style="padding: 6px 12px; border: 1px solid #E5E5E5; background: white; border-radius: 4px; cursor: pointer;">წინა</button>
+                        <button style="padding: 6px 12px; border: 1px solid #3B82F6; background: #3B82F6; color: white; border-radius: 4px;">1</button>
+                        <button style="padding: 6px 12px; border: 1px solid #E5E5E5; background: white; border-radius: 4px; cursor: pointer;">2</button>
+                        <button style="padding: 6px 12px; border: 1px solid #E5E5E5; background: white; border-radius: 4px; cursor: pointer;">3</button>
+                        <button style="padding: 6px 12px; border: 1px solid #E5E5E5; background: white; border-radius: 4px; cursor: pointer;">შემდეგი</button>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Calendar Section (Right - 25%) -->
+            <aside class="calendar-section">
+                <h3>კალენდარი</h3>
+                
+                <div class="calendar-mockup">
+                    <div class="calendar-header">
+                        <div class="calendar-title">სექტემბერი 2025</div>
+                        <div class="calendar-nav">
+                            <button>‹</button>
+                            <button>დღეს</button>
+                            <button>›</button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <!-- Day headers -->
+                        <div class="calendar-day-header">ორშ</div>
+                        <div class="calendar-day-header">სამ</div>
+                        <div class="calendar-day-header">ოთხ</div>
+                        <div class="calendar-day-header">ხუთ</div>
+                        <div class="calendar-day-header">პარ</div>
+                        <div class="calendar-day-header">შაბ</div>
+                        <div class="calendar-day-header">კვი</div>
+                        
+                        <!-- Calendar days -->
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">1</div>
+                            <div class="calendar-event confirmed" onclick="openModalFromCalendar('123')">19:00 ჯავშენი #123</div>
+                            <div class="calendar-event pending">20:30 ჯავშენი #124</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">2</div>
+                            <div class="calendar-event checked-in">18:00 ჯავშენი #125</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">3</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">4</div>
+                            <div class="calendar-event confirmed">19:30 ჯავშენი #126</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">5</div>
+                            <div class="calendar-event canceled">20:00 ჯავშენი #127</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">6</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="calendar-day-number">7</div>
+                            <div class="calendar-event confirmed">18:30 ჯავშენი #128</div>
+                        </div>
+                        
+                        <!-- More calendar days would follow... -->
+                        <div class="calendar-day"><div class="calendar-day-number">8</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">9</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">10</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">11</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">12</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">13</div></div>
+                        <div class="calendar-day"><div class="calendar-day-number">14</div></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- Quick Reservation Modal -->
+    <div id="reservationModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <header class="modal-header">
+                <h3>ჯავშნის დეტალები #123</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </header>
+            
+            <div class="modal-body">
+                <div class="reservation-details">
+                    <div class="detail-group highlight">
+                        <div class="detail-label">მომხმარებლის სახელი</div>
+                        <div class="detail-value">გიორგი ალექსიძე</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="detail-group">
+                            <div class="detail-label">ტელეფონი</div>
+                            <div class="detail-value">+995551234567</div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-label">ელ. ფოსტა</div>
+                            <div class="detail-value">giorgi@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-group highlight">
+                        <div class="detail-label">რესტორანი</div>
+                        <div class="detail-value">თბილისი რესტორანი</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="detail-group">
+                            <div class="detail-label">რეზერვირებული ადგილი</div>
+                            <div class="detail-value">მაგიდა #5</div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-label">სტუმრების რაოდენობა</div>
+                            <div class="detail-value">4 ადამიანი</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="detail-group">
+                            <div class="detail-label">რეზერვაციის თარიღი</div>
+                            <div class="detail-value">2025-09-01</div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-label">დრო</div>
+                            <div class="detail-value">19:00 - 21:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">სტატუსი</div>
+                        <div class="detail-value">
+                            <span class="status-badge confirmed">დადასტურებული</span>
+                        </div>
+                    </div>
+                    
+                    <div class="reservation-note">
+                        <div class="detail-label">შენიშვნა</div>
+                        <div class="detail-value">birthday, please prepare small cake</div>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="modal-footer">
+                <button class="btn-primary">რედაქტირება</button>
+                <button class="btn-secondary" onclick="closeModal()">დახურვა</button>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        function openModal(reservationId) {
+            document.getElementById('reservationModal').classList.remove('hidden');
+        }
+        
+        function openModalFromCalendar(reservationId) {
+            openModal(reservationId);
+        }
+        
+        function closeModal() {
+            document.getElementById('reservationModal').classList.add('hidden');
+        }
+        
+        function confirmDelete(reservationId) {
+            if (confirm('დარწმუნებული ხართ, რომ გსურთ ამ ჯავშნის წაშლა?')) {
+                // Delete logic would go here
+                alert('ჯავშანი წაშლილია');
+            }
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('reservationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

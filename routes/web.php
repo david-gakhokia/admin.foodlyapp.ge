@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\PlaceController;
 use App\Http\Controllers\Admin\DishController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\NotificationLogController;
 
 // Admin Slot Controllers
 use App\Http\Controllers\Admin\Slot\RestaurantSlotController as AdminRestaurantSlotController;
@@ -243,6 +244,14 @@ Route::middleware(['auth'])
         Route::delete('spaces/{space}/image', [\App\Http\Controllers\Admin\SpaceController::class, 'deleteImage'])
             ->name('spaces.image.delete');
 
+        // Notification Logs (failed notifications)
+        Route::prefix('notification-logs')->name('notification-logs.')->group(function () {
+            Route::get('/', [NotificationLogController::class, 'index'])->name('index');
+            Route::get('{notificationLog}', [NotificationLogController::class, 'show'])->name('show');
+            // Create a sample log for testing (admin only)
+            Route::post('sample', [NotificationLogController::class, 'sample'])->name('sample');
+        });
+
         // Space-Restaurant Management (from Space perspective)
         Route::prefix('spaces/{space}/restaurants')->name('spaces.restaurants.')->group(function () {
             Route::get('/', [SpaceRestaurantController::class, 'index'])->name('index');
@@ -351,6 +360,9 @@ Route::middleware(['auth'])
         Route::prefix('restaurants/{restaurant}')->name('restaurants.')->group(function () {
             Route::get('reservations/calendar', [ReservationController::class, 'calendar'])
                 ->name('reservations.calendar');
+            // JSON events endpoint for FullCalendar (placed before resource to avoid route conflicts)
+            Route::get('reservations/events', [ReservationController::class, 'events'])
+                ->name('reservations.events');
             Route::resource('reservations', ReservationController::class)
                 ->only(['index', 'show', 'edit', 'update', 'destroy']);
         });
@@ -396,6 +408,8 @@ Route::middleware(['auth'])
 
             // Parent categories route
             Route::get('menu/category/{menuCategory}/parents', [MenuCategoryController::class, 'showParents'])->name('menu.category.parents');
+
+            // Notification Logs (failed notifications) — moved to top-level admin routes
         });
 
         // Restaurant Places - Nested routes
@@ -446,6 +460,16 @@ Route::middleware(['auth'])
             ->name('restaurants.parent-categories');
         Route::get('/restaurants/{restaurant}/places-ajax', [TableController::class, 'getRestaurantPlaces'])
             ->name('restaurants.places-ajax');
+
+        // Top-level Admin Reservations (list and calendar across all restaurants)
+        Route::get('reservations/list', [ReservationController::class, 'list'])
+            ->name('reservations.list');
+
+        Route::get('reservation/calendar', [ReservationController::class, 'calendarAll'])
+            ->name('reservation.calendar');
+
+        Route::get('reservations/events/all', [ReservationController::class, 'eventsAll'])
+            ->name('reservations.events.all');
     });
 
 

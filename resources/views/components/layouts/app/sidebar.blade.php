@@ -19,6 +19,7 @@
                     <flux:navlist.item icon="shield-check" :href="route('admin.roles.index')" :current="request()->routeIs('admin.roles.*')" wire:navigate>{{ __('Roles') }}</flux:navlist.item>
                     <flux:navlist.item icon="key" :href="route('admin.permissions.index')" :current="request()->routeIs('admin.permissions.*')" wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
                     <flux:navlist.item icon="cube" :href="route('admin.kiosks.index')" :current="request()->routeIs('admin.kiosks.*')" wire:navigate>Kiosks</flux:navlist.item>
+                    <flux:navlist.item icon="bell" :href="route('admin.notification-logs.index')" :current="request()->routeIs('admin.notification-logs.*')" wire:navigate>{{ __('Notification Logs') }}</flux:navlist.item>
                     
                     {{-- @endrole --}}
                     
@@ -27,6 +28,7 @@
                         {{ __('API') }}
                     </div>
                     <flux:navlist.item icon="building-storefront" :href="route('admin.restaurants.index')" :current="request()->routeIs('admin.restaurants.*')" wire:navigate>{{ __('Restaurants') }}</flux:navlist.item>
+                    <flux:navlist.item icon="calendar-days" :href="route('admin.reservations.list')" :current="request()->routeIs('admin.reservations.*')" wire:navigate>რეზერვაციები</flux:navlist.item>
                     {{-- <flux:navlist.item icon="table-cells-large" :href="route('admin.tables.index')" :current="request()->routeIs('admin.tables.*')" wire:navigate>{{ __('Tables') }}</flux:navlist.item>
                      --}}
           

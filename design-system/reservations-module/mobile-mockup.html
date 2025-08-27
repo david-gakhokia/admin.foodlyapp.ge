@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ka" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>რეზერვაციების მართვა - Mobile Mockup</title>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+            background-color: #FAFAFA;
+            color: #171717;
+            line-height: 1.5;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        /* Mobile Header */
+        .mobile-header {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #E5E5E5;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .mobile-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #171717;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-header p {
+            color: #737373;
+            font-size: 12px;
+        }
+        
+        .mobile-header-actions {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .mobile-filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #F3F4F6;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+        }
+        
+        .mobile-calendar-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #3B82F6;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Status Chips */
+        .mobile-status-chips {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .status-chips-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        
+        .status-chips-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .status-chips-scroll::-webkit-scrollbar-track {
+            background: #F3F4F6;
+            border-radius: 2px;
+        }
+        
+        .status-chips-scroll::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 2px;
+        }
+        
+        .status-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #D1D5DB;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .status-chip.active {
+            background: #3B82F6;
+            color: white;
+            border-color: #3B82F6;
+        }
+        
+        /* Mobile Reservations List */
+        .mobile-list {
+            padding: 0 16px 16px;
+        }
+        
+        .list-meta {
+            padding: 16px 0;
+            color: #737373;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .reservation-card {
+            background: white;
+            border: 1px solid #E5E5E5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .reservation-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-color: #D1D5DB;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .card-id {
+            font-weight: 600;
+            color: #3B82F6;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-badge.pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .status-badge.confirmed {
+            background: #D1FAE5;
+            color: #047857;
+        }
+        
+        .status-badge.checked-in {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .status-badge.canceled {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+        
+        .card-guest {
+            margin-bottom: 8px;
+        }
+        
+        .guest-name {
+            font-weight: 500;
+            color: #171717;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .guest-contact {
+            font-size: 14px;
+            color: #737373;
+        }
+        
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #737373;
+            margin-bottom: 2px;
+        }
+        
+        .detail-value {
+            font-size: 14px;
+            color: #171717;
+            font-weight: 500;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #F3F4F6;
+        }
+        
+        .mobile-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border: 1px solid #E5E5E5;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+        
+        .mobile-action-btn:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-action-btn.view {
+            color: #3B82F6;
+        }
+        
+        .mobile-action-btn.edit {
+            color: #7C3AED;
+        }
+        
+        .mobile-action-btn.delete {
+            color: #EF4444;
+            border-color: #FEE2E2;
+        }
+        
+        /* Filter Drawer */
+        .filter-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .filter-drawer.open {
+            transform: translateX(0);
+        }
+        
+        .filter-content {
+            width: 80%;
+            max-width: 320px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #E5E5E5;
+        }
+        
+        .filter-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #171717;
+        }
+        
+        .filter-close {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #737373;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.15s ease;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: 12px 16px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-secondary {
+            padding: 12px 16px;
+            background: #F5F5F5;
+            color: #737373;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Mobile Calendar */
+        .mobile-calendar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-calendar.open {
+            transform: translateY(0);
+        }
+        
+        .calendar-header {
+            padding: 16px;
+            border-bottom: 1px solid #E5E5E5;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .calendar-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #171717;
+        }
+        
+        .calendar-close {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #737373;
+        }
+        
+        .calendar-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        
+        .calendar-mockup {
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .calendar-nav {
+            background: #F9FAFB;
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E5E5;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .calendar-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .calendar-nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .calendar-nav-buttons button {
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        .calendar-day-header {
+            padding: 12px 4px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: #737373;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E5E5;
+        }
+        
+        .calendar-day {
+            padding: 8px 4px;
+            min-height: 60px;
+            border-right: 1px solid #F3F4F6;
+            border-bottom: 1px solid #F3F4F6;
+            position: relative;
+        }
+        
+        .calendar-day-number {
+            font-size: 14px;
+            color: #737373;
+            margin-bottom: 4px;
+        }
+        
+        .calendar-event {
+            background: #D1FAE5;
+            color: #047857;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: 10px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border-left: 2px solid #10B981;
+        }
+        
+        .calendar-event.pending {
+            background: #FEF3C7;
+            color: #92400E;
+            border-left-color: #F59E0B;
+        }
+        
+        .calendar-event.confirmed {
+            background: #D1FAE5;
+            color: #047857;
+            border-left-color: #10B981;
+        }
+        
+        .calendar-event.checked-in {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border-left-color: #3B82F6;
+        }
+        
+        .calendar-event.canceled {
+            background: #FEE2E2;
+            color: #B91C1C;
+            border-left-color: #EF4444;
+        }
+        
+        /* Mobile Modal */
+        .mobile-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 60;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-modal-container {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-modal.open .mobile-modal-container {
+            transform: translateY(0);
+        }
+        
+        .mobile-modal-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid #E5E5E5;
+            position: relative;
+        }
+        
+        .modal-handle {
+            width: 32px;
+            height: 4px;
+            background: #D1D5DB;
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+        
+        .mobile-modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #171717;
+            text-align: center;
+        }
+        
+        .mobile-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .mobile-modal-footer {
+            padding: 16px 20px 20px;
+            border-top: 1px solid #E5E5E5;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .mobile-modal-footer .btn-primary,
+        .mobile-modal-footer .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .mobile-modal-footer .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+        
+        .mobile-modal-footer .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
+        
+        /* Reservation Details in Mobile Modal */
+        .mobile-reservation-details {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .mobile-detail-group {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .mobile-detail-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #737373;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .mobile-detail-value {
+            font-size: 16px;
+            color: #171717;
+        }
+        
+        .mobile-detail-group.highlight .mobile-detail-value {
+            font-weight: 600;
+        }
+        
+        .mobile-reservation-note {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        .mobile-reservation-note .mobile-detail-label {
+            color: #3B82F6;
+        }
+        
+        /* Hidden states */
+        .hidden {
+            display: none;
+        }
+        
+        /* Loading states */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #737373;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #F3F4F6;
+            border-top: 2px solid #3B82F6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <h1>რეზერვაციების მართვა</h1>
+            <p>მენეჯმენტი — ყველა რესტორნისთვის</p>
+            
+            <div class="mobile-header-actions">
+                <button class="mobile-filter-btn" onclick="openFilterDrawer()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"/>
+                    </svg>
+                    ფილტრები
+                </button>
+                
+                <button class="mobile-calendar-btn" onclick="openMobileCalendar()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    კალენდარი
+                </button>
+            </div>
+        </header>
+        
+        <!-- Status Chips -->
+        <div class="mobile-status-chips">
+            <div class="status-chips-scroll">
+                <a href="#" class="status-chip">ყველა</a>
+                <a href="#" class="status-chip">მოლოდინში</a>
+                <a href="#" class="status-chip active">დადასტურებული</a>
+                <a href="#" class="status-chip">შემოვიდა</a>
+                <a href="#" class="status-chip">გაუქმებული</a>
+            </div>
+        </div>
+        
+        <!-- Mobile Reservations List -->
+        <main class="mobile-list">
+            <div class="list-meta">სულ: 156 ჯავშანი</div>
+            
+            <!-- Reservation Cards -->
+            <div class="reservation-card" onclick="openMobileModal('123')">
+                <div class="card-header">
+                    <div class="card-id">#123</div>
+                    <span class="status-badge confirmed">დადასტურებული</span>
+                </div>
+                
+                <div class="card-guest">
+                    <div class="guest-name">გიორგი ალექსიძე</div>
+                    <div class="guest-contact">+995551234567</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="detail-item">
+                        <div class="detail-label">რესტორანი</div>
+                        <div class="detail-value">თბილისი რესტორანი</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">მაგიდა</div>
+                        <div class="detail-value">მაგიდა #5</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">თარიღი</div>
+                        <div class="detail-value">01/09/2025</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">დრო</div>
+                        <div class="detail-value">19:00 - 21:00</div>
+                    </div>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="#" class="mobile-action-btn view" onclick="event.stopPropagation(); openMobileModal('123')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        ნახვა
+                    </a>
+                    <a href="#" class="mobile-action-btn edit" onclick="event.stopPropagation()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                            <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        რედაქტირება
+                    </a>
+                    <button class="mobile-action-btn delete" onclick="event.stopPropagation(); confirmDelete('123')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                        </svg>
+                        წაშლა
+                    </button>
+                </div>
+            </div>
+            
+            <div class="reservation-card">
+                <div class="card-header">
+                    <div class="card-id">#124</div>
+                    <span class="status-badge pending">მოლოდინში</span>
+                </div>
+                
+                <div class="card-guest">
+                    <div class="guest-name">ნინო ხახუტაშვილი</div>
+                    <div class="guest-contact">+995555987654</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="detail-item">
+                        <div class="detail-label">რესტორანი</div>
+                        <div class="detail-value">ბათუმი კაფე</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">ადგილი</div>
+                        <div class="detail-value">ტერასა #2</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">თარიღი</div>
+                        <div class="detail-value">01/09/2025</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">დრო</div>
+                        <div class="detail-value">20:30 - 22:30</div>
+                    </div>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="#" class="mobile-action-btn view">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        ნახვა
+                    </a>
+                    <a href="#" class="mobile-action-btn edit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                            <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        რედაქტირება
+                    </a>
+                    <button class="mobile-action-btn delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                        </svg>
+                        წაშლა
+                    </button>
+                </div>
+            </div>
+            
+            <div class="reservation-card">
+                <div class="card-header">
+                    <div class="card-id">#125</div>
+                    <span class="status-badge checked-in">შემოვიდა</span>
+                </div>
+                
+                <div class="card-guest">
+                    <div class="guest-name">ლევან მაღლაკელიძე</div>
+                    <div class="guest-contact">+995551122334</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="detail-item">
+                        <div class="detail-label">რესტორანი</div>
+                        <div class="detail-value">თბილისი რესტორანი</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">მაგიდა</div>
+                        <div class="detail-value">მაგიდა #10</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">თარიღი</div>
+                        <div class="detail-value">02/09/2025</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">დრო</div>
+                        <div class="detail-value">18:00 - 20:00</div>
+                    </div>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="#" class="mobile-action-btn view">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        ნახვა
+                    </a>
+                    <a href="#" class="mobile-action-btn edit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                            <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        რედაქტირება
+                    </a>
+                    <button class="mobile-action-btn delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                        </svg>
+                        წაშლა
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Filter Drawer -->
+    <div id="filterDrawer" class="filter-drawer">
+        <div class="filter-content">
+            <div class="filter-header">
+                <h3>ფილტრები</h3>
+                <button class="filter-close" onclick="closeFilterDrawer()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">დაწყების თარიღი</label>
+                <input type="date" class="filter-input" value="2025-09-01">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">დასრულების თარიღი</label>
+                <input type="date" class="filter-input" value="2025-09-30">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">ტიპი</label>
+                <select class="filter-input">
+                    <option value="">ყველა</option>
+                    <option value="restaurant">რესტორანი</option>
+                    <option value="place">ადგილი</option>
+                    <option value="table">მაგიდა</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">სტატუსი</label>
+                <select class="filter-input">
+                    <option value="">ყველა</option>
+                    <option value="pending">მოლოდინში</option>
+                    <option value="confirmed" selected>დადასტურებული</option>
+                    <option value="checked-in">შემოვიდა</option>
+                    <option value="canceled">გაუქმებული</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">რესტორანი</label>
+                <select class="filter-input">
+                    <option value="">ყველა რესტორანი</option>
+                    <option value="1" selected>თბილისი რესტორანი</option>
+                    <option value="2">ბათუმი კაფე</option>
+                    <option value="3">ქუთაისი გრილი</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">ძიება</label>
+                <input type="search" class="filter-input" placeholder="სახელი ან ტელეფონი">
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="btn-primary" onclick="applyFilters()">ფილტრი</button>
+                <button class="btn-secondary" onclick="clearFilters()">გასუფთავება</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Calendar -->
+    <div id="mobileCalendar" class="mobile-calendar">
+        <div class="calendar-header">
+            <h3>კალენდარი</h3>
+            <button class="calendar-close" onclick="closeMobileCalendar()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="calendar-body">
+            <div class="calendar-mockup">
+                <div class="calendar-nav">
+                    <div class="calendar-title">სექტემბერი 2025</div>
+                    <div class="calendar-nav-buttons">
+                        <button>‹</button>
+                        <button>დღეს</button>
+                        <button>›</button>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid">
+                    <!-- Day headers -->
+                    <div class="calendar-day-header">ორშ</div>
+                    <div class="calendar-day-header">სამ</div>
+                    <div class="calendar-day-header">ოთხ</div>
+                    <div class="calendar-day-header">ხუთ</div>
+                    <div class="calendar-day-header">პარ</div>
+                    <div class="calendar-day-header">შაბ</div>
+                    <div class="calendar-day-header">კვი</div>
+                    
+                    <!-- Calendar days -->
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">1</div>
+                        <div class="calendar-event confirmed" onclick="openMobileModal('123')">19:00 #123</div>
+                        <div class="calendar-event pending" onclick="openMobileModal('124')">20:30 #124</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">2</div>
+                        <div class="calendar-event checked-in" onclick="openMobileModal('125')">18:00 #125</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">3</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">4</div>
+                        <div class="calendar-event confirmed">19:30 #126</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">5</div>
+                        <div class="calendar-event canceled">20:00 #127</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">6</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">7</div>
+                        <div class="calendar-event confirmed">18:30 #128</div>
+                    </div>
+                    
+                    <!-- More days -->
+                    <div class="calendar-day"><div class="calendar-day-number">8</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">9</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">10</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">11</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">12</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">13</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">14</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Modal -->
+    <div id="mobileModal" class="mobile-modal">
+        <div class="mobile-modal-container">
+            <div class="mobile-modal-header">
+                <div class="modal-handle"></div>
+                <h3>ჯავშნის დეტალები #123</h3>
+            </div>
+            
+            <div class="mobile-modal-body">
+                <div class="mobile-reservation-details">
+                    <div class="mobile-detail-group highlight">
+                        <div class="mobile-detail-label">მომხმარებლის სახელი</div>
+                        <div class="mobile-detail-value">გიორგი ალექსიძე</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">ტელეფონი</div>
+                        <div class="mobile-detail-value">+995551234567</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">ელ. ფოსტა</div>
+                        <div class="mobile-detail-value">giorgi@example.com</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group highlight">
+                        <div class="mobile-detail-label">რესტორანი</div>
+                        <div class="mobile-detail-value">თბილისი რესტორანი</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">რეზერვირებული ადგილი</div>
+                        <div class="mobile-detail-value">მაგიდა #5</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">სტუმრების რაოდენობა</div>
+                        <div class="mobile-detail-value">4 ადამიანი</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">რეზერვაციის თარიღი</div>
+                        <div class="mobile-detail-value">2025-09-01</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">დრო</div>
+                        <div class="mobile-detail-value">19:00 - 21:00</div>
+                    </div>
+                    
+                    <div class="mobile-detail-group">
+                        <div class="mobile-detail-label">სტატუსი</div>
+                        <div class="mobile-detail-value">
+                            <span class="status-badge confirmed">დადასტურებული</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-reservation-note">
+                        <div class="mobile-detail-label">შენიშვნა</div>
+                        <div class="mobile-detail-value">birthday, please prepare small cake</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-modal-footer">
+                <button class="btn-primary">რედაქტირება</button>
+                <button class="btn-secondary" onclick="closeMobileModal()">დახურვა</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Filter Drawer
+        function openFilterDrawer() {
+            document.getElementById('filterDrawer').classList.add('open');
+        }
+        
+        function closeFilterDrawer() {
+            document.getElementById('filterDrawer').classList.remove('open');
+        }
+        
+        // Mobile Calendar
+        function openMobileCalendar() {
+            document.getElementById('mobileCalendar').classList.add('open');
+        }
+        
+        function closeMobileCalendar() {
+            document.getElementById('mobileCalendar').classList.remove('open');
+        }
+        
+        // Mobile Modal
+        function openMobileModal(reservationId) {
+            document.getElementById('mobileModal').classList.add('open');
+        }
+        
+        function closeMobileModal() {
+            document.getElementById('mobileModal').classList.remove('open');
+        }
+        
+        // Filter actions
+        function applyFilters() {
+            closeFilterDrawer();
+            // Apply filter logic here
+        }
+        
+        function clearFilters() {
+            // Clear filter logic here
+        }
+        
+        function confirmDelete(reservationId) {
+            if (confirm('დარწმუნებული ხართ, რომ გსურთ ამ ჯავშნის წაშლა?')) {
+                alert('ჯავშანი წაშლილია');
+            }
+        }
+        
+        // Close drawer/modal on overlay click
+        document.getElementById('filterDrawer').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFilterDrawer();
+            }
+        });
+        
+        document.getElementById('mobileModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMobileModal();
+            }
+        });
+        
+        // Touch gestures for modal
+        let startY = 0;
+        let currentY = 0;
+        
+        document.querySelector('.mobile-modal-container').addEventListener('touchstart', function(e) {
+            startY = e.touches[0].clientY;
+        });
+        
+        document.querySelector('.mobile-modal-container').addEventListener('touchmove', function(e) {
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            
+            if (deltaY > 0) {
+                this.style.transform = `translateY(${Math.min(deltaY, 200)}px)`;
+                this.style.opacity = `${1 - (deltaY / 400)}`;
+            }
+        });
+        
+        document.querySelector('.mobile-modal-container').addEventListener('touchend', function(e) {
+            const deltaY = currentY - startY;
+            
+            if (deltaY > 100) {
+                closeMobileModal();
+            } else {
+                this.style.transform = '';
+                this.style.opacity = '';
+            }
+        });
+    </script>
+</body>
+</html>
