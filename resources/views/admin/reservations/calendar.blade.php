@@ -4,47 +4,7 @@
             <!-- Header with Navigation Back -->
             <header class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 mb-6">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center s            }
-
-            // Today filter toggle function
-            function toggleTodayFilter() {
-                // Check if filter is currently active
-                const isActive = window.todayFilterActive || false;
-                
-                if (isActive) {
-                    // Deactivate today filter
-                    window.todayFilterActive = false;
-                    console.log('📅 Today filter deactivated');
-                    
-                    // Update button appearance
-                    const todayBtn = document.querySelector('.fc-todayFilterBtn-button');
-                    if (todayBtn) {
-                        todayBtn.classList.remove('fc-button-active');
-                    }
-                } else {
-                    // Activate today filter
-                    window.todayFilterActive = true;
-                    console.log('📅 Today filter activated');
-                    
-                    // Update button appearance
-                    const todayBtn = document.querySelector('.fc-todayFilterBtn-button');
-                    if (todayBtn) {
-                        todayBtn.classList.add('fc-button-active');
-                    }
-                    
-                    // Navigate to today's date
-                    if (calendar) {
-                        calendar.today();
-                    }
-                }
-                
-                // Refresh calendar with new filter
-                if (calendar) {
-                    calendar.refetchEvents();
-                }
-            }
-
-            // Event details function with beautiful modale-x-4">
+                    <div class="flex items-center space-x-4">
                         <a href="{{ route('admin.reservations.list') }}" 
                            class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,6 +290,50 @@
             console.log('🚀 Script loaded successfully!');
             
             let calendar = null;
+            let todayFilterActive = false;
+
+            // Today filter toggle function
+            function toggleTodayFilter() {
+                console.log('🔄 Toggle today filter called, current state:', todayFilterActive);
+                
+                if (todayFilterActive) {
+                    // Deactivate today filter
+                    todayFilterActive = false;
+                    console.log('📅 Today filter deactivated');
+                    
+                    // Update button appearance
+                    const todayBtn = document.querySelector('.fc-todayFilterBtn-button');
+                    console.log('🔍 Found button element:', todayBtn);
+                    if (todayBtn) {
+                        todayBtn.classList.remove('fc-button-active');
+                        console.log('✅ Removed active class');
+                    }
+                } else {
+                    // Activate today filter
+                    todayFilterActive = true;
+                    console.log('📅 Today filter activated');
+                    
+                    // Update button appearance
+                    const todayBtn = document.querySelector('.fc-todayFilterBtn-button');
+                    console.log('🔍 Found button element:', todayBtn);
+                    if (todayBtn) {
+                        todayBtn.classList.add('fc-button-active');
+                        console.log('✅ Added active class');
+                    }
+                    
+                    // Navigate to today's date
+                    if (calendar) {
+                        calendar.today();
+                        console.log('📍 Navigated to today');
+                    }
+                }
+                
+                // Refresh calendar with new filter
+                if (calendar) {
+                    console.log('🔄 Refreshing calendar events...');
+                    calendar.refetchEvents();
+                }
+            }
             
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('� DOM Content Loaded');
@@ -371,6 +375,7 @@
                             todayFilterBtn: {
                                 text: 'დღეს',
                                 click: function() {
+                                    console.log('🎯 Custom დღეს button clicked!');
                                     toggleTodayFilter();
                                 }
                             }
@@ -391,10 +396,11 @@
                                 };
                                 
                                 // Add today's date filter if today button is active
-                                if (window.todayFilterActive) {
+                                if (todayFilterActive) {
                                     const today = new Date();
                                     const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
                                     params.date = todayStr;
+                                    console.log('📅 Adding today filter:', todayStr);
                                 }
                                 
                                 console.log('📤 Sending API request with params:', params);
