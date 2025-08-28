@@ -11,7 +11,6 @@ class ClientConfirmedEmail extends Mailable
 
     public $reservation;
     public $restaurantName;
-    public $restaurantName;
 
     public function __construct($reservation)
     {
