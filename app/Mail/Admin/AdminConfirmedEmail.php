@@ -26,8 +26,8 @@ class AdminConfirmedEmail extends Mailable
 
     public function build()
     {
-    return $this->subject('რეზერვაცია დადასტურებულია')
-            ->view('emails.admin.confirmed')
+    return $this->subject('✅ რეზერვაცია დადასტურებულია - FOODLY')
+            ->view('emails.layouts.modern')
             ->with([
                 'reservation' => $this->reservation,
                 'restaurantName' => $this->restaurantName
