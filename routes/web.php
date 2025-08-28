@@ -49,6 +49,33 @@ use App\Http\Controllers\DocumentationController;
 
 
 
+use Illuminate\Support\Facades\Mail;
+use App\Models\Reservation;
+use App\Mail\Client\ClientConfirmedEmail;
+
+Route::get('/test-email', function () {
+    // Find a reservation that has all the required relationships and eager-load them
+    $reservation = Reservation::with(['restaurant', 'place', 'table'])
+                                ->whereHas('restaurant')
+                                ->whereHas('place')
+                                ->whereHas('table')
+                                ->first();
+
+    if (!$reservation) {
+        return 'No complete reservations found in the database to use for testing (a reservation with a valid restaurant, place, and table is required).';
+    }
+
+    try {
+        // Send the ClientConfirmedEmail Mailable
+        Mail::to('gakhokia.david@gmail.com')->send(new ClientConfirmedEmail($reservation));
+        return 'Test email (ClientConfirmedEmail) sent successfully!';
+    } catch (\Exception $e) {
+        // Log the full error for debugging
+        \Log::error('Mail test failed: ' . $e->getMessage());
+        return 'Error sending test email: ' . $e->getMessage();
+    }
+});
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');

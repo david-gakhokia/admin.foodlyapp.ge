@@ -1,5 +1,5 @@
 <?php
-namespace App\Mail;
+namespace App\Mail\Restaurant;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -18,8 +18,8 @@ class RestaurantConfirmedEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('მომხარებელმა მაგიდა დაჯავშნილია!')
-                    ->view('emails.restaurant.completed')
+        return $this->subject('ახალი რეზერვაცია დადასტურდა!')
+                    ->view('emails.restaurant.confirmed')
                     ->with(['reservation' => $this->reservation]);
     }
 }

@@ -18,6 +18,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Email Address
+    |--------------------------------------------------------------------------
+    |
+    | This email address is used to send administrative notifications, such
+    | as reservation status changes.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', 'support@foodlyapp.ge'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Mailer Configurations
     |--------------------------------------------------------------------------
     |

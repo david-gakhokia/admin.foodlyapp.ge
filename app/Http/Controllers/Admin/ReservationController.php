@@ -8,6 +8,17 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+use App\Mail\Admin\AdminCancelledEmail;
+use App\Mail\Admin\AdminCompletedEmail;
+use App\Mail\Admin\AdminConfirmedEmail;
+use App\Mail\Client\ClientCancelledEmail;
+use App\Mail\Client\ClientCompletedEmail;
+use App\Mail\Client\ClientConfirmedEmail;
+use App\Mail\Restaurant\RestaurantCancelledEmail;
+use App\Mail\Restaurant\RestaurantCompletedEmail;
+use App\Mail\Restaurant\RestaurantConfirmedEmail;
+use Illuminate\Support\Facades\Mail;
+
 class ReservationController extends Controller
 {
     /**
@@ -80,19 +91,79 @@ class ReservationController extends Controller
      */
     public function update(Request $request, Restaurant $restaurant, Reservation $reservation)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'guests_count' => 'required|integer|min:1',
+            'reservation_date' => 'required|date',
+            'time_from' => 'required|date_format:H:i',
+            'time_to' => 'nullable|date_format:H:i|after:time_from',
             'status' => 'required|in:Pending,Confirmed,Cancelled,Completed',
             'notes' => 'nullable|string',
+            'promo_code' => 'nullable|string|max:255',
+            'occasion' => 'nullable|string|max:255',
         ]);
 
-        $reservation->update([
-            'status' => $request->status,
-            'notes' => $request->notes,
-        ]);
+        $oldStatus = $reservation->status;
 
-        return redirect()->route('admin.restaurants.reservations.index', $restaurant)
+        $reservation->update($validated);
+
+        $newStatus = $reservation->status;
+
+        if ($oldStatus !== $newStatus) {
+            $this->sendNotificationEmails($reservation, $restaurant, $newStatus);
+        }
+
+        return redirect()->route('admin.restaurants.reservations.show', [$restaurant, $reservation])
             ->with('success', 'ჯავშანი წარმატებით განახლდა!');
     }
+
+    private function sendNotificationEmails(Reservation $reservation, Restaurant $restaurant, string $newStatus)
+    {
+        $clientEmail = $reservation->email;
+        $restaurantEmail = $restaurant->email; // Assuming restaurant has an email property
+        $adminEmail = config('mail.admin_email', 'support@foodlyapp.ge'); // Fallback admin email
+
+        $clientMail = null;
+        $restaurantMail = null;
+        $adminMail = null;
+
+        switch ($newStatus) {
+            case 'Confirmed':
+                $clientMail = new ClientConfirmedEmail($reservation);
+                $restaurantMail = new RestaurantConfirmedEmail($reservation);
+                $adminMail = new AdminConfirmedEmail($reservation);
+                break;
+            case 'Cancelled':
+                $clientMail = new ClientCancelledEmail($reservation);
+                $restaurantMail = new RestaurantCancelledEmail($reservation);
+                $adminMail = new AdminCancelledEmail($reservation);
+                break;
+            case 'Completed':
+                $clientMail = new ClientCompletedEmail($reservation);
+                $restaurantMail = new RestaurantCompletedEmail($reservation);
+                $adminMail = new AdminCompletedEmail($reservation);
+                break;
+        }
+
+        try {
+            if ($clientEmail && $clientMail) {
+                Mail::to($clientEmail)->send($clientMail);
+            }
+            if ($restaurantEmail && $restaurantMail) {
+                Mail::to($restaurantEmail)->send($restaurantMail);
+            }
+            if ($adminEmail && $adminMail) {
+                Mail::to($adminEmail)->send($adminMail);
+            }
+        } catch (\Exception $e) {
+            \Log::error("Failed to send reservation status email for reservation #{$reservation->id}: " . $e->getMessage());
+            // Optionally add a session flash message to inform the user
+            session()->flash('warning', 'სტატუსის ცვლილების იმეილი ვერ გაიგზავნა.');
+        }
+    }
+
 
     /**
      * Display the specified reservation.
