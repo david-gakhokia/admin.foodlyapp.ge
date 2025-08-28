@@ -363,6 +363,9 @@ Route::middleware(['auth'])
             // JSON events endpoint for FullCalendar (placed before resource to avoid route conflicts)
             Route::get('reservations/events', [ReservationController::class, 'events'])
                 ->name('reservations.events');
+            // Status update route
+            Route::patch('reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])
+                ->name('reservations.status');
             Route::resource('reservations', ReservationController::class)
                 ->only(['index', 'show', 'edit', 'update', 'destroy']);
         });

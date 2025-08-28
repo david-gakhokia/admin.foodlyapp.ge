@@ -84,6 +84,120 @@
                 </div>
             </div>
 
+            <!-- Status Change Modal -->
+            <div id="statusChangeModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-auto overflow-hidden">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">სტატუსის ცვლილება</h3>
+                                <p class="text-sm text-gray-600" id="statusModalCustomerName"></p>
+                            </div>
+                        </div>
+                        <button id="statusModalClose" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <form id="statusChangeForm" method="POST" class="p-6">
+                        @csrf
+                        @method('PATCH')
+                        
+                        <div class="space-y-6">
+                            <!-- Current Status Display -->
+                            <div class="p-4 rounded-lg border-l-4" id="currentStatusDisplay">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-medium text-gray-700">მიმდინარე სტატუსი:</span>
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full" id="currentStatusBadge"></span>
+                                    </div>
+                                    <div class="w-3 h-3 rounded-full" id="currentStatusIndicator"></div>
+                                </div>
+                            </div>
+
+                            <!-- New Status Selection -->
+                            <div>
+                                <label for="newStatus" class="block text-sm font-medium text-gray-700 mb-3">
+                                    ახალი სტატუსი
+                                    <span class="text-xs text-gray-500 block mt-1">აირჩიეთ ჯავშნის ახალი მდგომარეობა</span>
+                                </label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="status-option" data-status="Pending">
+                                        <input type="radio" name="status" value="Pending" id="status_pending" class="sr-only">
+                                        <label for="status_pending" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 group">
+                                            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-yellow-200">
+                                                <span class="text-lg">🟡</span>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-700 group-hover:text-yellow-800">მოლოდინში</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="status-option" data-status="Confirmed">
+                                        <input type="radio" name="status" value="Confirmed" id="status_confirmed" class="sr-only">
+                                        <label for="status_confirmed" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-green-300 hover:bg-green-50 transition-all duration-200 group">
+                                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-green-200">
+                                                <span class="text-lg">🟢</span>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-700 group-hover:text-green-800">დადასტურებული</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="status-option" data-status="Completed">
+                                        <input type="radio" name="status" value="Completed" id="status_completed" class="sr-only">
+                                        <label for="status_completed" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200">
+                                                <span class="text-lg">🔵</span>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-700 group-hover:text-blue-800">დასრულებული</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="status-option" data-status="Cancelled">
+                                        <input type="radio" name="status" value="Cancelled" id="status_cancelled" class="sr-only">
+                                        <label for="status_cancelled" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all duration-200 group">
+                                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-red-200">
+                                                <span class="text-lg">🔴</span>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-700 group-hover:text-red-800">გაუქმებული</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notes -->
+                            <div>
+                                <label for="statusNote" class="block text-sm font-medium text-gray-700 mb-2">შენიშვნა (არასავალდებულო)</label>
+                                <textarea id="statusNote" name="note" rows="3" 
+                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" 
+                                          placeholder="დამატებითი შენიშვნა სტატუსის ცვლილების შესახებ..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+                            <button type="button" id="statusModalCancel" 
+                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                                გაუქმება
+                            </button>
+                            <button type="submit" id="statusModalSave"
+                                    class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                სტატუსის განახლება
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Quick Reservation Modal -->
             <div id="reservationQuickModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
                 <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-auto overflow-hidden">
@@ -276,42 +390,40 @@
                                             </div>
                                         </td>
                                         <td class="px-4 lg:px-6 py-3">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                                {{ $reservation->status == 'Confirmed' ? 'bg-green-100 text-green-800' : 
-                                                   ($reservation->status == 'Pending' ? 'bg-amber-100 text-amber-800' : 
-                                                    ($reservation->status == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
-                                                {{ $reservation->status == 'Confirmed' ? 'დადასტურებული' : 
-                                                   ($reservation->status == 'Pending' ? 'მოლოდინში' : 
-                                                    ($reservation->status == 'Cancelled' ? 'გაუქმებული' : 'დასრულებული')) }}
-                                            </span>
+                                            <!-- Livewire Status Updater Component -->
+                                            @livewire('reservation-status-updater', [
+                                                'reservation' => $reservation, 
+                                                'restaurantId' => $restaurantId
+                                            ], key('status-updater-' . $reservation->id))
                                         </td>
                                         <td class="px-4 lg:px-6 py-3 text-sm font-medium">
                                             <div class="flex space-x-1 lg:space-x-2">
                                                 <a href="{{ route('admin.restaurants.reservations.show', [$restaurantId, $reservation->id]) }}" 
-                                                   class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                                   class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                                   title="ნახვა">
                                                     <svg class="w-3 lg:w-4 h-3 lg:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                     </svg>
-                                                    <span class="hidden lg:inline"></span>
                                                 </a>
 
                                                 <a href="{{ route('admin.restaurants.reservations.edit', [$restaurantId, $reservation->id]) }}" 
-                                                   class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-blue-700 bg-white border border-blue-300 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                                   class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-blue-700 bg-white border border-blue-300 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                                   title="რედაქტირება">
                                                     <svg class="w-3 lg:w-4 h-3 lg:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                     </svg>
-                                                    <span class="hidden lg:inline"></span>
                                                 </a>
 
                                                 <form class="inline" method="POST" action="{{ route('admin.restaurants.reservations.destroy', [$restaurantId, $reservation->id]) }}" onsubmit="return confirm('დარწმუნებული ხართ, რომ გსურთ ამ ჯავშნის წაშლა?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                                                    <button type="submit" 
+                                                            class="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                                                            title="წაშლა">
                                                         <svg class="w-3 lg:w-4 h-3 lg:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                         </svg>
-                                                        <span class="hidden lg:inline"></span>
                                                     </button>
                                                 </form>
                                             </div>
@@ -399,6 +511,36 @@
                     display: block;
                 }
             }
+            
+            /* Status option hover effects */
+            .status-option label:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            
+            .status-option.selected label {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+            }
+            
+            /* Animation for status indicators */
+            .status-indicator-pulse {
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: .5;
+                }
+            }
+            
+            /* Modal backdrop blur */
+            .modal-backdrop {
+                backdrop-filter: blur(4px);
+            }
         </style>
     @endpush
 
@@ -406,7 +548,17 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                console.log('🚀 JavaScript loaded');
+                console.log('🚀 JavaScript loaded for reservations list');
+                
+                // Listen for Livewire status updates to refresh calendar if needed
+                window.addEventListener('reservation-status-changed', event => {
+                    console.log('Reservation status changed:', event.detail);
+                    // Refresh calendar events if calendar is open
+                    if (calendar) {
+                        calendar.refetchEvents();
+                    }
+                });
+            });
                 
                 // Calendar Modal Functionality
                 const toggleCalendarBtn = document.getElementById('toggleCalendarBtn');
@@ -755,7 +907,6 @@
                             window.location.href = url.toString();
                         }, 500);
                     });
-                }
-            });
+                </script>
     @endpush
 </x-layouts.app>

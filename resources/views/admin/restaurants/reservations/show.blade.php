@@ -127,7 +127,7 @@
                 </div>
 
                 <!-- Additional Information -->
-                @if($reservation->promo_code || $reservation->notes)
+                @if($reservation->promo_code || $reservation->notes || $reservation->occasion)
                     <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
                         <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200">
                             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
@@ -138,7 +138,15 @@
                             </h3>
                         </div>
                         <div class="p-6">
-                            <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                @if($reservation->occasion)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">მიზეზი/ღონისძიება</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg">
+                                            <p class="text-gray-900 font-medium">{{ $reservation->occasion }}</p>
+                                        </div>
+                                    </div>
+                                @endif
                                 @if($reservation->promo_code)
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">პრომო კოდი</label>
@@ -147,18 +155,115 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if($reservation->notes)
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">შენიშვნები</label>
-                                        <div class="p-3 bg-gray-50 rounded-lg">
-                                            <p class="text-gray-900">{{ $reservation->notes }}</p>
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
+                            @if($reservation->notes)
+                                <div class="mt-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">შენიშვნები</label>
+                                    <div class="p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-gray-900">{{ $reservation->notes }}</p>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @endif
+
+                <!-- Detailed System Information -->
+                <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            სისტემური ინფორმაცია
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის ID</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-900 font-mono">#{{ $reservation->id }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის ტიპი</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        {{ $reservation->type == 'restaurant' ? 'bg-blue-100 text-blue-800' : 
+                                           ($reservation->type == 'place' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800') }}">
+                                        {{ $reservation->type == 'restaurant' ? 'რესტორნის ჯავშანი' : 
+                                           ($reservation->type == 'place' ? 'ადგილის ჯავშანი' : 'მაგიდის ჯავშანი') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის ობიექტი</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="space-y-2">
+                                        <p class="text-gray-900 font-medium">{{ $reservation->reservable?->name ?? 'N/A' }}</p>
+                                        @if($reservation->type == 'table' && $reservation->reservable)
+                                            <div class="text-sm text-gray-600">
+                                                <p><span class="font-medium">ადგილი:</span> {{ $reservation->reservable->place?->name ?? 'N/A' }}</p>
+                                                <p><span class="font-medium">რესტორანი:</span> {{ $reservation->reservable->restaurant?->name ?? 'N/A' }}</p>
+                                            </div>
+                                        @elseif($reservation->type == 'place' && $reservation->reservable)
+                                            <div class="text-sm text-gray-600">
+                                                <p><span class="font-medium">რესტორანი:</span> {{ $reservation->reservable->restaurant?->name ?? 'N/A' }}</p>
+                                            </div>
+                                        @elseif($reservation->type == 'restaurant' && $reservation->reservable)
+                                            <div class="text-sm text-gray-600">
+                                                <p><span class="font-medium">რესტორანი:</span> {{ $reservation->reservable->name ?? 'N/A' }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის წყარო</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-900 text-sm font-mono">{{ $reservation->reservable_type }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის მდგომარეობა</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        {{ $reservation->status == 'Confirmed' ? 'bg-green-100 text-green-800' : 
+                                           ($reservation->status == 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                            ($reservation->status == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')) }}">
+                                        {{ $reservation->status == 'Confirmed' ? 'დადასტურებული' : 
+                                           ($reservation->status == 'Pending' ? 'მოლოდინში' : 
+                                            ($reservation->status == 'Cancelled' ? 'გაუქმებული' : 'დასრულებული')) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ჯავშნის ზუსტი დრო</label>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-4">
+                                        <div>
+                                            <span class="text-sm text-gray-500">თარიღი:</span>
+                                            <span class="text-gray-900 font-medium">{{ $reservation->reservation_date->format('l, F j, Y') }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">დრო:</span>
+                                            <span class="text-gray-900 font-medium">{{ $reservation->time_from }} - {{ $reservation->time_to }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">ხანგრძლივობა:</span>
+                                            <span class="text-gray-900 font-medium">
+                                                {{ $reservation->getFormattedDuration() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Side Panel -->
@@ -171,12 +276,14 @@
                     <div class="p-6">
                         <div class="text-center">
                             <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
-                                {{ $reservation->status == 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                   ($reservation->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                    ($reservation->status == 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')) }}">
-                                {{ $reservation->status == 'confirmed' ? 'დადასტურებული' : 
-                                   ($reservation->status == 'pending' ? 'მოლოდინში' : 
-                                    ($reservation->status == 'cancelled' ? 'გაუქმებული' : 'დასრულებული')) }}
+                                {{ $reservation->status == 'Confirmed' ? 'bg-green-100 text-green-800' : 
+                                   ($reservation->status == 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                    ($reservation->status == 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                                     ($reservation->status == 'Completed' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'))) }}">
+                                {{ $reservation->status == 'Confirmed' ? 'დადასტურებული' : 
+                                   ($reservation->status == 'Pending' ? 'მოლოდინში' : 
+                                    ($reservation->status == 'Cancelled' ? 'გაუქმებული' : 
+                                     ($reservation->status == 'Completed' ? 'დასრულებული' : $reservation->status))) }}
                             </span>
                         </div>
                     </div>
@@ -192,10 +299,67 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">შექმნის თარიღი</label>
                                 <p class="text-sm text-gray-900">{{ $reservation->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="text-xs text-gray-500">{{ $reservation->created_at->diffForHumans() }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">ბოლო განახლება</label>
                                 <p class="text-sm text-gray-900">{{ $reservation->updated_at->format('d/m/Y H:i') }}</p>
+                                <p class="text-xs text-gray-500">{{ $reservation->updated_at->diffForHumans() }}</p>
+                            </div>
+                            @if($reservation->created_at != $reservation->updated_at)
+                                <div class="pt-2 border-t border-gray-200">
+                                    <p class="text-xs text-gray-500">
+                                        ჯავშანი შეიცვალა {{ $reservation->updated_at->diffForHumans($reservation->created_at) }} შექმნის შემდეგ
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reservation Statistics -->
+                <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">სტატისტიკა</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">ჯავშნამდე დარჩენილი დრო:</span>
+                                <span class="text-sm font-medium text-gray-900">
+                                    {{ $reservation->getReservationDateTime()->diffForHumans() }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">სტუმრების რაოდენობა:</span>
+                                <span class="text-sm font-medium text-gray-900">{{ $reservation->guests_count }}</span>
+                            </div>
+                            @if($reservation->reservable)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">ჯავშნის ობიექტი:</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ $reservation->reservable->name ?? 'N/A' }}</span>
+                                </div>
+                            @endif
+                            <div class="pt-2 border-t border-gray-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">ღონისძიების ხანგრძლივობა:</span>
+                                    <span class="text-sm font-medium text-gray-900">
+                                        @php
+                                            $duration = $reservation->getDurationInMinutes();
+                                            if ($duration > 0) {
+                                                $hours = floor($duration / 60);
+                                                $minutes = $duration % 60;
+                                                
+                                                $text = '';
+                                                if ($hours > 0) $text .= $hours . 'ს ';
+                                                $text .= $minutes . 'წთ';
+                                                echo trim($text);
+                                            } else {
+                                                echo 'N/A';
+                                            }
+                                        @endphp
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

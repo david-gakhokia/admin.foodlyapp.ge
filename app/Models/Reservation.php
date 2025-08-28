@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class Reservation extends Model
 {
@@ -15,6 +16,7 @@ class Reservation extends Model
         'time_from',
         'time_to',
         'guests_count',
+        'occasion',
         'name',
         'phone',
         'email',
@@ -25,8 +27,6 @@ class Reservation extends Model
 
     protected $casts = [
         'reservation_date' => 'date',
-        'time_from' => 'datetime:H:i',
-        'time_to' => 'datetime:H:i',
         'guests_count' => 'integer',
     ];
 
@@ -48,5 +48,88 @@ class Reservation extends Model
     public function reservable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Get duration in minutes between time_from and time_to
+     */
+    public function getDurationInMinutes()
+    {
+        if (!$this->time_from || !$this->time_to) {
+            return 0;
+        }
+
+        try {
+            $timeFromParts = explode(':', $this->time_from);
+            $timeToParts = explode(':', $this->time_to);
+            
+            if (count($timeFromParts) >= 2 && count($timeToParts) >= 2) {
+                $fromHour = (int)$timeFromParts[0];
+                $fromMinute = (int)$timeFromParts[1];
+                $toHour = (int)$timeToParts[0];
+                $toMinute = (int)$timeToParts[1];
+                
+                $startMinutes = ($fromHour * 60) + $fromMinute;
+                $endMinutes = ($toHour * 60) + $toMinute;
+                
+                return max(0, $endMinutes - $startMinutes);
+            }
+        } catch (Exception $e) {
+            return 0;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get formatted duration string
+     */
+    public function getFormattedDuration()
+    {
+        $totalMinutes = $this->getDurationInMinutes();
+        
+        if ($totalMinutes <= 0) {
+            return 'N/A';
+        }
+
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
+        
+        $duration = '';
+        if ($hours > 0) {
+            $duration .= $hours . ' საათი ';
+        }
+        if ($minutes > 0) {
+            $duration .= $minutes . ' წუთი';
+        }
+        
+        return trim($duration);
+    }
+
+    /**
+     * Get reservation datetime
+     */
+    public function getReservationDateTime()
+    {
+        try {
+            if ($this->time_from && $this->reservation_date) {
+                $timeFromParts = explode(':', $this->time_from);
+                if (count($timeFromParts) >= 2 && is_numeric($timeFromParts[0]) && is_numeric($timeFromParts[1])) {
+                    $hour = (int)$timeFromParts[0];
+                    $minute = (int)$timeFromParts[1];
+                    
+                    if ($hour >= 0 && $hour <= 23 && $minute >= 0 && $minute <= 59) {
+                        return $this->reservation_date->copy()
+                            ->setHour($hour)
+                            ->setMinute($minute)
+                            ->setSecond(0);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            // Fall back to date only
+        }
+
+        return $this->reservation_date;
     }
 }

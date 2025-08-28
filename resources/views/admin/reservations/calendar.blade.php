@@ -70,32 +70,52 @@
                     სტატუსების ლეგენდა
                 </h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="flex items-center space-x-3 bg-white rounded-lg p-3 shadow-sm">
-                        <div class="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"></div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-900">მოლოდინში</div>
-                            <div class="text-xs text-gray-500">დასადასტურებელი</div>
+                    <div class="status-card flex items-center justify-between bg-white rounded-lg p-3 shadow-sm border border-orange-100 hover:border-orange-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"></div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">მოლოდინში</div>
+                                <div class="text-xs text-gray-500">დასადასტურებელი</div>
+                            </div>
+                        </div>
+                        <div class="counter-badge bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 text-sm font-bold px-3 py-1 rounded-full min-w-[2rem] text-center">
+                            <span id="pending-count">0</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3 bg-white rounded-lg p-3 shadow-sm">
-                        <div class="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 shadow-sm"></div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-900">დადასტურებული</div>
-                            <div class="text-xs text-gray-500">აქტიური ჯავშანი</div>
+                    <div class="status-card flex items-center justify-between bg-white rounded-lg p-3 shadow-sm border border-green-100 hover:border-green-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 shadow-sm"></div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">დადასტურებული</div>
+                                <div class="text-xs text-gray-500">აქტიური ჯავშანი</div>
+                            </div>
+                        </div>
+                        <div class="counter-badge bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-sm font-bold px-3 py-1 rounded-full min-w-[2rem] text-center">
+                            <span id="confirmed-count">0</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3 bg-white rounded-lg p-3 shadow-sm">
-                        <div class="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-500 shadow-sm"></div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-900">გაუქმებული</div>
-                            <div class="text-xs text-gray-500">შეუქმებული ჯავშანი</div>
+                    <div class="status-card flex items-center justify-between bg-white rounded-lg p-3 shadow-sm border border-red-100 hover:border-red-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-500 shadow-sm"></div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">გაუქმებული</div>
+                                <div class="text-xs text-gray-500">შეუქმებული ჯავშანი</div>
+                            </div>
+                        </div>
+                        <div class="counter-badge bg-gradient-to-r from-red-100 to-red-100 text-red-700 text-sm font-bold px-3 py-1 rounded-full min-w-[2rem] text-center">
+                            <span id="cancelled-count">0</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3 bg-white rounded-lg p-3 shadow-sm">
-                        <div class="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 shadow-sm"></div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-900">დასრულებული</div>
-                            <div class="text-xs text-gray-500">სტუმრები მოსულან</div>
+                    <div class="status-card flex items-center justify-between bg-white rounded-lg p-3 shadow-sm border border-blue-100 hover:border-blue-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 shadow-sm"></div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">დასრულებული</div>
+                                <div class="text-xs text-gray-500">სტუმრები მოსულან</div>
+                            </div>
+                        </div>
+                        <div class="counter-badge bg-gradient-to-r from-blue-100 to-blue-100 text-blue-700 text-sm font-bold px-3 py-1 rounded-full min-w-[2rem] text-center">
+                            <span id="completed-count">0</span>
                         </div>
                     </div>
                 </div>
@@ -280,6 +300,24 @@
                 box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
                 transform: scale(1.05) !important;
             }
+
+            /* Statistics counter animations */
+            .counter-badge {
+                transition: all 0.3s ease;
+                animation: countUpdate 0.5s ease-in-out;
+            }
+
+            @keyframes countUpdate {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+
+            .status-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
         </style>
     @endpush
 
@@ -332,6 +370,49 @@
                 if (calendar) {
                     console.log('🔄 Refreshing calendar events...');
                     calendar.refetchEvents();
+                }
+            }
+
+            // Load and update statistics
+            function loadStatistics() {
+                console.log('📊 Loading statistics...');
+                fetch('/api/reservations/statistics')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Statistics loaded:', data);
+                        
+                        // Update counters with animation
+                        updateCounter('pending-count', data.Pending || 0);
+                        updateCounter('confirmed-count', data.Confirmed || 0);
+                        updateCounter('cancelled-count', data.Cancelled || 0);
+                        updateCounter('completed-count', data.Completed || 0);
+                        
+                        console.log('✅ Statistics updated successfully');
+                    })
+                    .catch(error => {
+                        console.error('❌ Failed to load statistics:', error);
+                        // Set default values on error
+                        document.getElementById('pending-count').textContent = '-';
+                        document.getElementById('confirmed-count').textContent = '-';
+                        document.getElementById('cancelled-count').textContent = '-';
+                        document.getElementById('completed-count').textContent = '-';
+                    });
+            }
+
+            // Update counter with animation
+            function updateCounter(elementId, newValue) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    // Add animation class
+                    element.parentElement.classList.add('counter-badge');
+                    
+                    // Update value
+                    element.textContent = newValue;
+                    
+                    // Trigger animation
+                    element.parentElement.style.animation = 'none';
+                    element.parentElement.offsetHeight; // Trigger reflow
+                    element.parentElement.style.animation = 'countUpdate 0.5s ease-in-out';
                 }
             }
             
@@ -442,6 +523,9 @@
                     
                     // Setup filter listeners
                     setupFilters();
+                    
+                    // Load statistics
+                    loadStatistics();
                     
                 } catch (error) {
                     console.error('❌ Calendar error:', error);
@@ -605,6 +689,8 @@
                     if (calendar) {
                         console.log('🔄 Refreshing calendar with filters...');
                         calendar.refetchEvents();
+                        // Also refresh statistics when filters change
+                        loadStatistics();
                     }
                 }
 

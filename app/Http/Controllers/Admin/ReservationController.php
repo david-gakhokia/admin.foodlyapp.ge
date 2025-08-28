@@ -99,6 +99,18 @@ class ReservationController extends Controller
      */
     public function show(Restaurant $restaurant, Reservation $reservation)
     {
+        // Load additional relationships based on reservation type
+        $reservation->load(['reservable']);
+        
+        // If it's a table reservation, also load the restaurant and place
+        if ($reservation->type === 'table' && $reservation->reservable_type === 'App\\Models\\Table') {
+            $reservation->load(['reservable.restaurant.translations', 'reservable.place.translations']);
+        }
+        // If it's a place reservation, also load the restaurant
+        elseif ($reservation->type === 'place' && $reservation->reservable_type === 'App\\Models\\Place') {
+            $reservation->load(['reservable.restaurant.translations']);
+        }
+        
         return view('admin.restaurants.reservations.show', compact('restaurant', 'reservation'));
     }
 
@@ -536,6 +548,37 @@ class ReservationController extends Controller
     }
 
     /**
+     * Get reservation statistics by status
+     */
+    public function getStatistics(Request $request)
+    {
+        try {
+            // Get status counts
+            $statistics = \DB::table('reservations')
+                ->select('status', \DB::raw('count(*) as count'))
+                ->groupBy('status')
+                ->get()
+                ->keyBy('status');
+
+            // Prepare result with all possible statuses
+            $result = [
+                'Pending' => $statistics->get('Pending')?->count ?? 0,
+                'Confirmed' => $statistics->get('Confirmed')?->count ?? 0,
+                'Cancelled' => $statistics->get('Cancelled')?->count ?? 0,
+                'Completed' => $statistics->get('Completed')?->count ?? 0,
+                'total' => $statistics->sum('count')
+            ];
+            
+            return response()->json($result, 200, ['Content-Type' => 'application/json']);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Database error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Remove the specified reservation from storage.
      */
     public function destroy(Restaurant $restaurant, Reservation $reservation)
@@ -544,5 +587,43 @@ class ReservationController extends Controller
 
         return redirect()->route('admin.restaurants.reservations.index', $restaurant)
             ->with('success', 'ჯავშანი წარმატებით წაიშალა!');
+    }
+
+    /**
+     * Update reservation status.
+     */
+    public function updateStatus(Request $request, Restaurant $restaurant, Reservation $reservation)
+    {
+        $request->validate([
+            'status' => 'required|in:Pending,Confirmed,Cancelled,Completed',
+            'note' => 'nullable|string|max:500'
+        ]);
+
+        $oldStatus = $reservation->status;
+        $reservation->status = $request->status;
+        
+        // Add note to existing notes if provided
+        if ($request->note) {
+            $timestamp = now()->format('Y-m-d H:i:s');
+            $statusNote = "სტატუსის ცვლილება ({$oldStatus} → {$request->status}): {$request->note} [{$timestamp}]";
+            
+            if ($reservation->notes) {
+                $reservation->notes = $reservation->notes . "\n\n" . $statusNote;
+            } else {
+                $reservation->notes = $statusNote;
+            }
+        }
+        
+        $reservation->save();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'სტატუსი წარმატებით განახლდა!',
+                'status' => $reservation->status
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'სტატუსი წარმატებით განახლდა!');
     }
 }

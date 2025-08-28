@@ -485,9 +485,13 @@ Route::prefix('admin/notifications')->name('admin.notifications.')->group(functi
 // Admin Reservations API
 Route::get('reservations/events/all', [App\Http\Controllers\Admin\ReservationController::class, 'eventsAll'])
     ->name('reservations.events.all');
+Route::get('reservations/statistics', [App\Http\Controllers\Admin\ReservationController::class, 'getStatistics'])
+    ->name('reservations.statistics');
 
 // Admin Reservations API Routes (for AJAX calendar)
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('reservations/events/all', [App\Http\Controllers\Admin\ReservationController::class, 'eventsAll'])
         ->name('reservations.events.all');
+    Route::get('reservations/statistics', [App\Http\Controllers\Admin\ReservationController::class, 'getStatistics'])
+        ->name('reservations.statistics');
 });
