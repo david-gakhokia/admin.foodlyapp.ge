@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail\Restaurant;
 
 use Illuminate\Bus\Queueable;
@@ -15,7 +16,7 @@ class RestaurantConfirmedEmail extends Mailable
     public function __construct($reservation)
     {
         $this->reservation = $reservation;
-        
+
         // Pre-compute restaurant name to avoid serialization issues
         if (method_exists($reservation, 'getRestaurantName')) {
             $this->restaurantName = $reservation->getRestaurantName();
@@ -27,10 +28,10 @@ class RestaurantConfirmedEmail extends Mailable
     public function build()
     {
         return $this->subject('ახალი რეზერვაცია დადასტურდა!')
-                    ->view('emails.restaurant.confirmed')
-                    ->with([
-                        'reservation' => $this->reservation,
-                        'restaurantName' => $this->restaurantName
-                    ]);
+            ->view('emails.restaurant.confirmed')
+            ->with([
+                'reservation' => $this->reservation,
+                'restaurantName' => $this->restaurantName
+            ]);
     }
 }
