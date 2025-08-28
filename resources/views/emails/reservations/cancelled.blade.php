@@ -1,12 +1,26 @@
 <x-mail::message>
-# Introduction
+# რეზერვაციის სტატუსი: გაუქმებული ❌
 
-The body of your message.
+გამარჯობა {{ $reservation->name ?? 'ძვირფასო კლიენტო' }}!
 
-<x-mail::button :url="''">
-Button Text
+სამწუხაროდ, თქვენი რეზერვაცია (ID: #{{ $reservation->id }}) გაუქმდა.
+
+## რეზერვაციის დეტალები:
+- **რესტორანი:** {{ $restaurantName }}
+- **თარიღი:** {{ $reservation->reservation_date ?? $reservation->date ?? 'N/A' }}
+- **დრო:** {{ $reservation->time_from ?? $reservation->time ?? 'N/A' }}
+- **მომხმარებელთა რაოდენობა:** {{ $reservation->guests_count ?? $reservation->seats ?? 'N/A' }}
+
+@if(isset($reservation->notes) && $reservation->notes)
+**მიზეზი:** {{ $reservation->notes }}
+@endif
+
+ჩვენ ძალიან გვწყინს ეს გარემოება. თუ თქვენთვის სხვა თარიღი ან დრო მოგწონთ, გთხოვთ, სცადოთ ახალი რეზერვაცია.
+
+<x-mail::button :url="config('app.url')">
+ახალი რეზერვაცია
 </x-mail::button>
 
-Thanks,<br>
+ბოდიშს გიხდით,<br>
 {{ config('app.name') }}
 </x-mail::message>

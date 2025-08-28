@@ -10,16 +10,27 @@ class RestaurantCompletedEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $reservation;
+    public $restaurantName;
 
     public function __construct($reservation)
     {
         $this->reservation = $reservation;
+        
+        // Pre-compute restaurant name safely
+        if (method_exists($reservation, 'getRestaurantName')) {
+            $this->restaurantName = $reservation->getRestaurantName();
+        } else {
+            $this->restaurantName = 'N/A';
+        }
     }
 
     public function build()
     {
         return $this->subject('რეზერვაცია დასრულებულია')
                     ->view('emails.restaurant.completed')
-                    ->with(['reservation' => $this->reservation]);
+                    ->with([
+                    'reservation' => $this->reservation,
+                    'restaurantName' => $this->restaurantName,
+                ]);
     }
 }

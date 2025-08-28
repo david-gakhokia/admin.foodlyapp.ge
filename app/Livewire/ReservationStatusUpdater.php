@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Reservation;
 use Livewire\Attributes\On;
+use App\Events\ReservationStatusChanged;
 
 class ReservationStatusUpdater extends Component
 {
@@ -62,6 +63,8 @@ class ReservationStatusUpdater extends Component
             }
 
             // Update reservation status
+            $oldStatus = $this->reservation->status;
+            
             $this->reservation->update([
                 'status' => $newStatus,
                 'updated_at' => now()
@@ -69,6 +72,9 @@ class ReservationStatusUpdater extends Component
 
             $this->currentStatus = $newStatus;
             $this->reservation->refresh();
+
+            // Fire the ReservationStatusChanged event to trigger email notifications
+            ReservationStatusChanged::dispatch($this->reservation, $oldStatus, $newStatus);
 
             // Enhanced success message with status info
             $statusEmoji = $this->statusOptions[$newStatus]['icon'];

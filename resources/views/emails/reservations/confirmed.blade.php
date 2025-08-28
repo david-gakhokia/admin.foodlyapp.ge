@@ -1,12 +1,26 @@
 <x-mail::message>
-# Introduction
+# რეზერვაციის სტატუსი: დადასტურებული ✅
 
-The body of your message.
+გამარჯობა {{ $reservation->name ?? 'ძვირფასო კლიენტო' }}!
 
-<x-mail::button :url="''">
-Button Text
+**გილოცავთ!** თქვენი რეზერვაცია (ID: #{{ $reservation->id }}) წარმატებით დადასტურდა.
+
+## რეზერვაციის დეტალები:
+- **რესტორანი:** {{ $restaurantName }}
+- **თარიღი:** {{ $reservation->reservation_date ?? $reservation->date ?? 'N/A' }}
+- **დრო:** {{ $reservation->time_from ?? $reservation->time ?? 'N/A' }}
+- **მომხმარებელთა რაოდენობა:** {{ $reservation->guests_count ?? $reservation->seats ?? 'N/A' }}
+
+თქვენი მაგიდა დაცულია! ელოდებით მითითებულ დროს.
+
+@if(isset($reservation->price) && $reservation->price > 0)
+**გასადახდელი თანხა:** {{ $reservation->price }} ₾
+@endif
+
+<x-mail::button :url="config('app.url')">
+Foodly.ge-ზე ნახვა
 </x-mail::button>
 
-Thanks,<br>
+ძალიან ვუკურავებით რესტორანში!<br>
 {{ config('app.name') }}
 </x-mail::message>

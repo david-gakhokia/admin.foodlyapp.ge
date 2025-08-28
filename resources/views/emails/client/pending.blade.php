@@ -63,7 +63,7 @@
                               </table>
                               <p class="" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="center">
                                 შენს მიერ შერჩეული მაგიდა როგორ ჩანს დაკავებულია, <br> ამიტომ, რესტორნის მენეჯერმა ალტერნატიული ვარიანტი შემოგთავაზა.
-                                {{-- შენი რეზერვაცია რესტორან {{ $reservation->restaurant->name }}-ში დადასტურებულია. <br>
+                                {{-- შენი რეზერვაცია რესტორან {{ $restaurantName }}-ში დადასტურებულია. <br>
                                 დაჯავშნის დასასრულებლად, გთხოვ, გადაიხადოთ {{ $reservation->price }} ₾. --}}
                               </p>
                               {{-- <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
@@ -94,29 +94,29 @@
                                       <tbody>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">სახელი:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->name }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->client_name ?? "N/A" }}</td>
                                         </tr>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">ფოსტა:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->email }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->email ?? "N/A" }}</td>
                                         </tr>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">ობიექტი:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->restaurant->name }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $restaurantName }}</td>
                                         </tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">პერსონა:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->person }}</td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->client_name ?? "N/A" }}</td>
                                           </tr>
                                         <tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">სივრცე:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%"><a href="https://foodly.space/table/{{$reservation->place->id }}" target="_blank">{{ $reservation->place->name }}</a></td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%"><a href="https://foodly.space/table/{{$reservation->place->id }}" target="_blank">{{ $reservation->place->name ?? "N/A" }}</a></td>
                                             </tr>
                                         <tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">მაგიდა:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%"><a href="https://foodly.space/table/{{$reservation->table->id }}" target="_blank">№ {{ $reservation->table->name }}</a></td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%"><a href="https://foodly.space/table/{{$reservation->table->id }}" target="_blank">№ {{ $reservation->table->name ?? "N/A" }}</a></td>
                                             </tr>
                                         <tr>
                                         <tr>

@@ -49,7 +49,7 @@
                             </table>
                             <div class="space-y-4">
 
-                              <h1 class="text-4xl fw-800" style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 22px; line-height: 22px; margin: 0;" align="center">{{ $reservation->name }}, გილოცავ! 🎉</h1>
+                              <h1 class="text-4xl fw-800" style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 22px; line-height: 22px; margin: 0;" align="center">{{ $reservation->client_name ?? "N/A" }}, გილოცავ! 🎉</h1>
                               <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
                                 <tbody>
                                   <tr>
@@ -60,7 +60,7 @@
                                 </tbody>
                               </table>
                               <p class="text-center" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="center">
-                                შენი რეზერვაცია რესტორან {{ $reservation->restaurant->name }}-ში დასრულებულია. <br>
+                                შენი რეზერვაცია რესტორან {{ $restaurantName }}-ში დასრულებულია. <br>
                                 იმედია, სასიამოვნო დრო გაატარე!
                               </p>
                               <table class="s-4 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
@@ -91,29 +91,29 @@
                                       <tbody>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">სახელი:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->name }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->client_name ?? "N/A" }}</td>
                                         </tr>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">ფოსტა:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->email }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->email ?? "N/A" }}</td>
                                         </tr>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">ობიექტი:</td>
-                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->restaurant->name }}</td>
+                                          <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $restaurantName }}</td>
                                         </tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">პერსონა:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->person }}</td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->client_name ?? "N/A" }}</td>
                                           </tr>
                                         <tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">სივრცე:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->place->name }}</td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">{{ $reservation->place->name ?? "N/A" }}</td>
                                             </tr>
                                         <tr>
                                         <tr>
                                             <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="left" width="100%">მაგიდა:</td>
-                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">№ {{ $reservation->table->name }}</td>
+                                            <td class="text-right" style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;" align="right" width="100%">№ {{ $reservation->table->name ?? "N/A" }}</td>
                                             </tr>
                                         <tr>
                                         <tr>

@@ -30,24 +30,55 @@ class Reservation extends Model
         'guests_count' => 'integer',
     ];
 
-    // public function restaurant()
-    // {
-    //     return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id');
-    // }
-
-    // public function place()
-    // {
-    //     return $this->belongsTo(\App\Models\Place::class, 'place_id');
-    // }
-
-    // public function table()
-    // {
-    //     return $this->belongsTo(\App\Models\Table::class, 'table_id');
-    // }
+  
 
     public function reservable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Get the restaurant associated with this reservation
+     */
+    public function getRestaurant()
+    {
+        switch ($this->type) {
+            case 'restaurant':
+                return $this->reservable_type === 'App\\Models\\Restaurant' 
+                    ? $this->reservable 
+                    : null;
+            
+            case 'place':
+                if ($this->reservable_type === 'App\\Models\\Place' && $this->reservable) {
+                    return $this->reservable->restaurant ?? null;
+                }
+                return null;
+            
+            case 'table':
+                if ($this->reservable_type === 'App\\Models\\Table' && $this->reservable && $this->reservable->place) {
+                    return $this->reservable->place->restaurant ?? null;
+                }
+                return null;
+                
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Get restaurant name for this reservation
+     */
+    public function getRestaurantName()
+    {
+        $restaurant = $this->getRestaurant();
+        
+        if (!$restaurant) {
+            return 'N/A';
+        }
+        
+        return $restaurant->translate(app()->getLocale())->name ?? 
+               $restaurant->translate('ka')->name ?? 
+               $restaurant->translate('en')->name ?? 'N/A';
     }
 
     /**

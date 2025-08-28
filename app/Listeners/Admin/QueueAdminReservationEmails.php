@@ -17,12 +17,12 @@ class QueueAdminReservationEmails implements ShouldQueue
         $reservation = $event->reservation;
         $status = $event->newStatus;
 
-        // Map status to Mailable
-        $mailable = match ($status) {
+        // Map status to Mailable (handle both lowercase and capitalized status values)
+        $mailable = match (strtolower($status)) {
             'pending' => new AdminPendingEmail($reservation),
             'confirmed' => new AdminConfirmedEmail($reservation),
             'cancelled' => new AdminCancelledEmail($reservation),
-            'paid' => new AdminCompletedEmail($reservation),
+            'completed', 'paid' => new AdminCompletedEmail($reservation),
             default => null,
         };
 
@@ -68,6 +68,14 @@ class QueueAdminReservationEmails implements ShouldQueue
             $recipients[] = $reservation->admin_email;
         }
 
+        // If still no recipients, use the default admin email from config
+        if (empty($recipients)) {
+            $adminEmail = env('ADMIN_EMAIL', 'admin@foodlyapp.ge');
+            if (!empty($adminEmail) && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                $recipients[] = $adminEmail;
+            }
+        }
+
         if (empty($recipients)) {
             // Nothing to send to; log and return
             try {
@@ -94,7 +102,7 @@ class QueueAdminReservationEmails implements ShouldQueue
                     // ignore log errors in tests
                 }
                 // try to dispatch via the framework
-                dispatch(new SendAdminReservationEmail($to, $mailable));
+                dispatch(new SendAdminReservationEmail($to, $mailable, $reservation->id));
             } catch (\Throwable $e) {
                 try {
                     \Illuminate\Support\Facades\Log::warning('Dispatch failed; falling back to synchronous send', ['error' => $e->getMessage()]);
@@ -103,7 +111,7 @@ class QueueAdminReservationEmails implements ShouldQueue
                 }
                 // If dispatching is not available (tests or minimal runtime), run synchronously
                 try {
-                    (new SendAdminReservationEmail($to, $mailable))->handle();
+                    (new SendAdminReservationEmail($to, $mailable, $reservation->id))->handle();
                 } catch (\Throwable $_) {
                     // swallow secondary exceptions to avoid breaking notification flow in minimal environments
                     try {

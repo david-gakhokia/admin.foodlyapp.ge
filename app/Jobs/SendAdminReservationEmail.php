@@ -8,41 +8,56 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Models\Reservation;
 use Throwable;
 
 class SendAdminReservationEmail implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue, Queueable;
 
     public string $to;
     public $mailable;
+    public int $reservationId;
     public int $tries = 3;
     public int $backoff = 60; // seconds
 
-    public function __construct(string $to, $mailable)
+    public function __construct(string $to, $mailable, int $reservationId)
     {
         $this->to = $to;
         $this->mailable = $mailable;
+        $this->reservationId = $reservationId;
     }
 
     public function handle()
     {
         try {
+            // Load fresh reservation model with all methods
+            $reservation = Reservation::find($this->reservationId);
+            
+            if (!$reservation) {
+                Log::warning('Reservation not found for email', ['reservation_id' => $this->reservationId]);
+                return;
+            }
+
+            // Create new mailable instance with fresh reservation
+            $mailableClass = get_class($this->mailable);
+            $mailable = new $mailableClass($reservation);
+
             // Avoid calling Mail facade in 'testing' environment (unit tests without app bootstrapped)
             if (getenv('APP_ENV') !== 'testing') {
-                Mail::to($this->to)->queue($this->mailable);
+                Mail::to($this->to)->send($mailable);
             }
             try {
-                Log::info('Admin reservation email queued', ['to' => $this->to, 'mailable' => get_class($this->mailable)]);
+                Log::info('Admin reservation email sent', ['to' => $this->to, 'mailable' => get_class($mailable)]);
             } catch (Throwable $_) {
                 // ignore logging failures in minimal/test environments
             }
         } catch (Throwable $e) {
             // Log and rethrow to let the queue worker handle retry according to $tries/backoff
             try {
-                Log::error('Failed to queue admin reservation email', [
+                Log::error('Failed to send admin reservation email', [
                     'to' => $this->to,
-                    'mailable' => is_object($this->mailable) ? get_class($this->mailable) : (string) $this->mailable,
+                    'reservation_id' => $this->reservationId,
                     'error' => $e->getMessage(),
                 ]);
             } catch (Throwable $_) {

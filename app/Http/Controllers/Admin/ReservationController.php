@@ -18,6 +18,7 @@ use App\Mail\Restaurant\RestaurantCancelledEmail;
 use App\Mail\Restaurant\RestaurantCompletedEmail;
 use App\Mail\Restaurant\RestaurantConfirmedEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Events\ReservationStatusChanged;
 
 class ReservationController extends Controller
 {
@@ -112,6 +113,10 @@ class ReservationController extends Controller
         $newStatus = $reservation->status;
 
         if ($oldStatus !== $newStatus) {
+            // Fire the ReservationStatusChanged event to trigger email notifications
+            ReservationStatusChanged::dispatch($reservation, $oldStatus, $newStatus);
+            
+            // Keep the old email sending as backup
             $this->sendNotificationEmails($reservation, $restaurant, $newStatus);
         }
 
@@ -686,6 +691,11 @@ class ReservationController extends Controller
         }
         
         $reservation->save();
+
+        // Fire the ReservationStatusChanged event when status changes
+        if ($oldStatus !== $request->status) {
+            ReservationStatusChanged::dispatch($reservation, $oldStatus, $request->status);
+        }
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

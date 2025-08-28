@@ -287,7 +287,7 @@
                                                                         style="line-height: 24px; font-size: 15px; color: #000000; width: 100%; margin: 0;"
                                                                         align="center">
                                                                         {{ __('Reservation') }}ID #{{ $reservation->id }} <br>
-                                                                        {{ $reservation->created_at }}</p>
+                                                                        {{ $reservation->created_at ? $reservation->created_at->format('Y-m-d H:i') : 'N/A' }}</p>
 
                                                                     <table class="p-2 w-full" border="0"
                                                                         cellpadding="0" cellspacing="0"
@@ -300,7 +300,7 @@
                                                                                 <td class="text-right"
                                                                                     style="line-height: 24px; line-weight:150px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
                                                                                     align="right" width="100%">
-                                                                                    {{ $reservation->name }}
+                                                                                    {{ $reservation->client_name ?? "N/A" }}
 
                                                                                 </td>
                                                                             </tr>
@@ -324,7 +324,7 @@
                                                                                 <td class="text-right"
                                                                                     style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
                                                                                     align="right" width="100%">
-                                                                                    {{ $reservation->table->place->name }}
+                                                                                    {{ $reservation->table?->place?->name ?? "N/A" }}
 
                                                                                 </td>
                                                                             </tr>
@@ -336,7 +336,7 @@
                                                                                 <td class="text-right"
                                                                                     style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
                                                                                     align="right" width="100%">
-                                                                                    №{{ $reservation->table->name }}
+                                                                                    №{{ $reservation->table->name ?? "N/A" }}
 
                                                                                 </td>
                                                                             </tr>
