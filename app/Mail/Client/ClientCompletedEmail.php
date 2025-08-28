@@ -27,7 +27,7 @@ class ClientCompletedEmail extends Mailable
     public function build()
     {
         return $this->subject('მაგიდა დაიჯავშნა - გადახდილია')
-                    ->view('emails.client.completed')
+                    ->view('emails.layouts.modern')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

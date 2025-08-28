@@ -26,8 +26,8 @@ class AdminConfirmedEmail extends Mailable
 
     public function build()
     {
-    return $this->subject('✅ რეზერვაცია დადასტურებულია - FOODLY')
-            ->view('emails.layouts.modern')
+    return $this->subject('🛡️ ადმინისტრაციული შეტყობინება - FOODLY')
+            ->view('emails.layouts.admin')
             ->with([
                 'reservation' => $this->reservation,
                 'restaurantName' => $this->restaurantName

@@ -28,7 +28,7 @@ class ClientCancelledEmail extends Mailable
     public function build()
     {
         return $this->subject('რეზერვაცია უარყოფილია - დეტალები...')
-                    ->view('emails.client.cancelled')
+                    ->view('emails.layouts.modern')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

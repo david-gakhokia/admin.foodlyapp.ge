@@ -26,8 +26,8 @@ class AdminCompletedEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('გადახდილია - მაგიდა დაიჯავშნა')
-                    ->view('emails.admin.completed')
+        return $this->subject('🎉 რეზერვაცია დასრულდა - FOODLY')
+                    ->view('emails.layouts.modern')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

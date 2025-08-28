@@ -26,8 +26,8 @@ class ClientConfirmedEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('რეზერვაციის დეტალები - დადასტურებულია')
-                    ->view('emails.client.confirmed')
+        return $this->subject('🎉 რეზერვაცია დადასტურდა - FOODLY')
+                    ->view('emails.layouts.client')
                     ->with([
                         'reservation' => $this->reservation,
                         'restaurantName' => $this->restaurantName
