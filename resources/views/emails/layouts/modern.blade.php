@@ -28,7 +28,7 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -42,19 +42,19 @@
         }
         
         .status-pending {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #fed7aa 0%, #f7931e 100%);
         }
         
         .status-confirmed {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #86efac 0%, #22c55e 100%);
         }
         
         .status-completed {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            background: linear-gradient(135deg, #fdba74 0%, #ff6b35 100%);
         }
         
         .status-cancelled {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%);
         }
         
         .status-badge {
@@ -85,7 +85,7 @@
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #ff6b35;
         }
         
         .detail-row {
@@ -131,7 +131,7 @@
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 10px;
-            color: #667eea;
+            color: #ff6b35;
         }
         
         .footer-text {
@@ -146,7 +146,7 @@
         }
         
         .contact-info a {
-            color: #667eea;
+            color: #ff6b35;
             text-decoration: none;
         }
         

@@ -27,8 +27,8 @@ class RestaurantCancelledEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('ჯავშანი გაუქმებულია')
-                    ->view('emails.layouts.modern')
+        return $this->subject('❌ რეზერვაცია გაუქმდა - FOODLY')
+                    ->view('emails.layouts.restaurant')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

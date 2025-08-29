@@ -27,8 +27,8 @@ class AdminCancelledEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('რეზერვაცია გაუქმებულია - დეტალები')
-                    ->view('emails.layouts.modern')
+        return $this->subject('❌ რეზერვაცია გაუქმდა - FOODLY ADMIN')
+                    ->view('emails.layouts.admin')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

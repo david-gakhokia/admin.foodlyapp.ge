@@ -51,9 +51,10 @@ use App\Http\Controllers\DocumentationController;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
+    Route::get('/', [DocumentationController::class, 'index'])->name('home');
 
 // Documentation Routes
 Route::prefix('docs')->name('docs.')->group(function () {

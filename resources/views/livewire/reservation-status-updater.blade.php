@@ -21,7 +21,7 @@
             class="appearance-none text-xs font-semibold border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 bg-gradient-to-r from-white to-gray-50 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
         >
             <option value="" class="text-gray-500 font-normal">
-                {{ $isUpdating ? '⏳ იტვირთება...' : '🔄 სტატუსის ცვლილება' }}
+                {{ $isUpdating ? '⏳ იტვირთება...' : '🔄 განახლება' }}
             </option>
             @foreach($this->availableStatuses as $status => $info)
                 <option value="{{ $status }}" class="py-3 font-medium">

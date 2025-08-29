@@ -1,480 +1,146 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+@extends('emails.layouts.admin')
 
-<head>
-    <title>რესტორანმა კლენტს ჯავშანი დაუდასტურა</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="x-apple-disable-message-reformatting">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-    <style type="text/css">
-        body,
-        table,
-        td {
-            font-family: Helvetica, Arial, sans-serif !important
-        }
+@section('content')
+<!-- Header -->
+<div class="header status-cancelled">
+    <div class="admin-badge">👨‍💼 ADMIN PANEL</div>
+    <div class="logo">🍽️ FOODLY</div>
+    <div class="status-badge">❌ გაუქმებული</div>
+</div>
 
-        .ExternalClass {
-            width: 100%
-        }
+<!-- Content -->
+<div class="content">
+    <h1 class="title georgian">❌ რეზერვაცია გაუქმებულია</h1>
 
-        .ExternalClass,
-        .ExternalClass p,
-        .ExternalClass span,
-        .ExternalClass font,
-        .ExternalClass td,
-        .ExternalClass div {
-            line-height: 150%
-        }
+    <div class="admin-alert" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-color: #ef4444; color: #991b1b;">
+        <p style="font-size: 16px; margin: 0;">
+            ⚠️ <strong>რეზერვაცია ოფიციალურად გაუქმდა!</strong><br>
+            კლიენტს და რესტორანს ავტომატურად გაეგზავნა შეტყობინება.
+        </p>
+    </div>
 
-        a {
-            text-decoration: none
-        }
+    <div class="reservation-card">
+        <div class="detail-row">
+            <span class="detail-label">🆔 რეზერვაციის ID:</span>
+            <span class="detail-value">{{ $reservation->id ?? 'N/A' }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">👤 კლიენტის სახელი:</span>
+            <span class="detail-value georgian">{{ $reservation->name ?? 'N/A' }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">📧 ელ-ფოსტა:</span>
+            <span class="detail-value">{{ $reservation->email ?? 'N/A' }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">📞 ტელეფონი:</span>
+            <span class="detail-value">{{ $reservation->phone ?? 'N/A' }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">👥 სტუმრები:</span>
+            <span class="detail-value"><strong>{{ $reservation->guests_count ?? 'N/A' }} პერსონა</strong></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">📅 თარიღი:</span>
+            <span class="detail-value"><strong>{{ $reservation->reservation_date ?? 'N/A' }}</strong></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">🕐 დრო:</span>
+            <span class="detail-value"><strong>{{ $reservation->time_from ?? 'N/A' }} - {{ $reservation->time_to ?? 'N/A' }}</strong></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">🏪 რესტორანი:</span>
+            <span class="detail-value georgian">{{ $restaurantName ?? 'N/A' }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">❌ გაუქმების დრო:</span>
+            <span class="detail-value">{{ $reservation->cancelled_at ?? now() }}</span>
+        </div>
+        
+        @if($cancellationReason ?? false)
+        <div class="detail-row">
+            <span class="detail-label">📝 გაუქმების მიზეზი:</span>
+            <span class="detail-value georgian">{{ $cancellationReason }}</span>
+        </div>
+        @endif
+        
+        @if($reservation->notes ?? false)
+        <div class="detail-row">
+            <span class="detail-label">📝 კლიენტის შენიშვნა:</span>
+            <span class="detail-value georgian">{{ $reservation->notes }}</span>
+        </div>
+        @endif
+    </div>
 
-        * {
-            color: inherit
-        }
+    <div class="admin-actions">
+        <p style="font-size: 16px; font-weight: 600; color: #0c4a6e; margin-bottom: 15px;">
+            📊 <strong>გაუქმების ანალიზი:</strong>
+        </p>
+        <p style="color: #075985; margin-bottom: 20px;">
+            ❌ კლიენტს გაეგზავნა გაუქმების შეტყობინება<br>
+            ❌ რესტორანს გაეგზავნა შეტყობინება<br>
+            🗓️ ადგილი გათავისუფლდა კალენდარში<br>
+            📈 სტატისტიკა განახლდა (გაუქმების მაჩვენებელი)
+        </p>
+        
+        <div style="text-align: center;">
+            <a href="{{ $adminPanelUrl ?? 'https://admin.foodly.space/reservations' }}" style="display: inline-block; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 0 10px;">
+                📊 კალენდარი
+            </a>
+            <a href="{{ $adminPanelUrl ?? 'https://admin.foodly.space/analytics' }}" style="display: inline-block; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 0 10px;">
+                📈 ანალიტიკა
+            </a>
+        </div>
+    </div>
 
-        a[x-apple-reservation-detectors],
-        u+#body a,
-        #MessageViewBody a {
-            color: inherit;
-            text-decoration: none;
-            font-size: inherit;
-            font-family: inherit;
-            font-weight: inherit;
-            line-height: inherit
-        }
+    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde047 100%); border: 2px solid #eab308; border-radius: 12px; padding: 20px; margin: 25px 0;">
+        <p style="font-size: 16px; color: #92400e; margin: 0; font-weight: 600; text-align: center;">
+            💡 <strong>რჩევა:</strong> გაუქმების მაღალი მაჩვენებელი შეიძლება მიუთითებდეს:<br>
+            • ხელმისაწვდომობის პრობლემებზე<br>
+            • კომუნიკაციის გაუმჯობესების საჭიროებაზე<br>
+            • რესტორნების ტრენინგის საჭიროებაზე
+        </p>
+    </div>
 
-        img {
-            -ms-interpolation-mode: bicubic
-        }
+    <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 25px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="font-size: 16px; color: #991b1b; margin: 0; font-weight: 600;">
+                    💸 <strong>დაკარგული შემოსავალი:</strong>
+                </p>
+                <p style="font-size: 20px; color: #7f1d1d; margin: 5px 0 0 0; font-weight: 700;">
+                    {{ $lostRevenue ?? 'N/A' }} ₾
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 14px; color: #b91c1c; margin: 0;">
+                    📅 {{ $reservation->reservation_date ?? 'N/A' }}<br>
+                    👥 {{ $reservation->guests_count ?? 'N/A' }} სტუმარი
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        table:not([class^=s-]) {
-            font-family: Helvetica, Arial, sans-serif;
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-            border-spacing: 0px;
-            border-collapse: collapse
-        }
-
-        table:not([class^=s-]) td {
-            border-spacing: 0px;
-            border-collapse: collapse
-        }
-
-        @media screen and (max-width: 600px) {
-
-            .w-lg-48,
-            .w-lg-48>tbody>tr>td {
-                width: auto !important
-            }
-
-            .w-full,
-            .w-full>tbody>tr>td {
-                width: 100% !important
-            }
-
-            .w-16,
-            .w-16>tbody>tr>td {
-                width: 64px !important
-            }
-
-            .p-lg-10:not(table),
-            .p-lg-10:not(.btn)>tbody>tr>td,
-            .p-lg-10.btn td a {
-                padding: 0 !important
-            }
-
-            .p-2:not(table),
-            .p-2:not(.btn)>tbody>tr>td,
-            .p-2.btn td a {
-                padding: 8px !important
-            }
-
-            .pr-4:not(table),
-            .pr-4:not(.btn)>tbody>tr>td,
-            .pr-4.btn td a,
-            .px-4:not(table),
-            .px-4:not(.btn)>tbody>tr>td,
-            .px-4.btn td a {
-                padding-right: 16px !important
-            }
-
-            .pl-4:not(table),
-            .pl-4:not(.btn)>tbody>tr>td,
-            .pl-4.btn td a,
-            .px-4:not(table),
-            .px-4:not(.btn)>tbody>tr>td,
-            .px-4.btn td a {
-                padding-left: 16px !important
-            }
-
-            .pr-6:not(table),
-            .pr-6:not(.btn)>tbody>tr>td,
-            .pr-6.btn td a,
-            .px-6:not(table),
-            .px-6:not(.btn)>tbody>tr>td,
-            .px-6.btn td a {
-                padding-right: 24px !important
-            }
-
-            .pl-6:not(table),
-            .pl-6:not(.btn)>tbody>tr>td,
-            .pl-6.btn td a,
-            .px-6:not(table),
-            .px-6:not(.btn)>tbody>tr>td,
-            .px-6.btn td a {
-                padding-left: 24px !important
-            }
-
-            .pt-8:not(table),
-            .pt-8:not(.btn)>tbody>tr>td,
-            .pt-8.btn td a,
-            .py-8:not(table),
-            .py-8:not(.btn)>tbody>tr>td,
-            .py-8.btn td a {
-                padding-top: 32px !important
-            }
-
-            .pb-8:not(table),
-            .pb-8:not(.btn)>tbody>tr>td,
-            .pb-8.btn td a,
-            .py-8:not(table),
-            .py-8:not(.btn)>tbody>tr>td,
-            .py-8.btn td a {
-                padding-bottom: 32px !important
-            }
-
-            *[class*=s-lg-]>tbody>tr>td {
-                font-size: 0 !important;
-                line-height: 0 !important;
-                height: 0 !important
-            }
-
-            .s-4>tbody>tr>td {
-                font-size: 16px !important;
-                line-height: 16px !important;
-                height: 16px !important
-            }
-
-            .s-6>tbody>tr>td {
-                font-size: 24px !important;
-                line-height: 24px !important;
-                height: 24px !important
-            }
-        }
-    </style>
-</head>
-
-<body class="bg-red-100"
-    style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #000000; margin: 0; padding: 0; border-width: 0;"
-    bgcolor="#f8d7da">
-    <table class="bg-red-100 body" valign="top" role="presentation" border="0" cellpadding="0" cellspacing="0"
-        style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #000000; margin: 0; padding: 0; border-width: 0;"
-        bgcolor="#f8d7da">
-        <tbody>
-            <tr>
-                <td valign="top" style="line-height: 24px; font-size: 16px; margin: 0;" align="left"
-                    bgcolor="#f8d7da">
-                    <table class="container" role="presentation" border="0" cellpadding="0" cellspacing="0"
-                        style="width: 100%;">
-                        <tbody>
-                            <tr>
-                                <td align="center"
-                                    style="line-height: 24px; font-size: 16px; margin: 0; padding: 0 16px;">
-                                    <table align="center" role="presentation" border="0" cellpadding="0"
-                                        cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="line-height: 24px; font-size: 16px; margin: 0;"
-                                                    align="left">
-                                                    <table class="s-6 w-full" role="presentation" border="0"
-                                                        cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                        width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="line-height: 24px; font-size: 24px; width: 100%; height: 24px; margin: 0;"
-                                                                    align="left" width="100%" height="24">
-                                                                    &#160;
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <img class="w-200"
-                                                        src="https://imagedelivery.net/iju3uLOJWht1WeOaYRYgxA/16ba8fdf-3de4-47b9-516c-8a5b6b393d00/public"
-                                                        style="display: block; margin-left: auto; margin-right: auto;"
-                                                        width="200">
-                                                    <table class="s-6 w-full" role="presentation" border="0"
-                                                        cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                        width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="line-height: 4px; font-size: 24px; width: 100%; height: 4px; margin: 0;"
-                                                                    align="left" width="100%" height="24">
-                                                                    &#160;
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="space-y-4">
-
-                                                        {{-- <h1 class="text-4xl fw-800"
-                                                            style="padding-top: 0; padding-bottom: 0; font-weight: 800 !important; vertical-align: baseline; font-size: 24px; line-height: 24px; margin: 0;"
-                                                            align="center">{{ __('Hello') }}</h1> --}}
-                                                        <table class="s-4 w-full" role="presentation" border="0"
-                                                            cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                            width="100%">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td style="line-height: 16px; font-size: 16px; width: 100%; height: 16px; margin: 0;"
-                                                                        align="left" width="100%" height="16">
-                                                                        &#160;
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                        <h2 class=""
-                                                            style="line-height: 24px; font-size: 24px; width: 100%; margin: 0;"
-                                                            align="center">
-                                                            რეზერვაცია გაუქმებულია ❌
-                                                            {{-- {{ __('Your reservation request has been sent for review') }} --}}
-                                                        </h2>
-                                                        <p align="center">
-                                                            რესტორან: <b style="color: #EB644D">{{ $restaurantName }}</b> -ში
-                                                        </p>
-                                                        <table class="s-4 w-full" role="presentation" border="0"
-                                                            cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                            width="100%">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td style="line-height: 16px; font-size: 16px; width: 100%; height: 16px; margin: 0;"
-                                                                        align="left" width="100%" height="16">
-                                                                        &#160;
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <table class="s-6 w-full" role="presentation" border="0"
-                                                        cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                        width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="line-height: 24px; font-size: 24px; width: 100%; height: 24px; margin: 0;"
-                                                                    align="left" width="100%" height="24">
-                                                                    &#160;
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <table class="card rounded-3xl px-4 py-8 p-lg-10"
-                                                        role="presentation" border="0" cellpadding="0"
-                                                        cellspacing="0"
-                                                        style="border-radius: 24px; border-collapse: separate !important; width: 100%; overflow: hidden; border: 1px solid #e2e8f0;"
-                                                        bgcolor="#ffffff">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; border-radius: 24px; margin: 0; padding: 40px;"
-                                                                    align="left" bgcolor="#ffffff">
-                                                                    <h3 class="text-center"
-                                                                        style="padding-top: 0; padding-bottom: 0; color: #be0a0a; font-weight: 500; vertical-align: baseline; font-size: 28px; line-height: 33.6px; margin: 0;"
-                                                                        align="center">{{ __('Reservation Details') }}
-                                                                    </h3>
-                                                                    <p class="text-center text-muted"
-                                                                        style="line-height: 24px; font-size: 15px; color: #000000; width: 100%; margin: 0;"
-                                                                        align="center">
-                                                                        ID #{{ $reservation->id }} <br>
-                                                                        {{ $reservation->created_at ? $reservation->created_at->format('Y-m-d H:i') : 'N/A' }}
-                                                                    </p>
-                                                                    <table class="p-2 w-full" border="0"
-                                                                        cellpadding="0" cellspacing="0"
-                                                                        style="width: 100%;" width="100%">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Name') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->client_name ?? "N/A" }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Phone') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->phone ?? "N/A" }}</td>
-                                                                            </tr>
-
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('E-mail') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->email ?? "N/A" }}</td>
-                                                                            </tr>
-
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Restaurant') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $restaurantName }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Person') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->seats }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Place') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->table?->place?->name ?? "N/A" }}
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Table') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">№
-                                                                                    {{ $reservation->table->name ?? "N/A" }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Date') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->date }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Time') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->time }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Event') }}:</td>
-                                                                                <td class="text-right"
-                                                                                    style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">
-                                                                                    {{ $reservation->event_type }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="fw-700 border-top"
-                                                                                    style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: 100%; font-weight: 700 !important; margin: 0; padding: 8px;"
-                                                                                    align="left" width="100%">
-                                                                                    {{ __('Price') }}</td>
-                                                                                <td class="fw-700 text-right border-top"
-                                                                                    style="line-height: 24px; font-size: 16px; border-top-width: 1px !important; border-top-color: #e2e8f0 !important; border-top-style: solid !important; width: 100%; font-weight: 700 !important; margin: 0; padding: 8px;"
-                                                                                    align="right" width="100%">{{ $reservation->price }} ₾
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <table class="s-6 w-full" role="presentation"
-                                                                        border="0" cellpadding="0"
-                                                                        cellspacing="0" style="width: 100%;"
-                                                                        width="100%">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 24px; width: 100%; height: 24px; margin: 0;"
-                                                                                    align="left" width="100%"
-                                                                                    height="24">
-                                                                                    &#160;
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <table class="hr" role="presentation"
-                                                                        border="0" cellpadding="0"
-                                                                        cellspacing="0" style="width: 100%;">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; height: 1px; width: 100%; margin: 0;"
-                                                                                    align="left">
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <table class="s-6 w-full" role="presentation"
-                                                                        border="0" cellpadding="0"
-                                                                        cellspacing="0" style="width: 100%;"
-                                                                        width="100%">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="line-height: 24px; font-size: 24px; width: 100%; height: 24px; margin: 0;"
-                                                                                    align="left" width="100%"
-                                                                                    height="24">
-                                                                                    &#160;
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <p style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; color: #EB644D;"
-                                                                        align="center">
-                                                                        <a href="{{ url('https://admin.foodly.pro/admin/reservations/'. $reservation->id.'/edit') }}">შეკვეთის ნახვა  🧐</a>
-                                                                    </p>
-
-                                                                </td>
-
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <br>
-                                                    <p align="center"><a href="" target="_blank"> www.foodly.space</a> <br>(+995) 032 215 20 24</p>
-                                                    <table class="s-6 w-full" role="presentation" border="0"
-                                                        cellpadding="0" cellspacing="0" style="width: 100%;"
-                                                        width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="line-height: 24px; font-size: 24px; width: 100%; height: 24px; margin: 0;"
-                                                                    align="left" width="100%" height="24">
-                                                                    &#160;
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</body>
-</html>
+<!-- Footer -->
+<div class="footer">
+    <div class="footer-logo">🍽️ FOODLY ADMIN</div>
+    <div class="footer-text georgian">
+        ადმინისტრაციული პანელი<br>
+        <strong>რეზერვაციების მართვის სისტემა</strong>
+    </div>
+    <div class="contact-info">
+        📧 <a href="mailto:admin@foodlyapp.ge">admin@foodlyapp.ge</a><br>
+        📞 <a href="tel:+995322152024">(+995) 032 215 20 24</a><br>
+        🌐 <a href="https://admin.foodly.space" target="_blank">admin.foodly.space</a>
+    </div>
+</div>
+@endsection
