@@ -27,8 +27,8 @@ class AdminPendingEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('� ახალი რეზერვაცია - FOODLY ADMIN')
-                    ->view('emails.layouts.admin')
+        return $this->subject('🚨 ახალი რეზერვაცია - FOODLY ADMIN')
+                    ->view('emails.admin.pending')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

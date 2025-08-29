@@ -3,6 +3,7 @@
 namespace App\Services\Reservation;
 
 use App\Models\Reservation;
+use App\Events\ReservationStatusChanged;
 use Carbon\Carbon;
 
 class ReservationService
@@ -13,7 +14,7 @@ class ReservationService
         $slotIntervalMinutes = 60; // Default, მაგრამ მომავალში მოდელიდანაც ამოვიღებთ.
         $timeTo = $timeFrom->copy()->addMinutes($slotIntervalMinutes);
 
-        return Reservation::create([
+        $reservation = Reservation::create([
             'type' => strtolower(class_basename($model)),
             'reservable_type' => get_class($model),
             'reservable_id' => $model->id,
@@ -28,5 +29,11 @@ class ReservationService
             'notes' => $customerData['notes'] ?? null,
             'status' => 'Pending',
         ]);
+
+        // ✨ ახალი ფუნქციონალი - რეზერვაციის შექმნისას Email-ების გაგზავნა
+        // ვგზავნით "Pending" სტატუსის შეტყობინებას შექმნის დროს
+        ReservationStatusChanged::dispatch($reservation, null, 'Pending');
+
+        return $reservation;
     }
 }

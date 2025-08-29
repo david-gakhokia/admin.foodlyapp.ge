@@ -28,7 +28,7 @@ class RestauranPendingEmail extends Mailable
     public function build()
     {
         return $this->subject('⏳ ახალი რეზერვაცია - FOODLY')
-                    ->view('emails.layouts.restaurant')
+                    ->view('emails.restaurant.pending')
                     ->with([
                     'reservation' => $this->reservation,
                     'restaurantName' => $this->restaurantName,

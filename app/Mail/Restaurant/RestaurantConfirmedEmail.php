@@ -28,7 +28,7 @@ class RestaurantConfirmedEmail extends Mailable
     public function build()
     {
         return $this->subject('📋 რეზერვაციის შეტყობინება - FOODLY')
-            ->view('emails.layouts.restaurant')
+            ->view('emails.restaurant.confirmed')
             ->with([
                 'reservation' => $this->reservation,
                 'restaurantName' => $this->restaurantName
