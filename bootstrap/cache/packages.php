@@ -31,6 +31,17 @@
       0 => 'CloudinaryLabs\\CloudinaryLaravel\\CloudinaryServiceProvider',
     ),
   ),
+  'laravel/horizon' => 
+  array (
+    'aliases' => 
+    array (
+      'Horizon' => 'Laravel\\Horizon\\Horizon',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
+    ),
+  ),
   'laravel/pail' => 
   array (
     'providers' => 
@@ -121,6 +132,13 @@
     'providers' => 
     array (
       0 => 'PowerComponents\\LivewirePowerGrid\\Providers\\PowerGridServiceProvider',
+    ),
+  ),
+  'romanzipp/laravel-queue-monitor' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'romanzipp\\QueueMonitor\\Providers\\QueueMonitorProvider',
     ),
   ),
   'spatie/laravel-permission' => 

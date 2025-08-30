@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\SpotRestaurantController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Horizon\Horizon;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\KioskController;
@@ -28,6 +29,8 @@ use App\Http\Controllers\Admin\DishController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\NotificationLogController;
+use App\Http\Controllers\Admin\QueueController;
+use App\Http\Controllers\Admin\RealtimeMonitoringController;
 
 // Admin Slot Controllers
 use App\Http\Controllers\Admin\Slot\RestaurantSlotController as AdminRestaurantSlotController;
@@ -476,6 +479,28 @@ Route::middleware(['auth'])
 
         Route::get('reservation/calendar', [ReservationController::class, 'calendarAll'])
             ->name('reservation.calendar');
+
+        // Queue Management Routes
+        Route::prefix('queue')->name('queue.')->group(function () {
+            Route::get('dashboard', [\App\Http\Controllers\Admin\QueueController::class, 'dashboard'])->name('dashboard');
+            Route::get('jobs', [\App\Http\Controllers\Admin\QueueController::class, 'jobs'])->name('jobs');
+            Route::get('failed', [\App\Http\Controllers\Admin\QueueController::class, 'failed'])->name('failed');
+            Route::get('retry-failed/{id}', [\App\Http\Controllers\Admin\QueueController::class, 'retryFailed'])->name('retry-failed');
+            Route::delete('delete-failed/{id}', [\App\Http\Controllers\Admin\QueueController::class, 'deleteFailed'])->name('delete-failed');
+            Route::post('clear-failed', [\App\Http\Controllers\Admin\QueueController::class, 'clearFailed'])->name('clear-failed');
+            Route::post('restart', [\App\Http\Controllers\Admin\QueueController::class, 'restart'])->name('restart');
+            Route::get('api', [\App\Http\Controllers\Admin\QueueController::class, 'api'])->name('api');
+        });
+
+        // Real-time Monitoring Routes
+        Route::prefix('monitoring')->name('monitoring.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'dashboard'])->name('dashboard');
+            Route::get('api', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'api'])->name('api');
+            Route::get('reservations-feed', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'reservationsFeed'])->name('reservations-feed');
+            Route::get('email-activities', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'emailActivities'])->name('email-activities');
+            Route::get('system-health', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'systemHealth'])->name('system-health');
+            Route::get('performance-metrics', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'performanceMetrics'])->name('performance-metrics');
+        });
     });
 
 

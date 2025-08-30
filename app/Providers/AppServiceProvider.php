@@ -10,6 +10,7 @@ use App\Domain\Reservations\Events\ReservationRequested;
 use App\Domain\Reservations\Events\ReservationConfirmed;
 use App\Domain\Reservations\Events\ReservationDeclined;
 use App\Domain\Reservations\Events\ReservationPreArrivalDue;
+use Laravel\Horizon\Horizon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +36,10 @@ class AppServiceProvider extends ServiceProvider
             ReservationDeclined::class,
             ReservationPreArrivalDue::class,
         ], NotificationEventListener::class);
+
+        // Configure Horizon authorization
+        Horizon::auth(function ($request) {
+            return $request->user() && $request->user()->hasRole('admin');
+        });
     }
 }

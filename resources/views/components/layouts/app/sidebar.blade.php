@@ -39,6 +39,23 @@
                     <flux:navlist.item icon="building-storefront" :href="route('admin.cities.index')" :current="request()->routeIs('admin.cities.*')" wire:navigate>{{ __('Cities') }}</flux:navlist.item>
 
                 </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Monitoring & Analytics')" class="grid">
+                    <flux:navlist.item icon="chart-bar" :href="route('admin.monitoring.dashboard')" :current="request()->routeIs('admin.monitoring.*')" wire:navigate>
+                        <span class="flex items-center">
+                            🔥 Real-time Monitoring
+                            <span class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 animate-pulse">Live</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="queue-list" :href="route('admin.queue.dashboard')" :current="request()->routeIs('admin.queue.*')" wire:navigate>
+                        <span class="flex items-center">
+                            📊 Queue Dashboard
+                            @if(isset($queueStats) && $queueStats['failed'] > 0)
+                                <span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">{{ $queueStats['failed'] }}</span>
+                            @endif
+                        </span>
+                    </flux:navlist.item>
+                </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />

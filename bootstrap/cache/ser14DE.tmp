@@ -44,9 +44,8 @@
     40 => 'romanzipp\\QueueMonitor\\Providers\\QueueMonitorProvider',
     41 => 'Spatie\\Permission\\PermissionServiceProvider',
     42 => 'App\\Providers\\AppServiceProvider',
-    43 => 'App\\Providers\\HorizonServiceProvider',
-    44 => 'App\\Providers\\RouteServiceProvider',
-    45 => 'App\\Providers\\VoltServiceProvider',
+    43 => 'App\\Providers\\RouteServiceProvider',
+    44 => 'App\\Providers\\VoltServiceProvider',
   ),
   'eager' => 
   array (
@@ -77,9 +76,8 @@
     24 => 'romanzipp\\QueueMonitor\\Providers\\QueueMonitorProvider',
     25 => 'Spatie\\Permission\\PermissionServiceProvider',
     26 => 'App\\Providers\\AppServiceProvider',
-    27 => 'App\\Providers\\HorizonServiceProvider',
-    28 => 'App\\Providers\\RouteServiceProvider',
-    29 => 'App\\Providers\\VoltServiceProvider',
+    27 => 'App\\Providers\\RouteServiceProvider',
+    28 => 'App\\Providers\\VoltServiceProvider',
   ),
   'deferred' => 
   array (
