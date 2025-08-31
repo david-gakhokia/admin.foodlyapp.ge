@@ -16,25 +16,35 @@ class ReservationStatusUpdater extends Component
     
     // Available status options with enhanced styling
     public $statusOptions = [
-        'Pending' => [
+        'pending' => [
             'label' => 'მოლოდინში',
             'icon' => '🟡',
             'class' => 'bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border border-amber-200'
         ],
-        'Confirmed' => [
+        'confirmed' => [
             'label' => 'დადასტურებული',
             'icon' => '🟢',
             'class' => 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200'
         ],
-        'Completed' => [
+        'paid' => [
+            'label' => 'გადახდილი',
+            'icon' => '💳',
+            'class' => 'bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border border-emerald-200'
+        ],
+        'completed' => [
             'label' => 'დასრულებული',
             'icon' => '🔵',
             'class' => 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200'
         ],
-        'Cancelled' => [
+        'cancelled' => [
             'label' => 'გაუქმებული',
             'icon' => '🔴',
             'class' => 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border border-red-200'
+        ],
+        'no_show' => [
+            'label' => 'არ გამოჩენილა',
+            'icon' => '⚫',
+            'class' => 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 border border-gray-200'
         ]
     ];
 
