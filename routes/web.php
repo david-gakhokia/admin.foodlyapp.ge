@@ -31,6 +31,8 @@ use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\NotificationLogController;
 use App\Http\Controllers\Admin\QueueController;
 use App\Http\Controllers\Admin\RealtimeMonitoringController;
+use App\Http\Controllers\BOGPaymentController;
+use App\Http\Controllers\BOGWebhookController;
 
 // Admin Slot Controllers
 use App\Http\Controllers\Admin\Slot\RestaurantSlotController as AdminRestaurantSlotController;
@@ -516,6 +518,37 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+});
+
+// BOG Payment System Routes
+Route::prefix('bog')->name('bog.')->group(function () {
+    
+    // Payment initiation (API)
+    Route::post('payments/initiate/{reservation}', [BOGPaymentController::class, 'initiatePayment'])
+        ->name('payments.initiate');
+    
+    // Payment status check (API)  
+    Route::get('payments/status/{transaction}', [BOGPaymentController::class, 'checkStatus'])
+        ->name('payments.status');
+        
+    // Payment history (API)
+    Route::get('payments/history/{reservation}', [BOGPaymentController::class, 'getPaymentHistory'])
+        ->name('payments.history');
+    
+    // Refund processing (API)
+    Route::post('payments/refund/{transaction}', [BOGPaymentController::class, 'processRefund'])
+        ->name('payments.refund');
+    
+    // Callback URLs (Public)
+    Route::get('payment/success', [BOGPaymentController::class, 'handleSuccess'])
+        ->name('payment.success');
+        
+    Route::get('payment/fail', [BOGPaymentController::class, 'handleFailure'])
+        ->name('payment.fail');
+        
+    // BOG Webhook (Public - No Auth Required)
+    Route::post('webhook/payment-status', [BOGWebhookController::class, 'handlePaymentStatus'])
+        ->name('webhook.payment-status');
 });
 
 require __DIR__ . '/auth.php';

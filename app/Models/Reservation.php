@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Enums\ReservationStatus;
 use Exception;
 
 class Reservation extends Model
@@ -28,7 +31,137 @@ class Reservation extends Model
     protected $casts = [
         'reservation_date' => 'date',
         'guests_count' => 'integer',
+        'status' => ReservationStatus::class,
     ];
+
+    /**
+     * BOG Transactions relationship
+     */
+    public function bogTransactions(): HasMany
+    {
+        return $this->hasMany(BOGTransaction::class);
+    }
+
+    /**
+     * Latest BOG Transaction relationship
+     */
+    public function latestBOGTransaction(): HasOne
+    {
+        return $this->hasOne(BOGTransaction::class)->latest();
+    }
+
+    /**
+     * Get the latest successful BOG transaction
+     */
+    public function successfulBOGTransaction(): HasOne
+    {
+        return $this->hasOne(BOGTransaction::class)
+            ->where('status', 'completed')
+            ->latest();
+    }
+
+    /**
+     * Check if reservation can initiate payment
+     */
+    public function canInitiatePayment(): bool
+    {
+        return $this->status === ReservationStatus::Confirmed;
+    }
+
+    /**
+     * Check if reservation has successful payment
+     */
+    public function hasSuccessfulPayment(): bool
+    {
+        return $this->bogTransactions()->where('status', 'completed')->exists();
+    }
+
+    /**
+     * Check if reservation has pending payment
+     */
+    public function hasPendingPayment(): bool
+    {
+        return $this->bogTransactions()
+            ->whereIn('status', ['pending', 'processing'])
+            ->where('expires_at', '>', now())
+            ->exists();
+    }
+
+    /**
+     * Get payment amount for this reservation
+     */
+    public function getPaymentAmount(): float
+    {
+        // TODO: Implement your pricing logic based on:
+        // - Restaurant pricing
+        // - Number of guests  
+        // - Time slot
+        // - Special offers
+        // - Promo codes
+        
+        // For now, return default amount
+        return 50.00; // 50 GEL default
+    }
+
+    /**
+     * Get guest email (compatibility with different field names)
+     */
+    public function getGuestEmailAttribute(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Get guest phone (compatibility with different field names)
+     */
+    public function getGuestPhoneAttribute(): ?string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Get guest name
+     */
+    public function getGuestNameAttribute(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get reservation datetime attribute for compatibility
+     */
+    public function getReservationDatetimeAttribute()
+    {
+        return $this->getReservationDateTime();
+    }
+
+    /**
+     * Scope for reservations that need payment
+     */
+    public function scopeNeedsPayment($query)
+    {
+        return $query->where('status', ReservationStatus::Confirmed->value);
+    }
+
+    /**
+     * Scope for paid reservations
+     */
+    public function scopePaid($query)
+    {
+        return $query->where('status', ReservationStatus::Paid->value);
+    }
+
+    /**
+     * Scope for active reservations (not final state)
+     */
+    public function scopeActive($query)
+    {
+        return $query->whereNotIn('status', [
+            ReservationStatus::Completed->value,
+            ReservationStatus::Cancelled->value,
+            ReservationStatus::NoShow->value
+        ]);
+    }
 
   
 
