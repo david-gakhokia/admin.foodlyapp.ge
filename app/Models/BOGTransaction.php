@@ -8,6 +8,11 @@ use App\Enums\ReservationStatus;
 
 class BOGTransaction extends Model
 {
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'bog_transactions';
+    
     protected $fillable = [
         'reservation_id',
         'bog_order_id',

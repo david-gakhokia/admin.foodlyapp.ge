@@ -51,6 +51,42 @@ return [
     
     /*
     |--------------------------------------------------------------------------
+    | Webhook Configuration
+    |--------------------------------------------------------------------------
+    */
+    
+    'webhook' => [
+        'secret' => env('BOG_WEBHOOK_SECRET'),
+        'signature_validation' => env('BOG_WEBHOOK_SIGNATURE_VALIDATION', true),
+        'rate_limit' => [
+            'max_attempts' => env('BOG_WEBHOOK_RATE_LIMIT_ATTEMPTS', 60), // per minute
+            'decay_minutes' => env('BOG_WEBHOOK_RATE_LIMIT_DECAY', 1),
+        ],
+        'allowed_ips' => [
+            '185.17.47.0/24', // BOG production servers
+            '10.0.0.0/8',     // Internal network (for testing)
+            '127.0.0.1',      // Localhost (for testing)
+            '192.168.0.0/16', // Local network (for testing)
+        ],
+        'timeout' => env('BOG_WEBHOOK_TIMEOUT', 10), // seconds
+    ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Security Settings
+    |--------------------------------------------------------------------------
+    */
+    
+    'security' => [
+        'token_cache_ttl' => env('BOG_TOKEN_CACHE_TTL', 3600), // seconds
+        'max_retry_attempts' => env('BOG_MAX_RETRY_ATTEMPTS', 3),
+        'retry_delay' => env('BOG_RETRY_DELAY', 5), // seconds
+        'enable_logging' => env('BOG_ENABLE_LOGGING', true),
+        'log_level' => env('BOG_LOG_LEVEL', 'info'),
+    ],
+    
+    /*
+    |--------------------------------------------------------------------------
     | Status Mappings
     |--------------------------------------------------------------------------
     */
