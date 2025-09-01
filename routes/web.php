@@ -503,6 +503,21 @@ Route::middleware(['auth'])
             Route::get('system-health', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'systemHealth'])->name('system-health');
             Route::get('performance-metrics', [\App\Http\Controllers\Admin\RealtimeMonitoringController::class, 'performanceMetrics'])->name('performance-metrics');
         });
+
+        // BOG Payment Analytics Routes
+        Route::prefix('bog-analytics')->name('bog-analytics.')->group(function () {
+            Route::get('/', function () {
+                return view('admin.bog-analytics.dashboard');
+            })->name('dashboard');
+            
+            Route::get('transactions', function () {
+                return view('admin.bog-analytics.transactions');
+            })->name('transactions');
+            
+            Route::get('revenue', function () {
+                return view('admin.bog-analytics.revenue');
+            })->name('revenue');
+        });
     });
 
 

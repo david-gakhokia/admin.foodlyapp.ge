@@ -43,7 +43,7 @@
                 <flux:navlist.group :heading="__('Monitoring & Analytics')" class="grid">
                     <flux:navlist.item icon="chart-bar" :href="route('admin.monitoring.dashboard')" :current="request()->routeIs('admin.monitoring.*')" wire:navigate>
                         <span class="flex items-center">
-                            🔥 Real-time Monitoring
+                            🔥 Monitoring
                             <span class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 animate-pulse">Live</span>
                         </span>
                     </flux:navlist.item>
@@ -53,6 +53,27 @@
                             @if(isset($queueStats) && $queueStats['failed'] > 0)
                                 <span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">{{ $queueStats['failed'] }}</span>
                             @endif
+                        </span>
+                    </flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('BOG Payment System')" class="grid">
+                    <flux:navlist.item icon="chart-pie" :href="route('admin.bog-analytics.dashboard')" :current="request()->routeIs('admin.bog-analytics.dashboard')" wire:navigate>
+                        <span class="flex items-center">
+                            🏦 BOG Analytics
+                            <span class="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">Analytics</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="credit-card" :href="route('admin.bog-analytics.transactions')" :current="request()->routeIs('admin.bog-analytics.transactions')" wire:navigate>
+                        <span class="flex items-center">
+                            💳 Transactions
+                            <span class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">Monitor</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="chart-bar" :href="route('admin.bog-analytics.revenue')" :current="request()->routeIs('admin.bog-analytics.revenue')" wire:navigate>
+                        <span class="flex items-center">
+                            📈 Revenue Charts
+                            <span class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Revenue</span>
                         </span>
                     </flux:navlist.item>
                 </flux:navlist.group>
