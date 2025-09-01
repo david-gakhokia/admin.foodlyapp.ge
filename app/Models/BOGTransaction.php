@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\ReservationStatus;
 
 class BOGTransaction extends Model
 {
+    use HasFactory;
     /**
      * The table associated with the model.
      */
@@ -59,13 +61,17 @@ class BOGTransaction extends Model
         ]);
 
         // Sync reservation status
+        $currentReservationStatus = $this->reservation->status instanceof ReservationStatus 
+            ? $this->reservation->status 
+            : ReservationStatus::from($this->reservation->status);
+            
         $newReservationStatus = $this->mapBOGStatusToReservationStatus(
             $bogData['status'] ?? 'pending',
-            $this->reservation->status
+            $currentReservationStatus
         );
 
-        if ($newReservationStatus && $this->reservation->status !== $newReservationStatus) {
-            $this->reservation->update(['status' => $newReservationStatus]);
+        if ($newReservationStatus && $currentReservationStatus !== $newReservationStatus) {
+            $this->reservation->update(['status' => $newReservationStatus->value]);
         }
     }
 
@@ -74,7 +80,21 @@ class BOGTransaction extends Model
      */
     private function mapBOGStatusToTransactionStatus(string $bogStatus): string
     {
-        $mapping = config('bog.status_mappings.bog_to_transaction');
+        $mapping = config('bog.status_mappings.bog_to_transaction', [
+            'success' => 'completed',
+            'captured' => 'completed',
+            'completed' => 'completed',
+            'failed' => 'failed',
+            'error' => 'failed',
+            'declined' => 'failed',
+            'cancelled' => 'cancelled',
+            'voided' => 'cancelled',
+            'refunded' => 'refunded',
+            'partial_refund' => 'refunded',
+            'processing' => 'processing',
+            'pending' => 'pending',
+        ]);
+        
         return $mapping[$bogStatus] ?? 'pending';
     }
 
@@ -83,24 +103,29 @@ class BOGTransaction extends Model
      */
     private function mapBOGStatusToReservationStatus(string $bogStatus, ReservationStatus $currentStatus): ?ReservationStatus
     {
-        $mappings = config('bog.status_mappings.bog_to_reservation');
+        $mappings = config('bog.status_mappings.bog_to_reservation', [
+            'success_statuses' => ['success', 'captured', 'completed'],
+            'failure_statuses' => ['failed', 'error', 'declined'],
+            'cancelled_statuses' => ['cancelled', 'voided'],
+            'refunded_statuses' => ['refunded', 'partial_refund']
+        ]);
 
-        if (in_array($bogStatus, $mappings['success_statuses'])) {
+        if (in_array($bogStatus, $mappings['success_statuses'] ?? [])) {
             return match($currentStatus) {
                 ReservationStatus::Confirmed => ReservationStatus::Paid,
                 default => $currentStatus
             };
         }
 
-        if (in_array($bogStatus, $mappings['failure_statuses'])) {
+        if (in_array($bogStatus, $mappings['failure_statuses'] ?? [])) {
             return match($currentStatus) {
                 ReservationStatus::Confirmed => ReservationStatus::Confirmed, // retry possible
                 default => $currentStatus
             };
         }
 
-        if (in_array($bogStatus, $mappings['cancelled_statuses']) || 
-            in_array($bogStatus, $mappings['refunded_statuses'])) {
+        if (in_array($bogStatus, $mappings['cancelled_statuses'] ?? []) || 
+            in_array($bogStatus, $mappings['refunded_statuses'] ?? [])) {
             return ReservationStatus::Cancelled;
         }
 

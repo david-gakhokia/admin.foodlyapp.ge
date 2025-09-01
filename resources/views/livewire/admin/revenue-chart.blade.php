@@ -1,134 +1,155 @@
 <div class="revenue-chart">
     <!-- Header Controls -->
-    <div class="bg-white shadow rounded-lg p-6 mb-6">
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <h2 class="text-2xl font-bold text-gray-900">📈 შემოსავლის ანალიტიკა</h2>
-            
-            <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                <!-- Chart Type -->
-                <select wire:model.live="chartType" class="border rounded-lg px-3 py-2">
-                    <option value="daily">ყოველდღიური</option>
-                    <option value="weekly">კვირეული</option>
-                    <option value="monthly">ყოველთვიური</option>
-                    <option value="restaurant">რესტორნების მიხედვით</option>
-                </select>
-                
-                <!-- Date Range -->
-                @if($chartType !== 'restaurant')
-                    <select wire:model.live="dateRange" class="border rounded-lg px-3 py-2">
-                        <option value="7">უკანასკნელი 7 დღე</option>
-                        <option value="30">უკანასკნელი 30 დღე</option>
-                        <option value="90">უკანასკნელი 90 დღე</option>
-                        <option value="365">უკანასკნელი წელი</option>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center">
+                <h2 class="h4 text-gray-800 mb-3 mb-lg-0">📈 შემოსავლის ანალიტიკა</h2>
+
+                <div class="d-flex flex-column flex-sm-row" style="gap: 12px;">
+                    <!-- Chart Type -->
+                    <select wire:model.live="chartType" class="form-select form-select-sm">
+                        <option value="daily">ყოველდღიური</option>
+                        <option value="weekly">კვირეული</option>
+                        <option value="monthly">ყოველთვიური</option>
+                        <option value="restaurant">რესტორნების მიხედვით</option>
                     </select>
-                @endif
-                
-                <!-- Restaurant Filter -->
-                <select wire:model.live="selectedRestaurant" class="border rounded-lg px-3 py-2">
-                    <option value="all">ყველა რესტორანი</option>
-                    <!-- TODO: Populate with actual restaurants -->
-                </select>
+                    
+                    <!-- Date Range -->
+                    @if($chartType !== 'restaurant')
+                        <select wire:model.live="dateRange" class="form-select form-select-sm">
+                            <option value="7">უკანასკნელი 7 დღე</option>
+                            <option value="30">უკანასკნელი 30 დღე</option>
+                            <option value="90">უკანასკნელი 90 დღე</option>
+                            <option value="365">უკანასკნელი წელი</option>
+                        </select>
+                    @endif
+                    
+                    <!-- Restaurant Filter -->
+                    <select wire:model.live="selectedRestaurant" class="form-select form-select-sm">
+                        <option value="all">ყველა რესტორანი</option>
+                        <!-- TODO: Populate with actual restaurants -->
+                    </select>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="row mb-4">
         <!-- Total Revenue -->
-        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-sm">მთლიანი შემოსავალი</p>
-                    <p class="text-2xl font-bold">₾{{ number_format($totalRevenue, 2) }}</p>
-                </div>
-                <div class="text-blue-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
-                    </svg>
+        <div class="col-md-4 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="small font-weight-bold text-primary text-uppercase mb-1">
+                                მთლიანი შემოსავალი
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ₾{{ number_format($totalRevenue, 2) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Average Revenue -->
-        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-sm">
-                        @if($chartType === 'daily') საშუალო დღიური
-                        @elseif($chartType === 'weekly') საშუალო კვირეული
-                        @elseif($chartType === 'monthly') საშუალო ყოველთვიური
-                        @else საშუალო
-                        @endif
-                        შემოსავალი
-                    </p>
-                    <p class="text-2xl font-bold">₾{{ number_format($averageDailyRevenue, 2) }}</p>
-                </div>
-                <div class="text-green-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
-                    </svg>
+        <div class="col-md-4 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="small font-weight-bold text-success text-uppercase mb-1">
+                                @if($chartType === 'daily') საშუალო დღიური
+                                @elseif($chartType === 'weekly') საშუალო კვირეული
+                                @elseif($chartType === 'monthly') საშუალო ყოველთვიური
+                                @else საშუალო
+                                @endif
+                                შემოსავალი
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ₾{{ number_format($averageDailyRevenue, 2) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Data Points -->
-        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm">მონაცემთა წერტილები</p>
-                    <p class="text-2xl font-bold">{{ count($chartData) }}</p>
-                </div>
-                <div class="text-purple-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+        <div class="col-md-4 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="small font-weight-bold text-info text-uppercase mb-1">
+                                მონაცემთა წერტილები
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ count($chartData) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-area fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Main Chart -->
-    <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
                 @if($chartType === 'daily') 📅 ყოველდღიური შემოსავალი
                 @elseif($chartType === 'weekly') 📅 კვირეული შემოსავალი
                 @elseif($chartType === 'monthly') 📅 ყოველთვიური შემოსავალი
                 @else 🏪 რესტორნების შემოსავალი
                 @endif
-            </h3>
-            <div class="text-sm text-gray-500">
+            </h6>
+            <div class="small text-muted">
                 განახლებულია: {{ now()->format('Y-m-d H:i') }}
             </div>
         </div>
-        
-        <div class="h-96">
-            <canvas id="mainChart" wire:ignore></canvas>
+        <div class="card-body">
+            <div style="height: 400px;">
+                <canvas id="mainChart" wire:ignore></canvas>
+            </div>
         </div>
     </div>
 
     <!-- Top Restaurants -->
     @if($chartType !== 'restaurant' && count($topRestaurants) > 0)
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">🏆 საუკეთესო რესტორნები</h3>
-            
-            <div class="space-y-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">🏆 საუკეთესო რესტორნები</h6>
+            </div>
+            <div class="card-body">
                 @foreach($topRestaurants as $index => $restaurant)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div class="d-flex align-items-center justify-content-between p-3 mb-3 bg-light rounded">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold" 
+                                 style="width: 32px; height: 32px; font-size: 14px;">
                                 {{ $index + 1 }}
                             </div>
-                            <div class="ml-4">
-                                <h4 class="text-sm font-medium text-gray-900">{{ $restaurant['restaurant_name'] }}</h4>
-                                <p class="text-sm text-gray-500">{{ $restaurant['transactions'] }} ტრანზაქცია</p>
+                            <div class="ml-3">
+                                <h6 class="mb-0 font-weight-bold">{{ $restaurant['restaurant_name'] }}</h6>
+                                <small class="text-muted">{{ $restaurant['transactions'] }} ტრანზაქცია</small>
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-lg font-bold text-gray-900">₾{{ number_format($restaurant['revenue'], 2) }}</div>
-                            <div class="text-sm text-gray-500">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">₾{{ number_format($restaurant['revenue'], 2) }}</div>
+                            <small class="text-muted">
                                 {{ round(($restaurant['revenue'] / max($totalRevenue, 1)) * 100, 1) }}%
-                            </div>
+                            </small>
                         </div>
                     </div>
                 @endforeach
@@ -137,23 +158,23 @@
     @endif
 
     <!-- Export Options -->
-    <div class="mt-6 flex justify-end">
-        <div class="flex space-x-2">
+    <div class="d-flex justify-content-end mb-4">
+        <div class="btn-group">
             <button 
                 onclick="exportChart('png')"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                class="btn btn-primary btn-sm"
             >
                 📊 PNG Export
             </button>
             <button 
                 onclick="exportChart('pdf')"
-                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
+                class="btn btn-danger btn-sm"
             >
                 📄 PDF Export
             </button>
             <button 
                 onclick="exportData()"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+                class="btn btn-success btn-sm"
             >
                 📈 CSV Export
             </button>

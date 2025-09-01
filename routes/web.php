@@ -561,9 +561,13 @@ Route::prefix('bog')->name('bog.')->group(function () {
     Route::get('payment/fail', [BOGPaymentController::class, 'handleFailure'])
         ->name('payment.fail');
         
-    // BOG Webhook (Public - No Auth Required)
+    // BOG Webhook (Public - No Auth Required) - add security middleware aliases
     Route::post('webhook/payment-status', [BOGWebhookController::class, 'handlePaymentStatus'])
+        ->middleware(['bog.webhook.signature', 'bog.webhook.rate_limit'])
         ->name('webhook.payment-status');
 });
 
 require __DIR__ . '/auth.php';
+
+// Include Analytics Web Routes
+require __DIR__ . '/analytics-web.php';

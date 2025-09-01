@@ -6,16 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
 class BOGWebhookRateLimit
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $key = $this->resolveRequestSignature($request);
         $maxAttempts = config('bog.webhook.rate_limit.max_attempts', 60);
@@ -53,7 +50,7 @@ class BOGWebhookRateLimit
 
         Log::info('BOG webhook request processed', [
             'ip' => $request->ip(),
-            'remaining_attempts' => $maxAttempts - RateLimiter::attempts($key)
+            'remaining_attempts' => max(0, $maxAttempts - RateLimiter::attempts($key))
         ]);
 
         return $next($request);
@@ -66,7 +63,7 @@ class BOGWebhookRateLimit
     {
         // Use IP + User-Agent for more specific rate limiting
         return 'bog_webhook:' . sha1(
-            $request->ip() . '|' . $request->userAgent()
+            ($request->ip() ?? 'unknown') . '|' . ($request->userAgent() ?? '')
         );
     }
 
@@ -104,7 +101,7 @@ class BOGWebhookRateLimit
         }
 
         // CIDR notation support
-        if (str_contains($allowedIP, '/')) {
+        if (strpos($allowedIP, '/') !== false) {
             return $this->ipInCIDR($clientIP, $allowedIP);
         }
 
@@ -116,12 +113,12 @@ class BOGWebhookRateLimit
      */
     private function ipInCIDR(string $ip, string $cidr): bool
     {
-        list($subnet, $mask) = explode('/', $cidr);
-        
+        [$subnet, $mask] = explode('/', $cidr);
+
         $ipLong = ip2long($ip);
         $subnetLong = ip2long($subnet);
         $maskLong = -1 << (32 - (int)$mask);
-        
+
         return ($ipLong & $maskLong) === ($subnetLong & $maskLong);
     }
 }

@@ -57,23 +57,49 @@
                     </flux:navlist.item>
                 </flux:navlist.group>
 
-                <flux:navlist.group :heading="__('BOG Payment System')" class="grid">
-                    <flux:navlist.item icon="chart-pie" :href="route('admin.bog-analytics.dashboard')" :current="request()->routeIs('admin.bog-analytics.dashboard')" wire:navigate>
+      
+
+                <flux:navlist.group :heading="__('📊 Analytics & Reporting')" class="grid">
+                    <flux:navlist.item icon="chart-bar-square" href="/admin/analytics/dashboard" :current="request()->is('admin/analytics/dashboard')" wire:navigate>
                         <span class="flex items-center">
-                            🏦 BOG Analytics
+                            📈 Dashboard Overview
+                            <span class="ml-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Live</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="credit-card" href="/admin/analytics/bog-payments" :current="request()->is('admin/analytics/bog-payments')" wire:navigate>
+                        <span class="flex items-center">
+                            💳 BOG Payments
                             <span class="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">Analytics</span>
                         </span>
                     </flux:navlist.item>
-                    <flux:navlist.item icon="credit-card" :href="route('admin.bog-analytics.transactions')" :current="request()->routeIs('admin.bog-analytics.transactions')" wire:navigate>
+                    <flux:navlist.item icon="calendar-days" href="/admin/analytics/reservations" :current="request()->is('admin/analytics/reservations')" wire:navigate>
                         <span class="flex items-center">
-                            💳 Transactions
-                            <span class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">Monitor</span>
+                            📅 Reservations
+                            <span class="ml-2 inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-800">Trends</span>
                         </span>
                     </flux:navlist.item>
-                    <flux:navlist.item icon="chart-bar" :href="route('admin.bog-analytics.revenue')" :current="request()->routeIs('admin.bog-analytics.revenue')" wire:navigate>
+                    <flux:navlist.item icon="currency-dollar" href="/admin/analytics/revenue" :current="request()->is('admin/analytics/revenue')" wire:navigate>
                         <span class="flex items-center">
-                            📈 Revenue Charts
-                            <span class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Revenue</span>
+                            💰 Revenue Analysis
+                            <span class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Growth</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="funnel" href="/admin/analytics/conversion-funnel" :current="request()->is('admin/analytics/conversion-funnel')" wire:navigate>
+                        <span class="flex items-center">
+                            🎯 Conversion Funnel
+                            <span class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">Insights</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="clock" href="/admin/analytics/real-time" :current="request()->is('admin/analytics/real-time')" wire:navigate>
+                        <span class="flex items-center">
+                            ⚡ Real-Time
+                            <span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 animate-pulse">Live</span>
+                        </span>
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="document-chart-bar" href="/admin/analytics/reports" :current="request()->is('admin/analytics/reports')" wire:navigate>
+                        <span class="flex items-center">
+                            📊 Reports
+                            <span class="ml-2 inline-flex items-center rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-800">Export</span>
                         </span>
                     </flux:navlist.item>
                 </flux:navlist.group>

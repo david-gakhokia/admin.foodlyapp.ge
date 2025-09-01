@@ -5,16 +5,10 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
 class ValidateBOGWebhookSignature
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // Skip validation in testing environment or when disabled
         if (app()->environment('testing') || !config('bog.webhook.signature_validation', true)) {
@@ -25,7 +19,7 @@ class ValidateBOGWebhookSignature
             return $next($request);
         }
 
-        $signature = $request->header('X-BOG-Signature');
+        $signature = $request->header('X-BOG-Signature') ?? $request->header('X-Signature');
         $payload = $request->getContent();
 
         if (!$signature) {

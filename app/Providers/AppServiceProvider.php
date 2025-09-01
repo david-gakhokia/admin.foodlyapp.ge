@@ -11,6 +11,7 @@ use App\Domain\Reservations\Events\ReservationConfirmed;
 use App\Domain\Reservations\Events\ReservationDeclined;
 use App\Domain\Reservations\Events\ReservationPreArrivalDue;
 use Laravel\Horizon\Horizon;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register BOG webhook middleware aliases for route usage
+        if (method_exists(Route::class, 'aliasMiddleware')) {
+            Route::aliasMiddleware('bog.webhook.rate_limit', \App\Http\Middleware\BOGWebhookRateLimit::class);
+            Route::aliasMiddleware('bog.webhook.signature', \App\Http\Middleware\ValidateBOGWebhookSignature::class);
+        }
+
         View::share('locales', config('translatable.locales'));
 
         // Register notification event listeners

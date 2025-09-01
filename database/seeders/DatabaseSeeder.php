@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
             KioskSeeder::class,
+            ReservationSeeder::class,
+            BOGTransactionSeeder::class,
         ]);
         // User::factory(10)->create();
 

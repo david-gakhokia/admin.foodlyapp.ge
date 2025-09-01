@@ -495,3 +495,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('reservations/statistics', [App\Http\Controllers\Admin\ReservationController::class, 'getStatistics'])
         ->name('reservations.statistics');
 });
+
+// Include Analytics Routes
+require __DIR__.'/analytics.php';
