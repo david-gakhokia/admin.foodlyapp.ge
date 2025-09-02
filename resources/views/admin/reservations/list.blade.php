@@ -435,8 +435,12 @@
                                         $isPast = $reservationDateTime->isPast();
                                         $isUpcoming = $reservationDateTime->diffInHours($now) <= 2 && !$isPast;
                                     @endphp
+                                    @if($restaurantId)
                                     <tr class="hover:bg-gray-50 transition-colors duration-150 {{ $isToday ? 'bg-blue-50' : '' }} {{ $isUpcoming ? 'bg-amber-50' : '' }}" 
                                         data-href="{{ route('admin.restaurants.reservations.show', [$restaurantId, $reservation->id]) }}">
+                                    @else
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150 {{ $isToday ? 'bg-blue-50' : '' }} {{ $isUpcoming ? 'bg-amber-50' : '' }}">
+                                    @endif
                                         <td class="px-4 lg:px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                                             <div class="flex items-center gap-2">
                                                 #{{ $reservation->id }}
@@ -541,6 +545,7 @@
                                                     </button>
 
                                                     <!-- Edit Button -->
+                                                    @if($restaurantId)
                                                     <a href="{{ route('admin.restaurants.reservations.edit', [$restaurantId, $reservation->id]) }}" 
                                                        class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-700 bg-white border border-blue-300 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                                                        title="რედაქტირება">
@@ -548,6 +553,7 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                         </svg>
                                                     </a>
+                                                    @endif
 
                                                     <!-- Actions Dropdown -->
                                                     <div class="relative">
@@ -586,6 +592,7 @@
                                                             <div class="border-t border-gray-100 my-1"></div>
                                                             
                                                             <!-- Other Actions -->
+                                                            @if($restaurantId)
                                                             <a href="{{ route('admin.restaurants.reservations.show', [$restaurantId, $reservation->id]) }}" 
                                                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -594,6 +601,7 @@
                                                                 </svg>
                                                                 სრული ნახვა
                                                             </a>
+                                                            @endif
                                                             
                                                             <button onclick="duplicateReservation({{ $reservation->id }})" 
                                                                    class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -605,6 +613,7 @@
                                                             
                                                             <div class="border-t border-gray-100 my-1"></div>
                                                             
+                                                            @if($restaurantId)
                                                             <form class="w-full" method="POST" action="{{ route('admin.restaurants.reservations.destroy', [$restaurantId, $reservation->id]) }}" onsubmit="return confirm('დარწმუნებული ხართ, რომ გსურთ ამ ჯავშნის წაშლა?')">
                                                                 @csrf
                                                                 @method('DELETE')
@@ -616,6 +625,7 @@
                                                                     წაშლა
                                                                 </button>
                                                             </form>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
@@ -731,6 +741,7 @@
                                             </svg>
                                         </button>
                                         
+                                        @if($restaurantId)
                                         <a href="{{ route('admin.restaurants.reservations.edit', [$restaurantId, $reservation->id]) }}" 
                                            class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-lg transition-colors"
                                            title="რედაქტირება">
@@ -738,6 +749,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                         </a>
+                                        @endif
                                         
                                         <button onclick="toggleActionsDropdown('card-{{ $reservation->id }}')" 
                                                class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
