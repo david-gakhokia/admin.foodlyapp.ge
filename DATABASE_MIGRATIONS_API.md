@@ -37,6 +37,17 @@ create_permission_tables.php (Spatie Permission)
 2025_05_19_203620_create_dishes_table.php
 2025_05_19_203621_create_dish_translations_table.php
 
+# Places
+2025_05_07_124838_create_places_table.php
+2025_05_07_124839_create_place_translations_table.php
+
+# Tables
+2025_05_07_205929_create_tables_table.php
+2025_05_07_205930_create_table_translations_table.php
+
+# Reservations
+2025_06_01_160000_create_reservations_table.php
+
 # Relationship Tables
 2025_05_26_131612_create_cuisine_restaurant_table.php
 2025_06_01_160744_create_restaurant_dish_table.php
@@ -50,11 +61,6 @@ create_permission_tables.php (Spatie Permission)
 
 ### Exclude These Migrations
 ```bash
-❌ create_places_table.php
-❌ create_place_translations_table.php
-❌ create_tables_table.php
-❌ create_table_translations_table.php
-❌ create_reservations_table.php
 ❌ create_kiosks_table.php
 ❌ create_bog_transactions_table.php
 ❌ create_bog_api_tokens_table.php
@@ -66,8 +72,6 @@ create_permission_tables.php (Spatie Permission)
 ❌ create_menu_items_table.php
 ❌ create_products_table.php
 ❌ create_categories_table.php
-❌ create_reservation_slots_table.php
-❌ *_reservation_slots_table.php
 ❌ create_failed_jobs_table.php (if not using queues)
 ❌ create_jobs_table.php
 ❌ horizon related tables
@@ -284,7 +288,117 @@ Schema::create('dish_translations', function (Blueprint $table) {
 });
 ```
 
-### 14. Cuisine Restaurant Pivot Table
+### 14. Places Table
+```php
+Schema::create('places', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+    $table->string('slug')->unique();
+    
+    // QR Code fields
+    $table->string('qr_code')->nullable();
+    $table->string('qr_code_image')->nullable();
+    $table->string('qr_code_link')->nullable();
+    
+    // Basic details
+    $table->enum('status', ['active', 'inactive'])->default('active');
+    $table->unsignedInteger('rank')->default(0);
+    $table->string('image')->nullable();       // Local image path
+    $table->string('image_link')->nullable();  // External image link
+    
+    $table->timestamps();
+});
+```
+
+### 15. Place Translations Table
+```php
+Schema::create('place_translations', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('place_id')->constrained('places')->cascadeOnDelete();
+    $table->string('locale', 10);
+    $table->string('name', 100);
+    $table->text('description')->nullable();
+    $table->timestamps();
+    $table->unique(['place_id', 'locale']);
+});
+```
+
+### 16. Tables Table
+```php
+Schema::create('tables', function (Blueprint $table) {
+    $table->id();
+    $table->string('slug')->unique();
+    
+    // QR Code fields  
+    $table->string('qr_code')->nullable();
+    $table->string('qr_code_image')->nullable();
+    $table->string('qr_code_link')->nullable();
+    
+    // Foreign keys
+    $table->foreignId('restaurant_id')->nullable()->constrained()->onDelete('cascade');
+    $table->foreignId('place_id')->nullable()->constrained('places')->onDelete('set null');
+    
+    // Table details
+    $table->enum('status', ['active', 'inactive'])->default('active');
+    $table->longText('icon')->nullable();
+    $table->longText('image')->nullable();
+    $table->longText('image_link')->nullable(); 
+    $table->unsignedInteger('rank')->default(0);
+    $table->unsignedInteger('capacity')->default(1);
+    
+    $table->timestamps();
+});
+```
+
+### 17. Table Translations Table
+```php
+Schema::create('table_translations', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('table_id')->constrained('tables')->cascadeOnDelete();
+    $table->string('locale', 10);
+    $table->string('name', 100);
+    $table->text('description')->nullable();
+    $table->timestamps();
+    $table->unique(['table_id', 'locale']);
+});
+```
+
+### 18. Reservations Table
+```php
+Schema::create('reservations', function (Blueprint $table) {
+    $table->id();
+    $table->string('reservation_code')->unique();
+    
+    // Foreign keys
+    $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+    $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+    $table->foreignId('place_id')->nullable()->constrained('places')->onDelete('set null');
+    $table->foreignId('table_id')->nullable()->constrained('tables')->onDelete('set null');
+    
+    // Reservation details
+    $table->string('customer_name');
+    $table->string('customer_phone');
+    $table->string('customer_email')->nullable();
+    $table->unsignedInteger('party_size');
+    $table->dateTime('reservation_date');
+    $table->time('reservation_time');
+    $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
+    $table->text('notes')->nullable();
+    $table->text('special_requests')->nullable();
+    
+    // Payment info
+    $table->decimal('deposit_amount', 10, 2)->nullable();
+    $table->enum('payment_status', ['pending', 'paid', 'refunded'])->default('pending');
+    
+    $table->timestamps();
+    
+    // Indexes
+    $table->index(['restaurant_id', 'reservation_date']);
+    $table->index(['status', 'reservation_date']);
+});
+```
+
+### 19. Cuisine Restaurant Pivot Table
 ```php
 Schema::create('cuisine_restaurant', function (Blueprint $table) {
     $table->id();
@@ -297,7 +411,7 @@ Schema::create('cuisine_restaurant', function (Blueprint $table) {
 });
 ```
 
-### 15. Restaurant Dish Pivot Table
+### 20. Restaurant Dish Pivot Table
 ```php
 Schema::create('restaurant_dish', function (Blueprint $table) {
     $table->id();
@@ -309,7 +423,7 @@ Schema::create('restaurant_dish', function (Blueprint $table) {
 });
 ```
 
-### 16. Restaurant Spot Pivot Table
+### 21. Restaurant Spot Pivot Table
 ```php
 Schema::create('restaurant_spot', function (Blueprint $table) {
     $table->id();
@@ -322,7 +436,7 @@ Schema::create('restaurant_spot', function (Blueprint $table) {
 });
 ```
 
-### 17. Restaurant Space Pivot Table
+### 22. Restaurant Space Pivot Table
 ```php
 Schema::create('restaurant_space', function (Blueprint $table) {
     $table->foreignId('restaurant_id')->constrained('restaurants')->cascadeOnDelete();
@@ -350,6 +464,9 @@ database/seeders/
 ├── SpotSeeder.php
 ├── RestaurantSeeder.php
 ├── DishSeeder.php
+├── PlaceSeeder.php
+├── TableSeeder.php
+├── ReservationSeeder.php
 └── RelationshipSeeders/
     ├── RestaurantCuisineSeeder.php
     ├── RestaurantDishSeeder.php
@@ -387,6 +504,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RestaurantSeeder::class,
             DishSeeder::class,
+            PlaceSeeder::class,
+            TableSeeder::class,
+            ReservationSeeder::class,
         ]);
 
         // 4. Relationships
@@ -430,10 +550,18 @@ class DatabaseSeeder extends Seeder
 16. create_dishes_table
 17. create_dish_translations_table
 
-18. create_cuisine_restaurant_table
-19. create_restaurant_dish_table
-20. create_restaurant_spot_table
-21. create_restaurant_space_table
+18. create_places_table
+19. create_place_translations_table
+
+20. create_tables_table
+21. create_table_translations_table
+
+22. create_reservations_table
+
+23. create_cuisine_restaurant_table
+24. create_restaurant_dish_table
+25. create_restaurant_spot_table
+26. create_restaurant_space_table
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 ## 🛣️ Complete API Routes Structure for New API Project
 
-### Core API Endpoints for 9 Modules
+### Core API Endpoints for 12 Modules
 
 ---
 
@@ -252,7 +252,110 @@ DELETE /api/admin/spaces/{id}/image       // Delete space image
 
 ---
 
-## 🏙️ Cities API Routes
+## � Places API Routes
+
+### Public Routes
+```php
+// Place Listing & Details
+GET    /api/places                   // List all places
+GET    /api/places/{slug}            // Show place by slug
+GET    /api/places/by-restaurant/{restaurantSlug} // Places by restaurant
+
+// Place Relationships
+GET    /api/places/{slug}/tables          // Tables in this place
+GET    /api/places/{slug}/availability    // Place availability
+```
+
+### Protected Routes (Admin)
+```php
+// Place CRUD
+GET    /api/admin/places             // List all places
+GET    /api/admin/places/{id}        // Show place by ID
+POST   /api/admin/places             // Create new place
+PUT    /api/admin/places/{id}        // Update place
+DELETE /api/admin/places/{id}        // Delete place
+
+// Place Image Management
+POST   /api/admin/places/{id}/image       // Upload place image
+DELETE /api/admin/places/{id}/image       // Delete place image
+```
+
+---
+
+## 🪑 Tables API Routes
+
+### Public Routes
+```php
+// Table Listing & Details
+GET    /api/tables                   // List all tables
+GET    /api/tables/{slug}            // Show table by slug
+GET    /api/tables/by-restaurant/{restaurantSlug} // Tables by restaurant
+GET    /api/tables/by-place/{placeSlug}           // Tables by place
+
+// Table Availability
+GET    /api/tables/{slug}/availability    // Table availability
+```
+
+### Protected Routes (Admin)
+```php
+// Table CRUD
+GET    /api/admin/tables             // List all tables
+GET    /api/admin/tables/{id}        // Show table by ID
+POST   /api/admin/tables             // Create new table
+PUT    /api/admin/tables/{id}        // Update table
+DELETE /api/admin/tables/{id}        // Delete table
+
+// Table QR Code Management
+POST   /api/admin/tables/{id}/qr-code     // Generate QR code
+DELETE /api/admin/tables/{id}/qr-code     // Delete QR code
+```
+
+---
+
+## 📅 Reservations API Routes
+
+### Public Routes
+```php
+// Reservation Creation
+POST   /api/reservations             // Create new reservation
+GET    /api/reservations/{code}      // Show reservation by code
+
+// Availability Check
+GET    /api/availability/restaurant/{slug}     // Restaurant availability
+GET    /api/availability/place/{slug}          // Place availability  
+GET    /api/availability/table/{slug}          // Table availability
+```
+
+### Protected Routes (Customer)
+```php
+// User's Reservations (require auth:sanctum)
+GET    /api/my-reservations          // User's reservations
+GET    /api/my-reservations/{id}     // Show user's reservation
+PUT    /api/my-reservations/{id}     // Update user's reservation
+DELETE /api/my-reservations/{id}     // Cancel user's reservation
+```
+
+### Protected Routes (Admin)
+```php
+// Reservation Management
+GET    /api/admin/reservations       // List all reservations
+GET    /api/admin/reservations/{id}  // Show reservation by ID
+PUT    /api/admin/reservations/{id}  // Update reservation
+DELETE /api/admin/reservations/{id}  // Delete reservation
+
+// Reservation Status Management
+PUT    /api/admin/reservations/{id}/status    // Update reservation status
+POST   /api/admin/reservations/{id}/confirm   // Confirm reservation
+POST   /api/admin/reservations/{id}/cancel    // Cancel reservation
+
+// Reservation Reports
+GET    /api/admin/reservations/reports        // Reservation statistics
+GET    /api/admin/reservations/export         // Export reservations
+```
+
+---
+
+## �🏙️ Cities API Routes
 
 ### Public Routes
 ```php
@@ -286,10 +389,13 @@ DELETE /api/admin/cities/{id}/image       // Delete city image
 ### Universal Search
 ```php
 // Global Search across all modules
-GET    /api/search                   // Search across restaurants, cuisines, dishes
+GET    /api/search                   // Search across restaurants, cuisines, dishes, places, tables
 GET    /api/search/restaurants       // Search only restaurants
 GET    /api/search/cuisines          // Search only cuisines
 GET    /api/search/dishes            // Search only dishes
+GET    /api/search/places            // Search only places
+GET    /api/search/tables            // Search only tables
+GET    /api/search/reservations      // Search reservations (admin only)
 
 // Filter Parameters for all search endpoints:
 // ?q=search_term
@@ -572,12 +678,56 @@ Route::prefix('v1')->middleware(['throttle:60,1', 'localization'])->group(functi
         Route::get('{slug}/top-restaurants', [CityController::class, 'topRestaurants']);
     });
     
+    // Places
+    Route::prefix('places')->group(function () {
+        Route::get('/', [PlaceController::class, 'index']);
+        Route::get('{slug}', [PlaceController::class, 'showBySlug']);
+        Route::get('{slug}/tables', [PlaceController::class, 'tables']);
+        Route::get('{slug}/availability', [PlaceController::class, 'availability']);
+        Route::get('by-restaurant/{restaurantSlug}', [PlaceController::class, 'byRestaurant']);
+    });
+    
+    // Tables
+    Route::prefix('tables')->group(function () {
+        Route::get('/', [TableController::class, 'index']);
+        Route::get('{slug}', [TableController::class, 'showBySlug']);
+        Route::get('{slug}/availability', [TableController::class, 'availability']);
+        Route::get('by-restaurant/{restaurantSlug}', [TableController::class, 'byRestaurant']);
+        Route::get('by-place/{placeSlug}', [TableController::class, 'byPlace']);
+    });
+    
+    // Reservations (Public)
+    Route::prefix('reservations')->group(function () {
+        Route::post('/', [ReservationController::class, 'store']);
+        Route::get('{code}', [ReservationController::class, 'showByCode']);
+    });
+    
+    // Availability Check
+    Route::prefix('availability')->group(function () {
+        Route::get('restaurant/{slug}', [ReservationController::class, 'restaurantAvailability']);
+        Route::get('place/{slug}', [ReservationController::class, 'placeAvailability']);
+        Route::get('table/{slug}', [ReservationController::class, 'tableAvailability']);
+    });
+    
     // Search
     Route::prefix('search')->middleware(['throttle:30,1'])->group(function () {
         Route::get('/', [SearchController::class, 'global']);
         Route::get('restaurants', [SearchController::class, 'restaurants']);
         Route::get('cuisines', [SearchController::class, 'cuisines']);
         Route::get('dishes', [SearchController::class, 'dishes']);
+        Route::get('places', [SearchController::class, 'places']);
+        Route::get('tables', [SearchController::class, 'tables']);
+    });
+});
+
+// Protected User Routes
+Route::middleware('auth:sanctum')->group(function () {
+    // User's Reservations
+    Route::prefix('my-reservations')->group(function () {
+        Route::get('/', [ReservationController::class, 'userReservations']);
+        Route::get('{id}', [ReservationController::class, 'userReservation']);
+        Route::put('{id}', [ReservationController::class, 'updateUserReservation']);
+        Route::delete('{id}', [ReservationController::class, 'cancelUserReservation']);
     });
 });
 
@@ -652,6 +802,34 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin', 'throttle:120,
         Route::post('image', [CityController::class, 'uploadImage']);
         Route::delete('image', [CityController::class, 'deleteImage']);
     });
+    
+    // Places Management
+    Route::apiResource('places', PlaceController::class);
+    Route::prefix('places/{place}')->group(function () {
+        Route::post('image', [PlaceController::class, 'uploadImage']);
+        Route::delete('image', [PlaceController::class, 'deleteImage']);
+    });
+    
+    // Tables Management
+    Route::apiResource('tables', TableController::class);
+    Route::prefix('tables/{table}')->group(function () {
+        Route::post('qr-code', [TableController::class, 'generateQrCode']);
+        Route::delete('qr-code', [TableController::class, 'deleteQrCode']);
+    });
+    
+    // Reservations Management
+    Route::apiResource('reservations', ReservationController::class);
+    Route::prefix('reservations/{reservation}')->group(function () {
+        Route::put('status', [ReservationController::class, 'updateStatus']);
+        Route::post('confirm', [ReservationController::class, 'confirm']);
+        Route::post('cancel', [ReservationController::class, 'cancel']);
+    });
+    
+    // Reservation Reports
+    Route::prefix('reservations')->group(function () {
+        Route::get('reports', [ReservationController::class, 'reports']);
+        Route::get('export', [ReservationController::class, 'export']);
+    });
 });
 
 // Default routes (latest version)
@@ -662,9 +840,11 @@ Route::middleware(['throttle:60,1', 'localization'])->group(function () {
     Route::get('spots', [SpotController::class, 'index']);
     Route::get('spaces', [SpaceController::class, 'index']);
     Route::get('cities', [CityController::class, 'index']);
+    Route::get('places', [PlaceController::class, 'index']);
+    Route::get('tables', [TableController::class, 'index']);
 });
 ```
 
 ---
 
-*ეს დოკუმენტი მოიცავს API პროექტისთვის ყველა საჭირო route-ს, რომელიც უზრუნველყოფს 9 ძირითადი მოდულის სრულ ფუნქციონალობას.*
+*ეს დოკუმენტი მოიცავს API პროექტისთვის ყველა საჭირო route-ს, რომელიც უზრუნველყოფს 12 ძირითადი მოდულის სრულ ფუნქციონალობას.*

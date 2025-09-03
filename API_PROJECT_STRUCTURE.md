@@ -17,6 +17,9 @@ api-foodlyapp/
 │   │   │       ├── SpotController.php
 │   │   │       ├── SpaceController.php
 │   │   │       ├── CityController.php
+│   │   │       ├── PlaceController.php
+│   │   │       ├── TableController.php
+│   │   │       ├── ReservationController.php
 │   │   │       └── RolePermissionController.php
 │   │   ├── Resources/
 │   │   │   ├── UserResource.php
@@ -25,7 +28,10 @@ api-foodlyapp/
 │   │   │   ├── DishResource.php
 │   │   │   ├── SpotResource.php
 │   │   │   ├── SpaceResource.php
-│   │   │   └── CityResource.php
+│   │   │   ├── CityResource.php
+│   │   │   ├── PlaceResource.php
+│   │   │   ├── TableResource.php
+│   │   │   └── ReservationResource.php
 │   │   ├── Requests/
 │   │   └── Middleware/
 │   ├── Models/
@@ -38,6 +44,9 @@ api-foodlyapp/
 │   │   ├── Spot.php
 │   │   ├── Space.php
 │   │   ├── City.php
+│   │   ├── Place.php
+│   │   ├── Table.php
+│   │   ├── Reservation.php
 │   │   └── Translations/
 │   └── Services/
 ├── database/
@@ -57,7 +66,7 @@ api-foodlyapp/
 
 ## 🗂️ Files to Copy/Move to API Project
 
-### Models (9 core models + translations)
+### Models (12 core models + translations)
 ```
 FROM: app/Models/
 TO: api-project/app/Models/
@@ -77,6 +86,11 @@ TO: api-project/app/Models/
 ✅ SpaceTranslation.php
 ✅ City.php
 ✅ CityTranslation.php
+✅ Place.php
+✅ PlaceTranslation.php
+✅ Table.php
+✅ TableTranslation.php
+✅ Reservation.php
 ```
 
 ### API Controllers
@@ -92,6 +106,9 @@ TO: api-project/app/Http/Controllers/Api/
 ✅ SpotController.php
 ✅ SpaceController.php
 ✅ CityController.php
+✅ PlaceController.php
+✅ TableController.php
+✅ ReservationController.php
 ✅ CuisineRestaurantController.php
 ✅ SpotRestaurantController.php
 ✅ RestaurantCuisineController.php
@@ -110,6 +127,9 @@ TO: api-project/app/Http/Resources/
 ✅ SpotResource.php
 ✅ SpaceResource.php
 ✅ CityResource.php
+✅ PlaceResource.php
+✅ TableResource.php
+✅ ReservationResource.php
 ✅ CategoryResource.php (if needed)
 ```
 
@@ -118,7 +138,7 @@ TO: api-project/app/Http/Resources/
 FROM: database/migrations/
 TO: api-project/database/migrations/
 
-📋 Select migrations for core 9 modules only:
+📋 Select migrations for core 12 modules only:
 - create_users_table
 - create_roles_table  
 - create_permissions_table
@@ -137,6 +157,11 @@ TO: api-project/database/migrations/
 - create_space_translations_table
 - create_cities_table
 - create_city_translations_table
+- create_places_table
+- create_place_translations_table
+- create_tables_table
+- create_table_translations_table
+- create_reservations_table
 - create_cuisine_restaurant_table
 - create_dish_restaurant_table
 - create_spot_restaurant_table
@@ -181,9 +206,6 @@ TO: api-project/config/
 
 ### Models to Exclude
 ```
-❌ Reservation.php
-❌ Place.php
-❌ Table.php
 ❌ Kiosk.php
 ❌ BOGTransaction.php
 ❌ NotificationLog.php
@@ -325,6 +347,28 @@ Route::prefix('v1')->middleware(['throttle:api'])->group(function () {
         Route::get('/{slug}/restaurants', [DishController::class, 'restaurants']);
     });
     
+    // Places
+    Route::prefix('places')->group(function () {
+        Route::get('/', [PlaceController::class, 'index']);
+        Route::get('/{slug}', [PlaceController::class, 'showBySlug']);
+        Route::get('/{slug}/tables', [PlaceController::class, 'tables']);
+    });
+    
+    // Tables
+    Route::prefix('tables')->group(function () {
+        Route::get('/', [TableController::class, 'index']);
+        Route::get('/{slug}', [TableController::class, 'showBySlug']);
+        Route::get('/{slug}/availability', [TableController::class, 'availability']);
+    });
+    
+    // Reservations
+    Route::prefix('reservations')->group(function () {
+        Route::get('/', [ReservationController::class, 'index']);
+        Route::get('/{id}', [ReservationController::class, 'show']);
+        Route::post('/', [ReservationController::class, 'store']);
+        Route::put('/{id}', [ReservationController::class, 'update']);
+    });
+    
     // Spots
     Route::prefix('spots')->group(function () {
         Route::get('/', [SpotController::class, 'index']);
@@ -355,6 +399,9 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin'])->group(functi
     Route::apiResource('spots', SpotController::class);
     Route::apiResource('spaces', SpaceController::class);
     Route::apiResource('cities', CityController::class);
+    Route::apiResource('places', PlaceController::class);
+    Route::apiResource('tables', TableController::class);
+    Route::apiResource('reservations', ReservationController::class);
 });
 ```
 
@@ -388,6 +435,13 @@ restaurant_translations
 dishes
 dish_translations
 
+routes/
+places
+place_translations
+tables
+table_translations
+reservations
+
 -- Relationships
 cuisine_restaurant
 dish_restaurant
@@ -400,11 +454,6 @@ personal_access_tokens (Sanctum)
 
 ### Tables to Exclude from API Project
 ```sql
-❌ reservations
-❌ places
-❌ place_translations
-❌ tables
-❌ table_translations
 ❌ kiosks
 ❌ bog_transactions
 ❌ bog_api_tokens
@@ -416,7 +465,6 @@ personal_access_tokens (Sanctum)
 ❌ menu_items
 ❌ products
 ❌ categories
-❌ reservation_slots
 ❌ All queue/job related tables
 ```
 

@@ -3,7 +3,14 @@
 ## 📋 პროექტის გაყოფის სრული გეგმა
 
 ### 🎯 მიზანი
-არსებული ერთიანი პროექტის გაყოფა ორ ცალკე, დამოუკიდებელ პროექტად:
+არსებული ერთიანი პროექტის გაყოფა ორ ცალკე, დამოუკიდებელ პროექტადcp ../admin-foodlyapp/app/Models/CityTranslation.php app/Models/
+cp ../admin-foodlyapp/app/Models/Place.php app/Models/
+cp ../admin-foodlyapp/app/Models/PlaceTranslation.php app/Models/
+cp ../admin-foodlyapp/app/Models/Table.php app/Models/
+cp ../admin-foodlyapp/app/Models/TableTranslation.php app/Models/
+cp ../admin-foodlyapp/app/Models/Reservation.php app/Models/
+
+# Copy API controllers (only 12 modules)
 1. **Admin Dashboard Project** - სრული admin ფუნქციონალობა
 2. **API Project** - მხოლოდ API endpoints-ები 9 მოდულისთვის
 
@@ -45,7 +52,7 @@
 ✅ All Frontend Assets
 ```
 
-### 🔌 API Project (მხოლოდ 9 მოდული)
+### 🔌 API Project (მხოლოდ 12 მოდული)
 ```
 ✅ Users (API only)
 ✅ Roles & Permissions (API only)
@@ -55,11 +62,11 @@
 ✅ Spots (API only) 
 ✅ Spaces (API only)
 ✅ Cities (API only)
+✅ Places (API only)
+✅ Tables (API only)
+✅ Reservations (API only)
 ✅ Authentication (Sanctum API)
 
-❌ Places (არ გადაინოს)
-❌ Tables (არ გადაინოს)
-❌ Reservations (არ გადაინოს)
 ❌ Kiosks (არ გადაინოს)
 ❌ Menu Management (არ გადაინოს)
 ❌ Analytics (არ გადაინოს)
@@ -109,11 +116,11 @@ api-foodlyapp/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   └── Api/            📋 მხოლოდ 9 მოდულის API controllers
-│   │   ├── Resources/          📋 მხოლოდ 9 მოდულის resources
+│   │   │   └── Api/            📋 მხოლოდ 12 მოდულის API controllers
+│   │   ├── Resources/          📋 მხოლოდ 12 მოდულის resources
 │   │   ├── Requests/           📋 მხოლოდ საჭირო validation rules
 │   │   └── Middleware/         📋 API-specific middleware
-│   ├── Models/                 📋 მხოლოდ 9 მოდულის models + User
+│   ├── Models/                 📋 მხოლოდ 12 მოდულის models + User
 │   └── Services/               📋 მხოლოდ API-related services
 ├── resources/
 │   └── views/                  📋 მინიმალური (მხოლოდ docs)
@@ -121,147 +128,149 @@ api-foodlyapp/
 │   ├── api.php                 📋 მხოლოდ API routes
 │   └── web.php                 📋 მინიმალური (auth + docs)
 ├── database/
-│   ├── migrations/             📋 მხოლოდ 9 მოდულის migrations
-│   └── seeders/                📋 მხოლოდ 9 მოდულის seeders
+│   ├── migrations/             📋 მხოლოდ 12 მოდულის migrations
+│   └── seeders/                📋 მხოლოდ 12 მოდულის seeders
 ├── config/                     📋 API-optimized configs
 └── tests/                      📋 API-focused tests
 ```
 
 ---
 
-## 🔄 Migration Strategy
+## 🔄 API Project Strategy
 
-### Phase 1: Create API Project Repository
+### 🎯 ახალი API პროექტის მიზანი
+```
+✅ არსებული ბაზიდან მონაცემების წაკითხვა
+✅ მონაცემების განახლება API-ს მეშვეობით  
+✅ მხოლოდ 12 მოდულისთვის clean API endpoints
+✅ მობილური აპლიკაციებისთვის ოპტიმიზაცია
+✅ სწრაფი და მარტივი API responses
+
+❌ ახალი მიგრაციები არ ჭირდება
+❌ ახალი მონაცემთა ბაზის სტრუქტურა არ ჭირდება  
+❌ მონაცემების კოპირება არ ჭირდება
+```
+
+### 📊 Database Strategy  
+```
+არსებული Database: foodly (სრული სისტემა)
+  ↓
+API Project: api-foodlyapp (კითხულობს იგივე ბაზას)
+  ↓
+მხოლოდ 12 მოდულის tables-ზე წვდომა:
+  - users, roles, permissions
+  - cities, spots, spaces, cuisines  
+  - restaurants, dishes, places, tables, reservations
+```
+
+### 🔧 API Project Setup
 ```bash
-# 1. Create new Laravel project
+# 1. ახალი Laravel პროექტი
 composer create-project laravel/laravel api-foodlyapp
-cd api-foodlyapp
 
-# 2. Install required packages
+# 2. საჭირო packages
 composer require laravel/sanctum
-composer require spatie/laravel-permission
-composer require spatie/laravel-sluggable
+composer require spatie/laravel-permission  
 composer require astrotomic/laravel-translatable
 composer require cloudinary-labs/cloudinary-laravel
 
-# 3. Remove unwanted packages
-composer remove livewire/flux livewire/volt power-components/livewire-powergrid
-composer remove romanzipp/laravel-queue-monitor laravel/horizon
-composer remove sendgrid/sendgrid mpdf/mpdf endroid/qr-code
+# 3. Database კონფიგურაცია (.env)
+DB_DATABASE=foodly  # არსებული ბაზა
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+# 4. მხოლოდ საჭირო Models-ების კოპირება (12 მოდული)
+# 5. მხოლოდ API Controllers-ების შექმნა
+# 6. Clean API Routes შექმნა
 ```
 
-### Phase 2: Copy Core Files
-```bash
-# Copy Models (only 9 modules + User)
-cp ../admin-foodlyapp/app/Models/User.php app/Models/
-cp ../admin-foodlyapp/app/Models/Role.php app/Models/
-cp ../admin-foodlyapp/app/Models/Permission.php app/Models/
-cp ../admin-foodlyapp/app/Models/Restaurant.php app/Models/
-cp ../admin-foodlyapp/app/Models/RestaurantTranslation.php app/Models/
-cp ../admin-foodlyapp/app/Models/Cuisine.php app/Models/
-cp ../admin-foodlyapp/app/Models/CuisineTranslation.php app/Models/
-cp ../admin-foodlyapp/app/Models/Dish.php app/Models/
-cp ../admin-foodlyapp/app/Models/DishTranslation.php app/Models/
-cp ../admin-foodlyapp/app/Models/Spot.php app/Models/
-cp ../admin-foodlyapp/app/Models/SpotTranslation.php app/Models/
-cp ../admin-foodlyapp/app/Models/Space.php app/Models/
-cp ../admin-foodlyapp/app/Models/SpaceTranslation.php app/Models/
-cp ../admin-foodlyapp/app/Models/City.php app/Models/
-cp ../admin-foodlyapp/app/Models/CityTranslation.php app/Models/
+### 📋 Models რომლებიც ჭირდება
+```php
+// User Management
+User.php
+Role.php  
+Permission.php
 
-# Copy API Controllers (only 9 modules)
-cp -r ../admin-foodlyapp/app/Http/Controllers/Api/ app/Http/Controllers/
+// Geographic & Categories
+City.php + CityTranslation.php
+Spot.php + SpotTranslation.php
+Space.php + SpaceTranslation.php
+Cuisine.php + CuisineTranslation.php
 
-# Copy API Resources
-cp -r ../admin-foodlyapp/app/Http/Resources/ app/Http/Resources/
-
-# Copy specific migrations (only 9 modules)
-# Copy database seeders (only 9 modules)
-# Copy configuration files (adapted)
-```
-
-### Phase 3: Clean Up API Project
-```bash
-# Remove unnecessary files
-rm -rf resources/views/admin/
-rm -rf resources/views/livewire/
-rm -rf app/Http/Livewire/
-rm -rf app/Mail/
-rm -rf app/Jobs/
-rm -rf app/Events/
-
-# Clean up routes
-# Edit routes/api.php - keep only 9 modules
-# Edit routes/web.php - minimal auth routes only
-
-# Update configuration files
-# Edit config/app.php - remove Livewire providers
-# Edit composer.json - clean dependencies
-```
-
-### Phase 4: Database Setup
-```bash
-# Run migrations
-php artisan migrate
-
-# Seed data
-php artisan db:seed
-
-# Test API endpoints
-php artisan serve
+// Restaurant System
+Restaurant.php + RestaurantTranslation.php
+Dish.php + DishTranslation.php
+Place.php + PlaceTranslation.php
+Table.php + TableTranslation.php
+Reservation.php
 ```
 
 ---
 
 ## 🗄️ Database Strategy
 
-### Option 1: Separate Databases (Recommended)
+### ✅ Shared Database (რეკომენდებული)
 ```
-admin-foodlyapp:
-  Database: foodly_admin
-  Contains: All tables (complete system)
+არსებული Database: foodly
+  ↓
+Admin Project: admin-foodlyapp (იყენებს სრულ ბაზას)
+API Project: api-foodlyapp (იყენებს იგივე ბაზას, მხოლოდ 12 მოდული)
 
-api-foodlyapp:
-  Database: foodly_api
-  Contains: Only 9 modules + auth tables
-```
-
-### Option 2: Shared Database
-```
-Both projects use same database: foodly_shared
-API project ignores extra tables
-Admin project uses all tables
+Benefits:
+✅ არ ჭირდება მონაცემების კოპირება
+✅ Real-time data sync ორივე პროექტს შორის  
+✅ ერთი ბაზის მხოლოდ ერთი backup
+✅ უფრო მარტივი development
+✅ მონაცემები ყოველთვის სინქრონიზებული
 ```
 
-### Recommended: Separate Databases
-**Benefits:**
-- Clear separation of concerns
-- Independent scaling
-- Better security isolation
-- Easier maintenance
-- No interference between projects
+### Database Access Control
+```php
+// API Project Models - მხოლოდ საჭირო tables
+API Project იყენებს:
+- users, roles, permissions  
+- cities, city_translations
+- spots, spot_translations  
+- spaces, space_translations
+- cuisines, cuisine_translations
+- restaurants, restaurant_translations
+- dishes, dish_translations
+- places, place_translations
+- tables, table_translations
+- reservations
+
+API Project არ იყენებს:
+- kiosks, menu_categories, products
+- analytics, monitoring tables
+- bog_payments, queue_jobs
+- notifications, email_logs
+```
 
 ---
 
 ## 🔧 Configuration Differences
 
-### Admin Dashboard .env
+### Admin Dashboard .env (უცვლელი)
 ```env
 APP_NAME="Foodly Admin Dashboard"
 APP_URL=https://admin.foodlyapp.ge
 
-# Full feature set
+# სრული feature set
 LIVEWIRE_ENABLED=true
 HORIZON_ENABLED=true
 ANALYTICS_ENABLED=true
 BOG_PAYMENTS_ENABLED=true
 QUEUE_MONITORING_ENABLED=true
 
-# Database
-DB_DATABASE=foodly_admin
+# Database (არსებული)
+DB_DATABASE=foodly
+DB_HOST=127.0.0.1
+DB_PORT=3306
 ```
 
-### API Project .env
+### API Project .env (ახალი)
 ```env
 APP_NAME="Foodly API"
 APP_URL=https://api.foodlyapp.ge
@@ -271,12 +280,18 @@ SANCTUM_ENABLED=true
 API_RATE_LIMITING=true
 CORS_ENABLED=true
 
-# Database
-DB_DATABASE=foodly_api
+# იგივე Database - მხოლოდ read/write access 12 მოდულზე
+DB_DATABASE=foodly
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=api_user  # შესაძლოა ცალკე user
+DB_PASSWORD=api_password
 
 # Disable web features
 SESSION_DRIVER=array
 VIEW_CACHE=false
+CACHE_DRIVER=redis
+QUEUE_CONNECTION=sync
 ```
 
 ---
@@ -381,34 +396,40 @@ API Project:     https://api.foodlyapp.ge
 
 ---
 
-## 📋 Migration Checklist
+## 📋 API Project Setup Checklist
 
-### ✅ Pre-Migration Tasks
+### ✅ Pre-Setup Tasks
 - [ ] Create new repository for API project
 - [ ] Set up separate development environment
-- [ ] Document current API endpoints
-- [ ] Identify dependencies between modules
-- [ ] Plan database migration strategy
-- [ ] Update CI/CD pipelines
+- [ ] Document არსებული Kiosk API endpoints
+- [ ] Plan database connection strategy
+- [ ] Update CI/CD pipelines for API project
 
-### ✅ Migration Tasks
+### ✅ Setup Tasks
 - [ ] Create new Laravel API project
-- [ ] Install required packages only
-- [ ] Copy and adapt core files
-- [ ] Clean up unnecessary components
-- [ ] Update configuration files
-- [ ] Migrate database tables
-- [ ] Seed test data
-- [ ] Update route definitions
+- [ ] Install required packages only (Sanctum, Spatie, etc.)
+- [ ] Copy core Models (12 მოდული)
+- [ ] Create clean API Controllers
+- [ ] Remove unnecessary components (Livewire, etc.)
+- [ ] Update configuration files (.env, config files)
+- [ ] Connect to existing database
+- [ ] Create clean API routes
 
-### ✅ Post-Migration Tasks
+### ✅ Testing Tasks  
+- [ ] Test database connection
 - [ ] Test all API endpoints
-- [ ] Update API documentation
+- [ ] Verify data access for 12 modules
+- [ ] Test API authentication (Sanctum)
+- [ ] Test rate limiting
+- [ ] Performance testing
+
+### ✅ Deployment Tasks
 - [ ] Configure production servers
-- [ ] Set up monitoring
-- [ ] Update client applications
-- [ ] Deploy to production
-- [ ] Monitor performance
+- [ ] Set up monitoring for API
+- [ ] Deploy to production (api.foodlyapp.ge)
+- [ ] Update mobile applications
+- [ ] Monitor API performance
+- [ ] Document new API endpoints
 
 ---
 
